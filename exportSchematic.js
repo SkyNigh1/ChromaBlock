@@ -4,25 +4,28 @@ function exportToSchematic() {
   const size = parseInt(sizeInput.value) || 16;
   const squares = gradient.querySelectorAll('.gradient-square');
   if (!squares.length) {
+    console.error('No gradient squares found.');
     alert('Please generate a gradient first!');
     return;
   }
+
+  console.log('Exporting schematic with size:', size);
 
   // Initialize schematic dimensions
   const width = size;
   const height = 2; // Base layer (y=0) and glass layer (y=1)
   const length = size;
   const volume = width * height * length;
-  const blocks = new Uint8Array(volume).fill(0); // Default to air
-  const data = new Uint8Array(volume).fill(0); // Block metadata (0 for simplicity)
+  const blocks = new Uint8Array(volume).fill(0); // Default to air (ID 0)
+  const data = new Uint8Array(volume).fill(0); // Block metadata
 
-  // Simplified block ID mapping (legacy IDs for .schematic compatibility)
+  // Block ID mapping (legacy IDs for .schematic compatibility)
   const blockNameToId = {
     'redstone_ore': 73,
     'blast_furnace': 451,
     'coal_block': 173,
-    'red_concrete': 251, // Data value 14 for red
-    'stripped_mangrove_log': 17, // Log with data for mangrove
+    'red_concrete': 251,
+    'stripped_mangrove_log': 17,
     'iron_block': 42,
     'suspicious_gravel': 438,
     'furnace': 61,
@@ -34,19 +37,19 @@ function exportToSchematic() {
     'stone': 1,
     'chiseled_deepslate': 648,
     'grass_block': 2,
-    'smooth_stone': 1, // Same as stone, differentiated by texture in game
-    'smooth_stone_slab': 44, // Slab with data for smooth stone
+    'smooth_stone': 1,
+    'smooth_stone_slab': 44,
     'crafter': 454,
     'netherite_block': 525,
-    'stripped_crimson_stem': 17, // Log with data for crimson
-    'pink_concrete_powder': 252, // Data value 6 for pink
-    'pink_concrete': 251, // Data value 6 for pink
+    'stripped_crimson_stem': 17,
+    'pink_concrete_powder': 252,
+    'pink_concrete': 251,
     'pearlescent_froglight': 549,
     'pink_glazed_terracotta': 231,
-    'crimson_stem': 17, // Log with data for crimson
-    'purple_terracotta': 159, // Data value 10 for purple
-    'magenta_terracotta': 159, // Data value 2 for magenta
-    'pink_wool': 35, // Data value 6 for pink
+    'crimson_stem': 17,
+    'purple_terracotta': 159,
+    'magenta_terracotta': 159,
+    'pink_wool': 35,
     'mycelium': 110,
     'nether_bricks': 112,
     'chiseled_nether_bricks': 405,
@@ -54,28 +57,28 @@ function exportToSchematic() {
     'fire_coral_block': 387,
     'black_glazed_terracotta': 235,
     'smithing_table': 457,
-    'stripped_cherry_log': 17, // Log with data for cherry
+    'stripped_cherry_log': 17,
     'red_nether_bricks': 215,
     'deepslate_redstone_ore': 74,
-    'white_stained_glass': 95, // Data value 0 for white
-    'orange_stained_glass': 95, // Data value 1 for orange
-    'magenta_stained_glass': 95, // Data value 2 for magenta
-    'light_blue_stained_glass': 95, // Data value 3 for light blue
-    'yellow_stained_glass': 95, // Data value 4 for yellow
-    'lime_stained_glass': 95, // Data value 5 for lime
-    'pink_stained_glass': 95, // Data value 6 for pink
-    'gray_stained_glass': 95, // Data value 7 for gray
-    'light_gray_stained_glass': 95, // Data value 8 for light gray
-    'cyan_stained_glass': 95, // Data value 9 for cyan
-    'purple_stained_glass': 95, // Data value 10 for purple
-    'blue_stained_glass': 95, // Data value 11 for blue
-    'brown_stained_glass': 95, // Data value 12 for brown
-    'green_stained_glass': 95, // Data value 13 for green
-    'red_stained_glass': 95, // Data value 14 for red
-    'black_stained_glass': 95 // Data value 15 for black
+    'white_stained_glass': 95,
+    'orange_stained_glass': 95,
+    'magenta_stained_glass': 95,
+    'light_blue_stained_glass': 95,
+    'yellow_stained_glass': 95,
+    'lime_stained_glass': 95,
+    'pink_stained_glass': 95,
+    'gray_stained_glass': 95,
+    'light_gray_stained_glass': 95,
+    'cyan_stained_glass': 95,
+    'purple_stained_glass': 95,
+    'blue_stained_glass': 95,
+    'brown_stained_glass': 95,
+    'green_stained_glass': 95,
+    'red_stained_glass': 95,
+    'black_stained_glass': 95
   };
 
-  // Data values for blocks that need them (e.g., colored blocks)
+  // Data values for blocks
   const blockDataValues = {
     'red_concrete': 14,
     'pink_concrete_powder': 6,
@@ -98,30 +101,47 @@ function exportToSchematic() {
     'brown_stained_glass': 12,
     'green_stained_glass': 13,
     'red_stained_glass': 14,
-    'black_stained_glass': 15
+    'black_stained_glass': 15,
+    'stripped_mangrove_log': 3, // Log data for mangrove
+    'stripped_crimson_stem': 4, // Log data for crimson
+    'crimson_stem': 4, // Log data for crimson
+    'stripped_cherry_log': 5 // Log data for cherry
   };
 
   // Parse gradient squares
   squares.forEach((square, index) => {
     const x = index % width;
     const z = Math.floor(index / width);
-    const tooltip = square.querySelector('.tooltip').textContent;
+    const tooltip = square.querySelector('.tooltip')?.textContent;
+    if (!tooltip) {
+      console.warn(`No tooltip found for square ${index}`);
+      return;
+    }
+
     let baseName = 'stone';
     let glassName = null;
 
-    if (tooltip.includes('Base: ')) {
-      const parts = tooltip.split(', ');
-      baseName = parts[0].replace('Base: ', '');
-      if (parts.length > 1 && parts[1].replace('Glass: ', '') !== 'none') {
-        glassName = parts[1].replace('Glass: ', '');
-      }
+    const baseMatch = tooltip.match(/Base: ([^,]+)/);
+    const glassMatch = tooltip.match(/Glass: ([^,]+)/);
+
+    if (baseMatch) {
+      baseName = baseMatch[1].trim();
+      console.log(`Square ${index} (x:${x}, z:${z}): Base = ${baseName}`);
+    } else {
+      console.warn(`Square ${index} (x:${x}, z:${z}): No base block found in tooltip: ${tooltip}`);
+    }
+
+    if (glassMatch && glassMatch[1].trim() !== 'none') {
+      glassName = glassMatch[1].trim();
+      console.log(`Square ${index} (x:${x}, z:${z}): Glass = ${glassName}`);
     }
 
     // Set base block
-    const baseBlockId = blockNameToId[baseName] || 1; // Default to stone (ID 1)
+    const baseBlockId = blockNameToId[baseName] || 1; // Default to stone
     const baseIndex = x + z * width + 0 * width * length;
     blocks[baseIndex] = baseBlockId;
     data[baseIndex] = blockDataValues[baseName] || 0;
+    console.log(`Base block at (${x}, 0, ${z}): ID = ${baseBlockId}, Data = ${data[baseIndex]}`);
 
     // Set glass block (if any)
     if (glassName) {
@@ -129,6 +149,7 @@ function exportToSchematic() {
       const glassIndex = x + z * width + 1 * width * length;
       blocks[glassIndex] = glassBlockId;
       data[glassIndex] = blockDataValues[glassName] || 0;
+      console.log(`Glass block at (${x}, 1, ${z}): ID = ${glassBlockId}, Data = ${data[glassIndex]}`);
     }
   });
 
@@ -150,7 +171,7 @@ function exportToSchematic() {
     }
   };
 
-  // Write NBT data (adapted from script.js)
+  // Write NBT data
   function writeNBT(data) {
     const buffer = [];
     buffer.push(0x0A); // Compound tag start
@@ -238,7 +259,9 @@ function exportToSchematic() {
       throw new Error('Pako library not found. Please include pako.js.');
     }
     const nbtBuffer = writeNBT(nbtData);
+    console.log('NBT buffer size:', nbtBuffer.length);
     const compressed = pako.gzip(nbtBuffer);
+    console.log('Compressed size:', compressed.length);
     const blob = new Blob([compressed], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -248,6 +271,7 @@ function exportToSchematic() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+    console.log('Schematic exported successfully.');
   } catch (err) {
     console.error('Schematic export failed:', err);
     alert('Failed to export schematic: ' + err.message);
