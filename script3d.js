@@ -17,23 +17,54 @@ async function loadBlocks() {
       fetch('blocks.json'),
       fetch('glass.json')
     ]);
+    if (!blocksResponse.ok || !glassResponse.ok) {
+      throw new Error(`Failed to fetch JSON files: blocks(${blocksResponse.status}), glass(${glassResponse.status})`);
+    }
     blocks = await blocksResponse.json();
     glassBlocks = await glassResponse.json();
+    console.log('Blocks loaded:', blocks.length, 'Glass blocks loaded:', glassBlocks.length);
+
     // Initialize glass sources to "none"
-    glassTL = glassTR = glassBL = glassBR = glassBlocks.find(b => b.name === 'none');
-    document.getElementById('glassTL-label').textContent = 'None';
-    document.getElementById('glassTR-label').textContent = 'None';
-    document.getElementById('glassBL-label').textContent = 'None';
-    document.getElementById('glassBR-label').textContent = 'None';
+    const noneGlass = glassBlocks.find(b => b.name === 'none') || { name: 'none', path: null, color: { r: 0, g: 0, b: 0 }, alpha: 0.0, view: 'both' };
+    glassTL = glassTR = glassBL = glassBR = noneGlass;
+    document.getElementById('glassTL-label')?.textContent = 'None';
+    document.getElementById('glassTR-label')?.textContent = 'None';
+    document.getElementById('glassBL-label')?.textContent = 'None';
+    document.getElementById('glassBR-label')?.textContent = 'None';
+
+    // Set default base blocks to ensure gradient can render
+    const defaultBlock = blocks.find(b => b.name === 'stone') || blocks[0] || { name: 'stone', path: '', color: { r: 128, g: 128, b: 128 }, view: 'both' };
+    baseTL = baseTR = baseBL = baseBR = defaultBlock;
+    document.getElementById('baseTL-img')?.setAttribute('src', defaultBlock.path);
+    document.getElementById('baseTL-img')?.classList.remove('hidden');
+    document.getElementById('baseTL-label')?.textContent = defaultBlock.name;
+    document.getElementById('baseTR-img')?.setAttribute('src', defaultBlock.path);
+    document.getElementById('baseTR-img')?.classList.remove('hidden');
+    document.getElementById('baseTR-label')?.textContent = defaultBlock.name;
+    document.getElementById('baseBL-img')?.setAttribute('src', defaultBlock.path);
+    document.getElementById('baseBL-img')?.classList.remove('hidden');
+    document.getElementById('baseBL-label')?.textContent = defaultBlock.name;
+    document.getElementById('baseBR-img')?.setAttribute('src', defaultBlock.path);
+    document.getElementById('baseBR-img')?.classList.remove('hidden');
+    document.getElementById('baseBR-label')?.textContent = defaultBlock.name;
+
     showBlocks();
+    updateGradient();
   } catch (error) {
     console.error('Error loading blocks or glass:', error);
+    alert('Failed to load block data. Check console for details.');
   }
 }
 
 function openModal(source) {
   currentSource = source;
-  document.getElementById('modal').classList.remove('hidden');
+  const modal = document.getElementById('modal');
+  if (!modal) {
+    console.error('Modal element not found');
+    alert('Modal not found. Check HTML.');
+    return;
+  }
+  modal.classList.remove('hidden');
   if (source.startsWith('glass')) {
     showGlassBlocks();
   } else {
@@ -43,16 +74,25 @@ function openModal(source) {
 
 function showBlocks() {
   const blocksContent = document.getElementById('blocks-content');
-  const glassContent = document.getElementById('glass-content');
+  if (!blocksContent) {
+    console.error('blocks-content element not found');
+    alert('Block selection area not found. Check HTML.');
+    return;
+  }
+  if (blocks.length === 0) {
+    console.error('No blocks available to display');
+    alert('No blocks available. Ensure blocks.json is loaded.');
+    return;
+  }
   blocksContent.classList.remove('hidden');
-  glassContent.classList.add('hidden');
-  document.getElementById('color-content').classList.add('hidden');
-  document.getElementById('tab-blocks').classList.add('bg-blue-600', 'text-white');
-  document.getElementById('tab-blocks').classList.remove('bg-gray-300', 'text-black');
-  document.getElementById('tab-glass').classList.add('bg-gray-300', 'text-black');
-  document.getElementById('tab-glass').classList.remove('bg-blue-600', 'text-white');
-  document.getElementById('tab-color').classList.add('bg-gray-300', 'text-black');
-  document.getElementById('tab-color').classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('glass-content')?.classList.add('hidden');
+  document.getElementById('color-content')?.classList.add('hidden');
+  document.getElementById('tab-blocks')?.classList.add('bg-blue-600', 'text-white');
+  document.getElementById('tab-blocks')?.classList.remove('bg-gray-300', 'text-black');
+  document.getElementById('tab-glass')?.classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-glass')?.classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('tab-color')?.classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-color')?.classList.remove('bg-blue-600', 'text-white');
 
   blocksContent.innerHTML = '';
   blocks.forEach(block => {
@@ -65,17 +105,26 @@ function showBlocks() {
 }
 
 function showGlassBlocks() {
-  const blocksContent = document.getElementById('blocks-content');
   const glassContent = document.getElementById('glass-content');
-  blocksContent.classList.add('hidden');
+  if (!glassContent) {
+    console.error('glass-content element not found');
+    alert('Glass block selection area not found. Check HTML.');
+    return;
+  }
+  if (glassBlocks.length === 0) {
+    console.error('No glass blocks available to display');
+    alert('No glass blocks available. Ensure glass.json is loaded.');
+    return;
+  }
+  document.getElementById('blocks-content')?.classList.add('hidden');
   glassContent.classList.remove('hidden');
-  document.getElementById('color-content').classList.add('hidden');
-  document.getElementById('tab-blocks').classList.add('bg-gray-300', 'text-black');
-  document.getElementById('tab-blocks').classList.remove('bg-blue-600', 'text-white');
-  document.getElementById('tab-glass').classList.add('bg-blue-600', 'text-white');
-  document.getElementById('tab-glass').classList.remove('bg-gray-300', 'text-black');
-  document.getElementById('tab-color').classList.add('bg-gray-300', 'text-black');
-  document.getElementById('tab-color').classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('color-content')?.classList.add('hidden');
+  document.getElementById('tab-blocks')?.classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-blocks')?.classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('tab-glass')?.classList.add('bg-blue-600', 'text-white');
+  document.getElementById('tab-glass')?.classList.remove('bg-gray-300', 'text-black');
+  document.getElementById('tab-color')?.classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-color')?.classList.remove('bg-blue-600', 'text-white');
 
   glassContent.innerHTML = '';
   glassBlocks.forEach(block => {
@@ -88,53 +137,77 @@ function showGlassBlocks() {
 }
 
 function showColorPicker() {
-  document.getElementById('blocks-content').classList.add('hidden');
-  document.getElementById('glass-content').classList.add('hidden');
-  document.getElementById('color-content').classList.remove('hidden');
-  document.getElementById('tab-blocks').classList.add('bg-gray-300', 'text-black');
-  document.getElementById('tab-blocks').classList.remove('bg-blue-600', 'text-white');
-  document.getElementById('tab-glass').classList.add('bg-gray-300', 'text-black');
-  document.getElementById('tab-glass').classList.remove('bg-blue-600', 'text-white');
-  document.getElementById('tab-color').classList.add('bg-blue-600', 'text-white');
-  document.getElementById('tab-color').classList.remove('bg-gray-300', 'text-black');
+  const colorContent = document.getElementById('color-content');
+  if (!colorContent) {
+    console.error('color-content element not found');
+    alert('Color picker area not found. Check HTML.');
+    return;
+  }
+  document.getElementById('blocks-content')?.classList.add('hidden');
+  document.getElementById('glass-content')?.classList.add('hidden');
+  colorContent.classList.remove('hidden');
+  document.getElementById('tab-blocks')?.classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-blocks')?.classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('tab-glass')?.classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-glass')?.classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('tab-color')?.classList.add('bg-blue-600', 'text-white');
+  document.getElementById('tab-color')?.classList.remove('bg-gray-300', 'text-black');
 }
 
 function selectBlock(block) {
+  if (!block) return;
   const sourceId = currentSource;
   const img = document.getElementById(`${sourceId}-img`);
   const label = document.getElementById(`${sourceId}-label`);
-  img.src = block.path;
+  if (!img || !label) {
+    console.error(`Element not found for sourceId: ${sourceId}`);
+    return;
+  }
+  img.setAttribute('src', block.path);
   img.classList.remove('hidden');
   label.textContent = block.name;
   if (currentSource === 'baseTL') baseTL = block;
   else if (currentSource === 'baseTR') baseTR = block;
   else if (currentSource === 'baseBL') baseBL = block;
   else if (currentSource === 'baseBR') baseBR = block;
-  document.getElementById('modal').classList.add('hidden');
+  document.getElementById('modal')?.classList.add('hidden');
   updateGradient();
 }
 
 function selectGlassBlock(block) {
+  if (!block) return;
   const sourceId = currentSource;
   const img = document.getElementById(`${sourceId}-img`);
   const label = document.getElementById(`${sourceId}-label`);
-  img.src = block.path || '';
+  if (!img || !label) {
+    console.error(`Element not found for sourceId: ${sourceId}`);
+    return;
+  }
+  img.setAttribute('src', block.path || '');
   img.classList[block.path ? 'remove' : 'add']('hidden');
   label.textContent = block.name;
   if (currentSource === 'glassTL') glassTL = block;
   else if (currentSource === 'glassTR') glassTR = block;
   else if (currentSource === 'glassBL') glassBL = block;
   else if (currentSource === 'glassBR') glassBR = block;
-  document.getElementById('modal').classList.add('hidden');
+  document.getElementById('modal')?.classList.add('hidden');
   updateGradient();
 }
 
 function selectColor() {
-  const color = document.getElementById('color-picker').value;
+  const color = document.getElementById('color-picker')?.value;
+  if (!color) {
+    console.error('Color picker not found or no value selected');
+    return;
+  }
   const sourceId = currentSource;
   const img = document.getElementById(`${sourceId}-img`);
   const label = document.getElementById(`${sourceId}-label`);
-  img.src = '';
+  if (!img || !label) {
+    console.error(`Element not found for sourceId: ${sourceId}`);
+    return;
+  }
+  img.setAttribute('src', '');
   img.classList.add('hidden');
   label.textContent = `Color: ${color}`;
   const colorObj = hexToRgb(color);
@@ -148,7 +221,7 @@ function selectColor() {
   else if (currentSource === 'glassTR') glassTR = { ...colorObj, alpha: 0.5 };
   else if (currentSource === 'glassBL') glassBL = { ...colorObj, alpha: 0.5 };
   else if (currentSource === 'glassBR') glassBR = { ...colorObj, alpha: 0.5 };
-  document.getElementById('modal').classList.add('hidden');
+  document.getElementById('modal')?.classList.add('hidden');
   updateGradient();
 }
 
@@ -160,6 +233,10 @@ function hexToRgb(hex) {
 }
 
 function blendColors(base, glass) {
+  if (!base || !glass) {
+    console.warn('Missing base or glass for blending:', { base, glass });
+    return { r: 0, g: 0, b: 0 };
+  }
   if (glass.name === 'none') return base.color || base;
   const alpha = glass.alpha || 0.5;
   const r = Math.round(base.color.r * (1 - alpha) + glass.color.r * alpha);
@@ -169,11 +246,19 @@ function blendColors(base, glass) {
 }
 
 function updateGradient() {
-  if (!baseTL || !baseTR || !baseBL || !baseBR) return;
-  const size = parseInt(document.getElementById('size').value) || 16;
-  const fillMode = document.getElementById('fill-mode').value;
-  const viewMode = document.getElementById('view-mode').value;
+  if (!baseTL || !baseTR || !baseBL || !baseBR) {
+    console.warn('Not all corner blocks selected:', { baseTL, baseTR, baseBL, baseBR });
+    return;
+  }
+  const size = parseInt(document.getElementById('size')?.value) || 16;
+  const fillMode = document.getElementById('fill-mode')?.value || 'nearest';
+  const viewMode = document.getElementById('view-mode')?.value || 'both';
   const gradient = document.getElementById('gradient');
+  if (!gradient) {
+    console.error('Gradient element not found');
+    alert('Gradient area not found. Check HTML.');
+    return;
+  }
   gradient.innerHTML = '';
   gradient.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
 
@@ -208,10 +293,14 @@ function updateGradient() {
 
 function findNearestBlock(targetColor, viewMode) {
   let minDistance = Infinity;
-  let bestBase = blocks[0];
-  let bestGlass = glassBlocks.find(b => b.name === 'none');
+  let bestBase = blocks[0] || { name: 'stone', path: '', color: { r: 128, g: 128, b: 128 }, view: 'both' };
+  let bestGlass = glassBlocks.find(b => b.name === 'none') || { name: 'none', path: null, color: { r: 0, g: 0, b: 0 }, alpha: 0.0, view: 'both' };
   const filteredBlocks = blocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
   const filteredGlass = glassBlocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
+  if (filteredBlocks.length === 0 || filteredGlass.length === 0) {
+    console.warn('No blocks available for viewMode:', viewMode);
+    return { base: bestBase, glass: bestGlass };
+  }
 
   filteredBlocks.forEach(base => {
     filteredGlass.forEach(glass => {
@@ -233,22 +322,35 @@ function findNearestBlock(targetColor, viewMode) {
 
 function exportToSchematic() {
   if (!baseTL || !baseTR || !baseBL || !baseBR) {
+    console.warn('Not all corner blocks selected for export');
     alert('Please select all corner blocks before exporting.');
     return;
   }
-  const size = parseInt(document.getElementById('size').value) || 16;
-  const viewMode = document.getElementById('view-mode').value;
-  const fillMode = document.getElementById('fill-mode').value;
+  const size = parseInt(document.getElementById('size')?.value) || 16;
+  const gradient = document.getElementById('gradient');
+  if (!gradient) {
+    console.error('Gradient element not found');
+    alert('Gradient area not found. Check HTML.');
+    return;
+  }
 
   // Create block data for 2 layers (base and glass)
   const blockData = new Uint8Array(size * size * 2);
   const blockIds = [];
 
   // Collect gradient blocks from the DOM
-  const gradient = document.getElementById('gradient');
   const squares = gradient.querySelectorAll('.gradient-square');
+  if (squares.length !== size * size) {
+    console.error('Gradient size mismatch:', squares.length, 'expected:', size * size);
+    alert('Gradient data is incomplete. Refresh and try again.');
+    return;
+  }
   squares.forEach((square, index) => {
-    const tooltip = square.querySelector('.tooltip').textContent;
+    const tooltip = square.querySelector('.tooltip')?.textContent;
+    if (!tooltip) {
+      console.error('Tooltip missing for square:', index);
+      return;
+    }
     const [baseName, glassName] = tooltip.includes(',') ? tooltip.split(', ') : [tooltip, 'none'];
     const baseId = `minecraft:${baseName}`;
     const glassId = glassName === 'none' ? 'minecraft:air' : `minecraft:${glassName}`;
@@ -297,31 +399,50 @@ function exportToSchematic() {
     alert('Schematic exported successfully!');
   } catch (error) {
     console.error('Error exporting schematic:', error);
-    alert('Failed to export schematic.');
+    alert('Failed to export schematic. Check console.');
   }
 }
 
-document.getElementById('tab-blocks').onclick = showBlocks;
-document.getElementById('tab-glass').onclick = showGlassBlocks;
-document.getElementById('tab-color').onclick = showColorPicker;
-document.getElementById('close-modal').onclick = () => {
-  document.getElementById('modal').classList.add('hidden');
-};
-document.getElementById('use-color').onclick = selectColor;
-document.getElementById('size').oninput = updateGradient;
-document.getElementById('fill-mode').onchange = updateGradient;
-document.getElementById('view-mode').onchange = updateGradient;
-document.getElementById('copy').onclick = () => {
+// Event listeners
+document.getElementById('tab-blocks')?.addEventListener('click', showBlocks);
+document.getElementById('tab-glass')?.addEventListener('click', showGlassBlocks);
+document.getElementById('tab-color')?.addEventListener('click', showColorPicker);
+document.getElementById('close-modal')?.addEventListener('click', () => {
+  document.getElementById('modal')?.classList.add('hidden');
+});
+document.getElementById('use-color')?.addEventListener('click', selectColor);
+document.getElementById('size')?.addEventListener('input', updateGradient);
+document.getElementById('fill-mode')?.addEventListener('change', updateGradient);
+document.getElementById('view-mode')?.addEventListener('change', updateGradient);
+document.getElementById('copy')?.addEventListener('click', () => {
   const gradient = document.getElementById('gradient');
+  if (!gradient) {
+    console.error('Gradient element not found');
+    return;
+  }
   const names = Array.from(gradient.querySelectorAll('.tooltip')).map(span => span.textContent);
-  navigator.clipboard.writeText(names.join(';'));
-  alert('List copied!');
-};
-document.getElementById('surprise').onclick = () => {
-  const viewMode = document.getElementById('view-mode').value;
+  navigator.clipboard.writeText(names.join(';')).then(() => {
+    alert('List copied!');
+  }).catch(err => {
+    console.error('Failed to copy:', err);
+    alert('Failed to copy list.');
+  });
+});
+document.getElementById('surprise')?.addEventListener('click', () => {
+  const viewMode = document.getElementById('view-mode')?.value;
+  if (!viewMode) {
+    console.error('View mode not selected');
+    alert('View mode not selected.');
+    return;
+  }
   const filteredBlocks = blocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
   const filteredGlass = glassBlocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
-  if (filteredBlocks.length === 0 || filteredGlass.length === 0) return;
+  console.log('Filtered blocks:', filteredBlocks.length, 'Filtered glass:', filteredGlass.length);
+  if (filteredBlocks.length === 0 || filteredGlass.length === 0) {
+    console.error('No blocks or glass blocks available for viewMode:', viewMode);
+    alert('No blocks available for the selected view mode.');
+    return;
+  }
 
   const randomBaseTL = filteredBlocks[Math.floor(Math.random() * filteredBlocks.length)];
   const randomBaseTR = filteredBlocks[Math.floor(Math.random() * filteredBlocks.length)];
@@ -333,48 +454,49 @@ document.getElementById('surprise').onclick = () => {
   const randomGlassBR = filteredGlass[Math.floor(Math.random() * filteredGlass.length)];
 
   baseTL = randomBaseTL;
-  document.getElementById('baseTL-img').src = randomBaseTL.path;
-  document.getElementById('baseTL-img').classList.remove('hidden');
-  document.getElementById('baseTL-label').textContent = randomBaseTL.name;
+  document.getElementById('baseTL-img')?.setAttribute('src', randomBaseTL.path);
+  document.getElementById('baseTL-img')?.classList.remove('hidden');
+  document.getElementById('baseTL-label')?.textContent = randomBaseTL.name;
 
   baseTR = randomBaseTR;
-  document.getElementById('baseTR-img').src = randomBaseTR.path;
-  document.getElementById('baseTR-img').classList.remove('hidden');
-  document.getElementById('baseTR-label').textContent = randomBaseTR.name;
+  document.getElementById('baseTR-img')?.setAttribute('src', randomBaseTR.path);
+  document.getElementById('baseTR-img')?.classList.remove('hidden');
+  document.getElementById('baseTR-label')?.textContent = randomBaseTR.name;
 
   baseBL = randomBaseBL;
-  document.getElementById('baseBL-img').src = randomBaseBL.path;
-  document.getElementById('baseBL-img').classList.remove('hidden');
-  document.getElementById('baseBL-label').textContent = randomBaseBL.name;
+  document.getElementById('baseBL-img')?.setAttribute('src', randomBaseBL.path);
+  document.getElementById('baseBL-img')?.classList.remove('hidden');
+  document.getElementById('baseBL-label')?.textContent = randomBaseBL.name;
 
   baseBR = randomBaseBR;
-  document.getElementById('baseBR-img').src = randomBaseBR.path;
-  document.getElementById('baseBR-img').classList.remove('hidden');
-  document.getElementById('baseBR-label').textContent = randomBaseBR.name;
+  document.getElementById('baseBR-img')?.setAttribute('src', randomBaseBR.path);
+  document.getElementById('baseBR-img')?.classList.remove('hidden');
+  document.getElementById('baseBR-label')?.textContent = randomBaseBR.name;
 
   glassTL = randomGlassTL;
-  document.getElementById('glassTL-img').src = randomGlassTL.path || '';
-  document.getElementById('glassTL-img').classList[randomGlassTL.path ? 'remove' : 'add']('hidden');
-  document.getElementById('glassTL-label').textContent = randomGlassTL.name;
+  document.getElementById('glassTL-img')?.setAttribute('src', randomGlassTL.path || '');
+  document.getElementById('glassTL-img')?.classList[randomGlassTL.path ? 'remove' : 'add']('hidden');
+  document.getElementById('glassTL-label')?.textContent = randomGlassTL.name;
 
   glassTR = randomGlassTR;
-  document.getElementById('glassTR-img').src = randomGlassTR.path || '';
-  document.getElementById('glassTR-img').classList[randomGlassTR.path ? 'remove' : 'add']('hidden');
-  document.getElementById('glassTR-label').textContent = randomGlassTR.name;
+  document.getElementById('glassTR-img')?.setAttribute('src', randomGlassTR.path || '');
+  document.getElementById('glassTR-img')?.classList[randomGlassTR.path ? 'remove' : 'add']('hidden');
+  document.getElementById('glassTR-label')?.textContent = randomGlassTR.name;
 
   glassBL = randomGlassBL;
-  document.getElementById('glassBL-img').src = randomGlassBL.path || '';
-  document.getElementById('glassBL-img').classList[randomGlassBL.path ? 'remove' : 'add']('hidden');
-  document.getElementById('glassBL-label').textContent = randomGlassBL.name;
+  document.getElementById('glassBL-img')?.setAttribute('src', randomGlassBL.path || '');
+  document.getElementById('glassBL-img')?.classList[randomGlassBL.path ? 'remove' : 'add']('hidden');
+  document.getElementById('glassBL-label')?.textContent = randomGlassBL.name;
 
   glassBR = randomGlassBR;
-  document.getElementById('glassBR-img').src = randomGlassBR.path || '';
-  document.getElementById('glassBR-img').classList[randomGlassBR.path ? 'remove' : 'add']('hidden');
-  document.getElementById('glassBR-label').textContent = randomGlassBR.name;
+  document.getElementById('glassBR-img')?.setAttribute('src', randomGlassBR.path || '');
+  document.getElementById('glassBR-img')?.classList[randomGlassBR.path ? 'remove' : 'add']('hidden');
+  document.getElementById('glassBR-label')?.textContent = randomGlassBR.name;
 
+  console.log('Surprise triggered:', { baseTL, baseTR, baseBL, baseBR, glassTL, glassTR, glassBL, glassBR });
   updateGradient();
-};
-document.getElementById('export-schematic').onclick = exportToSchematic;
+});
+document.getElementById('export-schematic')?.addEventListener('click', exportToSchematic);
 
 // Initialize block loading
 loadBlocks();
