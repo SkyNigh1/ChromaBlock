@@ -26,86 +26,222 @@ async function exportToSchematic() {
     return;
   }
 
-  // Create block ID and data mappings dynamically
+  // Create comprehensive block mappings from JSON data
   const blockNameToId = {};
   const blockDataValues = {};
 
-  // Base blocks mapping
-  blocksData.forEach(block => {
-    const name = block.name;
-    // Assign legacy IDs based on known blocks; default to stone (ID 1) for unknown
-    if (name === 'stone') blockNameToId[name] = 1;
-    else if (name === 'grass_block') blockNameToId[name] = 2;
-    else if (name === 'cobblestone') blockNameToId[name] = 4;
-    else if (name === 'coal_ore') blockNameToId[name] = 16;
-    else if (name === 'iron_block') blockNameToId[name] = 42;
-    else if (name === 'furnace') blockNameToId[name] = 61;
-    else if (name === 'redstone_ore') blockNameToId[name] = 73;
-    else if (name === 'deepslate_redstone_ore') blockNameToId[name] = 74;
-    else if (name === 'netherrack') blockNameToId[name] = 87;
-    else if (name === 'mycelium') blockNameToId[name] = 110;
-    else if (name === 'nether_bricks') blockNameToId[name] = 112;
-    else if (name === 'coal_block') blockNameToId[name] = 173;
-    else if (name === 'red_nether_bricks') blockNameToId[name] = 215;
-    else if (name === 'observer') blockNameToId[name] = 218;
-    else if (name === 'pink_glazed_terracotta') blockNameToId[name] = 231;
-    else if (name === 'black_glazed_terracotta') blockNameToId[name] = 235;
-    else if (name === 'red_concrete') blockNameToId[name] = 251;
-    else if (name === 'pink_concrete') blockNameToId[name] = 251;
-    else if (name === 'pink_concrete_powder') blockNameToId[name] = 252;
-    else if (name === 'fire_coral_block') blockNameToId[name] = 387;
-    else if (name === 'cracked_nether_bricks') blockNameToId[name] = 406;
-    else if (name === 'suspicious_gravel') blockNameToId[name] = 438;
-    else if (name === 'blast_furnace') blockNameToId[name] = 451;
-    else if (name === 'crafter') blockNameToId[name] = 454;
-    else if (name === 'smithing_table') blockNameToId[name] = 457;
-    else if (name === 'crimson_nylium') blockNameToId[name] = 487;
-    else if (name === 'netherite_block') blockNameToId[name] = 525;
-    else if (name === 'pearlescent_froglight') blockNameToId[name] = 549;
-    else if (name === 'chiseled_deepslate') blockNameToId[name] = 648;
-    else if (name.includes('log') || name.includes('stem')) blockNameToId[name] = 17; // Logs and stems
-    else if (name.includes('terracotta')) blockNameToId[name] = 159; // Terracotta
-    else if (name.includes('wool')) blockNameToId[name] = 35; // Wool
-    else if (name.includes('slab')) blockNameToId[name] = 44; // Slabs
-    else if (name.includes('concrete')) blockNameToId[name] = 251; // Concrete
-    else blockNameToId[name] = 1; // Default to stone
+  // Enhanced mapping function using patterns and keywords
+  function getBlockMapping(blockName) {
+    const name = blockName.toLowerCase().trim();
+    
+    // Direct mappings for common blocks
+    const directMappings = {
+      'stone': { id: 1, data: 0 },
+      'grass_block': { id: 2, data: 0 },
+      'dirt': { id: 3, data: 0 },
+      'cobblestone': { id: 4, data: 0 },
+      'oak_planks': { id: 5, data: 0 },
+      'bedrock': { id: 7, data: 0 },
+      'sand': { id: 12, data: 0 },
+      'gravel': { id: 13, data: 0 },
+      'coal_ore': { id: 16, data: 0 },
+      'iron_ore': { id: 15, data: 0 },
+      'gold_ore': { id: 14, data: 0 },
+      'iron_block': { id: 42, data: 0 },
+      'gold_block': { id: 41, data: 0 },
+      'diamond_block': { id: 57, data: 0 },
+      'furnace': { id: 61, data: 0 },
+      'redstone_ore': { id: 73, data: 0 },
+      'netherrack': { id: 87, data: 0 },
+      'coal_block': { id: 173, data: 0 },
+      'quartz_block': { id: 155, data: 0 },
+      'observer': { id: 218, data: 0 },
+      'magma_block': { id: 213, data: 0 },
+      'bone_block': { id: 216, data: 0 },
+      'nether_bricks': { id: 112, data: 0 },
+      'red_nether_bricks': { id: 215, data: 0 },
+      'end_stone': { id: 121, data: 0 },
+      'purpur_block': { id: 201, data: 0 },
+      'blast_furnace': { id: 451, data: 0 },
+      'smoker': { id: 453, data: 0 },
+      'cartography_table': { id: 455, data: 0 },
+      'smithing_table': { id: 457, data: 0 },
+      'loom': { id: 459, data: 0 },
+      'barrel': { id: 458, data: 0 },
+      'composter': { id: 468, data: 0 },
+      'crimson_nylium': { id: 487, data: 0 },
+      'warped_nylium': { id: 488, data: 0 },
+      'ancient_debris': { id: 526, data: 0 },
+      'netherite_block': { id: 525, data: 0 },
+      'blackstone': { id: 528, data: 0 },
+      'basalt': { id: 489, data: 0 },
+      'soul_sand': { id: 88, data: 0 },
+      'soul_soil': { id: 491, data: 0 },
+      'deepslate': { id: 633, data: 0 },
+      'copper_block': { id: 601, data: 0 },
+      'raw_copper_block': { id: 707, data: 0 },
+      'raw_iron_block': { id: 706, data: 0 },
+      'raw_gold_block': { id: 708, data: 0 },
+      'amethyst_block': { id: 626, data: 0 },
+      'tuff': { id: 588, data: 0 },
+      'calcite': { id: 581, data: 0 },
+      'dripstone_block': { id: 615, data: 0 },
+      'moss_block': { id: 575, data: 0 },
+      'rooted_dirt': { id: 576, data: 0 },
+      'mud': { id: 717, data: 0 },
+      'packed_mud': { id: 718, data: 0 },
+      'mud_bricks': { id: 719, data: 0 },
+      'reinforced_deepslate': { id: 721, data: 0 }
+    };
 
-    // Assign data values
-    if (name === 'red_concrete') blockDataValues[name] = 14;
-    else if (name === 'pink_concrete') blockDataValues[name] = 6;
-    else if (name === 'pink_concrete_powder') blockDataValues[name] = 6;
-    else if (name === 'purple_terracotta') blockDataValues[name] = 10;
-    else if (name === 'magenta_terracotta') blockDataValues[name] = 2;
-    else if (name === 'pink_wool') blockDataValues[name] = 6;
-    else if (name === 'stripped_mangrove_log') blockDataValues[name] = 3;
-    else if (name.includes('crimson_stem')) blockDataValues[name] = 4;
-    else if (name === 'stripped_cherry_log') blockDataValues[name] = 5;
-    else blockDataValues[name] = 0; // Default data value
+    if (directMappings[name]) {
+      return directMappings[name];
+    }
+
+    // Pattern-based mappings
+    if (name.includes('log') || name.includes('stem')) {
+      if (name.includes('oak')) return { id: 17, data: 0 };
+      if (name.includes('spruce')) return { id: 17, data: 1 };
+      if (name.includes('birch')) return { id: 17, data: 2 };
+      if (name.includes('jungle')) return { id: 17, data: 3 };
+      if (name.includes('acacia')) return { id: 162, data: 0 };
+      if (name.includes('dark_oak')) return { id: 162, data: 1 };
+      if (name.includes('mangrove')) return { id: 476, data: 0 };
+      if (name.includes('cherry')) return { id: 478, data: 0 };
+      if (name.includes('pale_oak')) return { id: 480, data: 0 };
+      if (name.includes('crimson')) return { id: 481, data: 0 };
+      if (name.includes('warped')) return { id: 482, data: 0 };
+      return { id: 17, data: 0 }; // Default to oak log
+    }
+
+    if (name.includes('planks')) {
+      if (name.includes('oak')) return { id: 5, data: 0 };
+      if (name.includes('spruce')) return { id: 5, data: 1 };
+      if (name.includes('birch')) return { id: 5, data: 2 };
+      if (name.includes('jungle')) return { id: 5, data: 3 };
+      if (name.includes('acacia')) return { id: 5, data: 4 };
+      if (name.includes('dark_oak')) return { id: 5, data: 5 };
+      return { id: 5, data: 0 }; // Default to oak planks
+    }
+
+    if (name.includes('wool')) {
+      const woolColors = {
+        'white': 0, 'orange': 1, 'magenta': 2, 'light_blue': 3,
+        'yellow': 4, 'lime': 5, 'pink': 6, 'gray': 7,
+        'light_gray': 8, 'cyan': 9, 'purple': 10, 'blue': 11,
+        'brown': 12, 'green': 13, 'red': 14, 'black': 15
+      };
+      for (const [color, data] of Object.entries(woolColors)) {
+        if (name.includes(color)) return { id: 35, data };
+      }
+      return { id: 35, data: 0 }; // Default to white wool
+    }
+
+    if (name.includes('concrete')) {
+      const concreteColors = {
+        'white': 0, 'orange': 1, 'magenta': 2, 'light_blue': 3,
+        'yellow': 4, 'lime': 5, 'pink': 6, 'gray': 7,
+        'light_gray': 8, 'cyan': 9, 'purple': 10, 'blue': 11,
+        'brown': 12, 'green': 13, 'red': 14, 'black': 15
+      };
+      for (const [color, data] of Object.entries(concreteColors)) {
+        if (name.includes(color)) return { id: 251, data };
+      }
+      return { id: 251, data: 0 }; // Default to white concrete
+    }
+
+    if (name.includes('terracotta')) {
+      const terracottaColors = {
+        'white': 0, 'orange': 1, 'magenta': 2, 'light_blue': 3,
+        'yellow': 4, 'lime': 5, 'pink': 6, 'gray': 7,
+        'light_gray': 8, 'cyan': 9, 'purple': 10, 'blue': 11,
+        'brown': 12, 'green': 13, 'red': 14, 'black': 15
+      };
+      for (const [color, data] of Object.entries(terracottaColors)) {
+        if (name.includes(color)) return { id: 159, data };
+      }
+      return { id: 172, data: 0 }; // Hardened clay for plain terracotta
+    }
+
+    if (name.includes('coral')) {
+      if (name.includes('dead')) return { id: 133, data: 0 }; // Dead coral -> cobblestone variant
+      return { id: 387, data: 0 }; // Live coral blocks
+    }
+
+    if (name.includes('copper')) {
+      if (name.includes('exposed')) return { id: 602, data: 0 };
+      if (name.includes('weathered')) return { id: 603, data: 0 };
+      if (name.includes('oxidized')) return { id: 604, data: 0 };
+      if (name.includes('cut')) return { id: 605, data: 0 };
+      if (name.includes('bulb')) return { id: 610, data: 0 };
+      return { id: 601, data: 0 }; // Default copper block
+    }
+
+    if (name.includes('deepslate')) {
+      if (name.includes('coal_ore')) return { id: 661, data: 0 };
+      if (name.includes('iron_ore')) return { id: 662, data: 0 };
+      if (name.includes('copper_ore')) return { id: 663, data: 0 };
+      if (name.includes('gold_ore')) return { id: 664, data: 0 };
+      if (name.includes('redstone_ore')) return { id: 665, data: 0 };
+      if (name.includes('emerald_ore')) return { id: 666, data: 0 };
+      if (name.includes('lapis_ore')) return { id: 667, data: 0 };
+      if (name.includes('diamond_ore')) return { id: 668, data: 0 };
+      if (name.includes('bricks')) return { id: 646, data: 0 };
+      if (name.includes('tiles')) return { id: 647, data: 0 };
+      if (name.includes('chiseled')) return { id: 648, data: 0 };
+      return { id: 633, data: 0 }; // Default deepslate
+    }
+
+    if (name.includes('sandstone')) {
+      if (name.includes('red')) return { id: 179, data: 0 };
+      if (name.includes('chiseled')) return { id: 24, data: 1 };
+      if (name.includes('smooth')) return { id: 24, data: 2 };
+      return { id: 24, data: 0 }; // Default sandstone
+    }
+
+    // Special blocks
+    if (name.includes('glowstone')) return { id: 89, data: 0 };
+    if (name.includes('redstone_lamp')) return { id: 123, data: 0 };
+    if (name.includes('pumpkin')) return { id: 86, data: 0 };
+    if (name.includes('melon')) return { id: 103, data: 0 };
+    if (name.includes('hay')) return { id: 170, data: 0 };
+    if (name.includes('slime')) return { id: 165, data: 0 };
+    if (name.includes('honey')) return { id: 475, data: 0 };
+    if (name.includes('target')) return { id: 473, data: 0 };
+    if (name.includes('lodestone')) return { id: 493, data: 0 };
+    if (name.includes('crying_obsidian')) return { id: 492, data: 0 };
+    if (name.includes('respawn_anchor')) return { id: 494, data: 0 };
+    if (name.includes('shroomlight')) return { id: 485, data: 0 };
+
+    // Default fallback
+    console.warn(`Unknown block: ${name}, using stone as fallback`);
+    return { id: 1, data: 0 }; // Stone
+  }
+
+  // Process all blocks and glass from JSON to create mappings
+  blocksData.forEach(block => {
+    const mapping = getBlockMapping(block.name);
+    blockNameToId[block.name] = mapping.id;
+    blockDataValues[block.name] = mapping.data;
   });
 
   // Glass blocks mapping
   glassData.forEach(glass => {
-    const name = glass.name;
-    blockNameToId[name] = name === 'none' ? 0 : 95; // Air for 'none', stained glass for others
-    if (name !== 'none') {
-      if (name === 'white_stained_glass') blockDataValues[name] = 0;
-      else if (name === 'orange_stained_glass') blockDataValues[name] = 1;
-      else if (name === 'magenta_stained_glass') blockDataValues[name] = 2;
-      else if (name === 'light_blue_stained_glass') blockDataValues[name] = 3;
-      else if (name === 'yellow_stained_glass') blockDataValues[name] = 4;
-      else if (name === 'lime_stained_glass') blockDataValues[name] = 5;
-      else if (name === 'pink_stained_glass') blockDataValues[name] = 6;
-      else if (name === 'gray_stained_glass') blockDataValues[name] = 7;
-      else if (name === 'light_gray_stained_glass') blockDataValues[name] = 8;
-      else if (name === 'cyan_stained_glass') blockDataValues[name] = 9;
-      else if (name === 'purple_stained_glass') blockDataValues[name] = 10;
-      else if (name === 'blue_stained_glass') blockDataValues[name] = 11;
-      else if (name === 'brown_stained_glass') blockDataValues[name] = 12;
-      else if (name === 'green_stained_glass') blockDataValues[name] = 13;
-      else if (name === 'red_stained_glass') blockDataValues[name] = 14;
-      else if (name === 'black_stained_glass') blockDataValues[name] = 15;
+    if (glass.name === 'none') {
+      blockNameToId[glass.name] = 0; // Air
+      blockDataValues[glass.name] = 0;
     } else {
-      blockDataValues[name] = 0;
+      const glassColors = {
+        'white_stained_glass': 0, 'orange_stained_glass': 1, 'magenta_stained_glass': 2,
+        'light_blue_stained_glass': 3, 'yellow_stained_glass': 4, 'lime_stained_glass': 5,
+        'pink_stained_glass': 6, 'gray_stained_glass': 7, 'light_gray_stained_glass': 8,
+        'cyan_stained_glass': 9, 'purple_stained_glass': 10, 'blue_stained_glass': 11,
+        'brown_stained_glass': 12, 'green_stained_glass': 13, 'red_stained_glass': 14,
+        'black_stained_glass': 15
+      };
+      
+      blockNameToId[glass.name] = 95; // Stained glass ID
+      blockDataValues[glass.name] = glassColors[glass.name] || 0;
     }
   });
 
@@ -118,6 +254,7 @@ async function exportToSchematic() {
   const data = new Uint8Array(volume).fill(0); // Block metadata
 
   // Parse gradient squares
+  let validBlocks = 0;
   squares.forEach((square, index) => {
     const x = index % width;
     const z = Math.floor(index / width);
@@ -130,37 +267,45 @@ async function exportToSchematic() {
     let baseName = 'stone';
     let glassName = null;
 
-    const baseMatch = tooltip.match(/Base: ([^,]+)/);
-    const glassMatch = tooltip.match(/Glass: ([^,]+)/);
-
-    if (baseMatch) {
-      baseName = baseMatch[1].trim();
-      console.log(`Square ${index} (x:${x}, z:${z}): Base = ${baseName}`);
+    // Parse tooltip to extract block names
+    if (tooltip.startsWith('Color:')) {
+      // Handle exact color mode - use stone as base
+      baseName = 'stone';
     } else {
-      console.warn(`Square ${index} (x:${x}, z:${z}): No base block found in tooltip: ${tooltip}`);
-    }
+      const baseMatch = tooltip.match(/Base: ([^,]+)/);
+      const glassMatch = tooltip.match(/Glass: ([^,]+)/);
 
-    if (glassMatch && glassMatch[1].trim() !== 'none') {
-      glassName = glassMatch[1].trim();
-      console.log(`Square ${index} (x:${x}, z:${z}): Glass = ${glassName}`);
+      if (baseMatch) {
+        baseName = baseMatch[1].trim();
+      }
+
+      if (glassMatch && glassMatch[1].trim() !== 'none') {
+        glassName = glassMatch[1].trim();
+      }
     }
 
     // Set base block
-    const baseBlockId = blockNameToId[baseName] || 1; // Default to stone
+    const baseBlockId = blockNameToId[baseName] || 1;
+    const baseDataValue = blockDataValues[baseName] || 0;
     const baseIndex = x + z * width + 0 * width * length;
     blocks[baseIndex] = baseBlockId;
-    data[baseIndex] = blockDataValues[baseName] || 0;
-    console.log(`Base block at (${x}, 0, ${z}): ID = ${baseBlockId}, Data = ${data[baseIndex]}`);
+    data[baseIndex] = baseDataValue;
+    validBlocks++;
+
+    console.log(`Base block at (${x}, 0, ${z}): ${baseName} -> ID=${baseBlockId}, Data=${baseDataValue}`);
 
     // Set glass block (if any)
     if (glassName) {
       const glassBlockId = blockNameToId[glassName] || 0;
+      const glassDataValue = blockDataValues[glassName] || 0;
       const glassIndex = x + z * width + 1 * width * length;
       blocks[glassIndex] = glassBlockId;
-      data[glassIndex] = blockDataValues[glassName] || 0;
-      console.log(`Glass block at (${x}, 1, ${z}): ID = ${glassBlockId}, Data = ${data[glassIndex]}`);
+      data[glassIndex] = glassDataValue;
+      console.log(`Glass block at (${x}, 1, ${z}): ${glassName} -> ID=${glassBlockId}, Data=${glassDataValue}`);
     }
   });
+
+  console.log(`Successfully processed ${validBlocks} blocks out of ${squares.length} squares`);
 
   // Create NBT structure
   const nbtData = {
@@ -180,7 +325,7 @@ async function exportToSchematic() {
     }
   };
 
-  // Write NBT data
+  // Write NBT data (keeping your existing NBT writing functions)
   function writeNBT(data) {
     const buffer = [];
     buffer.push(0x0A); // Compound tag start
@@ -281,6 +426,7 @@ async function exportToSchematic() {
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     console.log('Schematic exported successfully.');
+    alert(`Schematic exported successfully! Processed ${validBlocks} blocks.`);
   } catch (err) {
     console.error('Schematic export failed:', err);
     alert('Failed to export schematic: ' + err.message);
