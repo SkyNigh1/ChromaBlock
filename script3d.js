@@ -137,136 +137,86 @@ function selectColor() {
   img.src = '';
   img.classList.add('hidden');
   label.textContent = `Color: ${color}`;
-  const colorObj = { 
-    name: color, 
-    color: hexToRgb(color), 
-    path: null, 
-    view: 'both', 
-    alpha: currentSource.startsWith('glass') ? 0.5 : 1.0 
-  };
+  const colorObj = hexToRgb(color);
+  colorObj.name = color;
+  colorObj.view = 'both';
   if (currentSource === 'baseTL') baseTL = colorObj;
   else if (currentSource === 'baseTR') baseTR = colorObj;
   else if (currentSource === 'baseBL') baseBL = colorObj;
   else if (currentSource === 'baseBR') baseBR = colorObj;
-  else if (currentSource === 'glassTL') glassTL = colorObj;
-  else if (currentSource === 'glassTR') glassTR = colorObj;
-  else if (currentSource === 'glassBL') glassBL = colorObj;
-  else glassBR = colorObj;
+  else if (currentSource === 'glassTL') glassTL = { ...colorObj, alpha: 0.5 };
+  else if (currentSource === 'glassTR') glassTR = { ...colorObj, alpha: 0.5 };
+  else if (currentSource === 'glassBL') glassBL = { ...colorObj, alpha: 0.5 };
+  else if (currentSource === 'glassBR') glassBR = { ...colorObj, alpha: 0.5 };
   document.getElementById('modal').classList.add('hidden');
   updateGradient();
 }
 
-function hexToRGB(hex) {
-  let r = parseInt(hex.slice(1, 3), 16);
-  let g = parseInt(hex.slice(3, 5), 16);
-  let b = parseInt(hex.slice(5, 7), 16);
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1, 3), 16);
+  const g = parseInt(hex.slice(3, 5), 16);
+  const b = parseInt(hex.slice(5, 7), 16);
   return { r, g, b };
 }
 
-function blendColors(baseColor, glassBlock) {
-  if (!glassBlock || glassBlock.name === 'none') return baseColor;
-  const alpha = glassBlock.alpha || 0.5;
-  const r = Math.round((1 - alpha) * baseColor.r + alpha * glassBlock.color.r);
-  const g = Math.round((1 - alpha) * baseColor.g + alpha * glassBlock.color.g);
-  const b = Math.round((1 - alpha) * baseColor.b + alpha * glassBlock.color.b);
+function blendColors(base, glass) {
+  if (glass.name === 'none') return base.color || base;
+  const alpha = glass.alpha || 0.5;
+  const r = Math.round(base.color.r * (1 - alpha) + glass.color.r * alpha);
+  const g = Math.round(base.color.g * (1 - alpha) + glass.color.g * alpha);
+  const b = Math.round(base.color.b * (1 - alpha) + glass.color.b * alpha);
   return { r, g, b };
 }
 
 function updateGradient() {
-  if (!baseTL || !baseTR || !baseBL || !baseBR || !glassTL || !glassTR || !glassBL || !glassBR) return;
+  if (!baseTL || !baseTR || !baseBL || !baseBR) return;
   const size = parseInt(document.getElementById('size').value) || 16;
   const fillMode = document.getElementById('fill-mode').value;
   const viewMode = document.getElementById('view-mode').value;
   const gradient = document.getElementById('gradient');
   gradient.innerHTML = '';
+  gradient.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
 
-  const gridSize = 512;
-  const blockSize = gridSize / size;
-  gradient.style.gridTemplateColumns = `repeat(${size}, ${blockSize}px)`;
-  gradient.style.gridTemplateRows = `repeat(${size}, ${blockSize}px)`;
-  gradient.style.width = `${gridSize}px`;
-  gradient.style.height = `${gridSize}px`;
-
-  // Compute combined colors for each corner
-  const tlColor = blendColors(baseTL.color, glassTL);
-  const trColor = blendColors(baseTR.color, glassTR);
-  const blColor = blendColors(baseBL.color, glassBL);
-  const brColor = blendColors(baseBR.color, glassBR);
-
-  for (let i = 0; i < size; i++) {
-    for (let j = 0; j < size; j++) {
-      const u = j / (size - 1);
-      const v = i / (size - 1);
-
-      // Bilinear interpolation of combined colors
-      const r = Math.round(
-        (1 - u) * (1 - v) * tlColor.r +
-        u * (1 - v) * trColor.r +
-        (1 - u) * v * blColor.r +
-        u * v * brColor.r
-      );
-      const g = Math.round(
-        (1 - u) * (1 - v) * tlColor.g +
-        u * (1 - v) * trColor.g +
-        (1 - u) * v * blColor.g +
-        u * v * brColor.g
-      );
-      const b = Math.round(
-        (1 - u) * (1 - v) * tlColor.b +
-        u * (1 - v) * trColor.b +
-        (1 - u) * v * blColor.b +
-        u * v * brColor.b
-      );
-
-      const finalColor = { r, g, b };
+  for (let y = 0; y < size; y++) {
+    for (let x = 0; x < size; x++) {
+      const u = x / (size - 1);
+      const v = y / (size - 1);
+      const c00 = blendColors(baseTL, glassTL);
+      const c10 = blendColors(baseTR, glassTR);
+      const c01 = blendColors(baseBL, glassBL);
+      const c11 = blendColors(baseBR, glassBR);
+      const r = Math.round(c00.r * (1 - u) * (1 - v) + c10.r * u * (1 - v) + c01.r * (1 - u) * v + c11.r * u * v);
+      const g = Math.round(c00.g * (1 - u) * (1 - v) + c10.g * u * (1 - v) + c01.g * (1 - u) * v + c11.g * u * v);
+      const b = Math.round(c00.b * (1 - u) * (1 - v) + c10.b * u * (1 - v) + c01.b * (1 - u) * v + c11.b * u * v);
       const div = document.createElement('div');
       div.className = 'gradient-square';
-      div.style.width = `${blockSize}px`;
-      div.style.height = `${blockSize}px`;
-      div.style.position = 'relative';
-
       if (fillMode === 'exact') {
         div.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
         div.innerHTML = `<span class="tooltip">Color: rgb(${r}, ${g}, ${b})</span>`;
       } else {
-        const { base, glass } = findNearestBlockPair(finalColor, viewMode);
-        const baseImg = `<img src="${base.path}" alt="${base.name}" class="base-img" />`;
-        const glassImg = glass.name !== 'none' ? `<img src="${glass.path}" alt="${glass.name}" class="glass-img" />` : '';
-        const tooltip = glass.name === 'none' ? `Base: ${base.name}` : `Base: ${base.name}, Glass: ${glass.name}`;
-        div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
-        div.dataset.baseBlock = base.name;
-        div.dataset.glassBlock = glass.name;
+        const { base, glass } = findNearestBlock({ r, g, b }, viewMode);
+        div.innerHTML = `<img src="${base.path}" alt="${base.name}" class="base-img" />`;
+        if (glass.name !== 'none') {
+          div.innerHTML += `<img src="${glass.path}" alt="${glass.name}" class="glass-img" />`;
+        }
+        div.innerHTML += `<span class="tooltip">${base.name}${glass.name !== 'none' ? ', ' + glass.name : ''}</span>`;
       }
       gradient.appendChild(div);
     }
   }
 }
 
-function findNearestBlockPair(targetColor, viewMode) {
+function findNearestBlock(targetColor, viewMode) {
   let minDistance = Infinity;
   let bestBase = blocks[0];
   let bestGlass = glassBlocks.find(b => b.name === 'none');
   const filteredBlocks = blocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
   const filteredGlass = glassBlocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
-  if (filteredBlocks.length === 0) return { base: blocks[0], glass: bestGlass };
 
   filteredBlocks.forEach(base => {
-    // Try with no glass
-    let distance = 
-      Math.pow(base.color.r - targetColor.r, 2) +
-      Math.pow(base.color.g - targetColor.g, 2) +
-      Math.pow(base.color.b - targetColor.b, 2);
-    if (distance < minDistance) {
-      minDistance = distance;
-      bestBase = base;
-      bestGlass = filteredGlass.find(b => b.name === 'none');
-    }
-
-    // Try with each glass block
     filteredGlass.forEach(glass => {
-      if (glass.name === 'none') return;
-      const blendedColor = blendColors(base.color, glass);
-      distance = 
+      const blendedColor = blendColors(base, glass);
+      const distance =
         Math.pow(blendedColor.r - targetColor.r, 2) +
         Math.pow(blendedColor.g - targetColor.g, 2) +
         Math.pow(blendedColor.b - targetColor.b, 2);
@@ -281,235 +231,73 @@ function findNearestBlockPair(targetColor, viewMode) {
   return { base: bestBase, glass: bestGlass };
 }
 
-function getClosestMinecraftBlockId(r, g, b) {
-  const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
-  if (r > g && r > b) {
-    return brightness > 0.5 ? 35 : 159; // Wool or Terracotta (red-dominated)
-  } else if (g > r && g > b) {
-    return brightness > 0.5 ? 35 : 159; // Wool or Terracotta (green-dominated)
-  } else if (b > r && b > g) {
-    return brightness > 0.5 ? 35 : 159; // Wool or Terracotta (blue-dominated)
-  } else {
-    if (brightness > 0.8) return 35; // White wool
-    else if (brightness > 0.6) return 35; // Light gray wool
-    else if (brightness > 0.4) return 35; // Gray wool
-    else if (brightness > 0.2) return 35; // Black wool
-    else return 49; // Obsidian
-  }
-}
-
-function exportSchematic() {
-  const size = parseInt(document.getElementById('size').value) || 16;
-  const gradient = document.getElementById('gradient');
-  const fillMode = document.getElementById('fill-mode').value;
-  const squares = gradient.querySelectorAll('.gradient-square');
-  
-  if (!squares.length) {
-    alert('No gradient data to export!');
+function exportToSchematic() {
+  if (!baseTL || !baseTR || !baseBL || !baseBR) {
+    alert('Please select all corner blocks before exporting.');
     return;
   }
+  const size = parseInt(document.getElementById('size').value) || 16;
+  const viewMode = document.getElementById('view-mode').value;
+  const fillMode = document.getElementById('fill-mode').value;
 
-  const voxelPositions = [];
+  // Create block data for 2 layers (base and glass)
+  const blockData = new Uint8Array(size * size * 2);
+  const blockIds = [];
+
+  // Collect gradient blocks from the DOM
+  const gradient = document.getElementById('gradient');
+  const squares = gradient.querySelectorAll('.gradient-square');
   squares.forEach((square, index) => {
-    const x = index % size;
-    const z = Math.floor(index / size);
-    if (fillMode === 'exact') {
-      const colorMatch = square.style.backgroundColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-      if (colorMatch) {
-        const [, r, g, b] = colorMatch;
-        voxelPositions.push({ x, y: 0, z, blockId: getClosestMinecraftBlockId(parseInt(r), parseInt(g), parseInt(b)) });
-      }
-    } else {
-      const baseBlock = square.dataset.baseBlock;
-      const glassBlock = square.dataset.glassBlock;
-      if (baseBlock) {
-        const base = blocks.find(b => b.name === baseBlock);
-        if (base) {
-          voxelPositions.push({ x, y: 0, z, blockId: getClosestMinecraftBlockId(base.color.r, base.color.g, base.color.b) });
-        }
-        if (glassBlock && glassBlock !== 'none') {
-          const glass = glassBlocks.find(g => g.name === glassBlock);
-          if (glass) {
-            voxelPositions.push({ x, y: 1, z, blockId: getClosestMinecraftBlockId(glass.color.r, glass.color.g, glass.color.b) });
-          }
-        }
-      }
-    }
+    const tooltip = square.querySelector('.tooltip').textContent;
+    const [baseName, glassName] = tooltip.includes(',') ? tooltip.split(', ') : [tooltip, 'none'];
+    const baseId = `minecraft:${baseName}`;
+    const glassId = glassName === 'none' ? 'minecraft:air' : `minecraft:${glassName}`;
+    const baseIndex = index * 2; // Bottom layer (y=0)
+    const glassIndex = index * 2 + 1; // Top layer (y=1)
+    if (!blockIds.includes(baseId)) blockIds.push(baseId);
+    if (!blockIds.includes(glassId)) blockIds.push(glassId);
+    blockData[baseIndex] = blockIds.indexOf(baseId);
+    blockData[glassIndex] = blockIds.indexOf(glassId);
   });
 
-  const voxelData = {
-    voxelPositions,
-    voxelSize: 1,
-    boundingBox: {
-      min: { x: 0, y: 0, z: 0 },
-      max: { x: size - 1, y: 1, z: size - 1 }
+  // Create Palette for NBT
+  const palette = {};
+  blockIds.forEach((id, index) => {
+    palette[id] = { type: 'int', value: index };
+  });
+
+  // Create NBT structure
+  const schematic = {
+    tagName: 'Schematic',
+    value: {
+      Width: { type: 'short', value: size },
+      Height: { type: 'short', value: 2 }, // 2 layers: base and glass
+      Length: { type: 'short', value: size },
+      Blocks: { type: 'byteArray', value: blockData },
+      Data: { type: 'byteArray', value: new Uint8Array(size * size * 2) }, // No block states
+      BlockEntities: { type: 'list', value: { type: 'compound', value: [] } },
+      Entities: { type: 'list', value: { type: 'compound', value: [] } },
+      Palette: { type: 'compound', value: palette },
+      PaletteMax: { type: 'int', value: blockIds.length }
     }
   };
 
+  // Serialize NBT and create downloadable file
   try {
-    const generator = new SchematicGenerator(voxelData, 35); // Default blockId 35 (wool) for simplicity
-    const { blob, filename, dimensions, blockCount } = generator.generateSchematic();
+    const nbtData = nbt.write(schematic);
+    const blob = new Blob([nbtData], { type: 'application/octet-stream' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'gradient.schematic';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
     URL.revokeObjectURL(url);
-    console.log('Schematic exported:', { filename, dimensions, blockCount });
-  } catch (err) {
-    console.error('Export error:', err);
-    alert('Error exporting schematic: ' + err.message);
-  }
-}
-
-class SchematicGenerator {
-  constructor(voxelData, blockId) {
-    this.voxelData = voxelData;
-    this.blockId = blockId;
-    this.voxelPositions = voxelData.voxelPositions;
-    this.voxelSize = voxelData.voxelSize;
-    this.boundingBox = voxelData.boundingBox;
-  }
-
-  generateSchematic() {
-    const minX = Math.min(...this.voxelPositions.map(p => p.x));
-    const maxX = Math.max(...this.voxelPositions.map(p => p.x));
-    const minY = Math.min(...this.voxelPositions.map(p => p.y));
-    const maxY = Math.max(...this.voxelPositions.map(p => p.y));
-    const minZ = Math.min(...this.voxelPositions.map(p => p.z));
-    const maxZ = Math.max(...this.voxelPositions.map(p => p.z));
-
-    const width = maxX - minX + 1;
-    const height = maxY - minY + 1;
-    const length = maxZ - minZ + 1;
-
-    const volume = width * height * length;
-    const blocks = new Uint8Array(volume).fill(0);
-    const data = new Uint8Array(volume).fill(0);
-
-    for (const pos of this.voxelPositions) {
-      const x = pos.x - minX;
-      const y = pos.y - minY;
-      const z = pos.z - minZ;
-      const index = x + z * width + y * width * length;
-      blocks[index] = pos.blockId || this.blockId;
-    }
-
-    const nbtData = {
-      name: 'Schematic',
-      value: {
-        Width: { type: 'short', value: width },
-        Height: { type: 'short', value: height },
-        Length: { type: 'short', value: length },
-        Materials: { type: 'string', value: 'Alpha' },
-        Blocks: { type: 'byteArray', value: blocks },
-        Data: { type: 'byteArray', value: data },
-        WEOffsetX: { type: 'int', value: 0 },
-        WEOffsetY: { type: 'int', value: 0 },
-        WEOffsetZ: { type: 'int', value: 0 }
-      }
-    };
-
-    const nbtBuffer = this.writeNBT(nbtData);
-    const compressed = this.gzipCompress(nbtBuffer);
-
-    return {
-      blob: new Blob([compressed], { type: 'application/octet-stream' }),
-      filename: 'gradient.schematic',
-      dimensions: { width, height, length },
-      blockCount: this.voxelPositions.length
-    };
-  }
-
-  writeNBT(data) {
-    const buffer = [];
-    buffer.push(0x0A);
-    this.writeString(data.name || 'Schematic', buffer);
-    this.writeCompoundContent(data.value, buffer);
-    return new Uint8Array(buffer);
-  }
-
-  writeCompoundContent(compound, buffer) {
-    for (const [key, tag] of Object.entries(compound)) {
-      this.writeNBTTag(tag, key, buffer);
-    }
-    buffer.push(0x00);
-  }
-
-  writeNBTTag(tag, name, buffer) {
-    const tagId = this.getTagId(tag.type);
-    buffer.push(tagId);
-    this.writeString(name, buffer);
-
-    switch (tag.type) {
-      case 'compound':
-        this.writeCompoundContent(tag.value, buffer);
-        break;
-      case 'int':
-        this.writeInt32(tag.value, buffer);
-        break;
-      case 'short':
-        this.writeInt16(tag.value, buffer);
-        break;
-      case 'byteArray':
-        this.writeInt32(tag.value.length, buffer);
-        for (let i = 0; i < tag.value.length; i++) {
-          buffer.push(tag.value[i] & 0xFF);
-        }
-        break;
-      case 'string':
-        this.writeString(tag.value, buffer);
-        break;
-    }
-  }
-
-  writeInt32(value, buffer) {
-    buffer.push(
-      (value >> 24) & 0xFF,
-      (value >> 16) & 0xFF,
-      (value >> 8) & 0xFF,
-      value & 0xFF
-    );
-  }
-
-  writeInt16(value, buffer) {
-    buffer.push(
-      (value >> 8) & 0xFF,
-      value & 0xFF
-    );
-  }
-
-  writeString(str, buffer) {
-    const bytes = new TextEncoder().encode(str);
-    buffer.push((bytes.length >> 8) & 0xFF, bytes.length & 0xFF);
-    bytes.forEach(byte => buffer.push(byte));
-  }
-
-  getTagId(type) {
-    const tagIds = {
-      'byte': 0x01,
-      'short': 0x02,
-      'int': 0x03,
-      'long': 0x04,
-      'float': 0x05,
-      'double': 0x06,
-      'byteArray': 0x07,
-      'string': 0x08,
-      'list': 0x09,
-      'compound': 0x0A,
-      'intArray': 0x0B,
-      'longArray': 0x0C
-    };
-    return tagIds[type] || 0x00;
-  }
-
-  gzipCompress(data) {
-    if (typeof pako === 'undefined') {
-      throw new Error('Pako library not found');
-    }
-    return pako.gzip(data);
+    alert('Schematic exported successfully!');
+  } catch (error) {
+    console.error('Error exporting schematic:', error);
+    alert('Failed to export schematic.');
   }
 }
 
@@ -586,8 +374,7 @@ document.getElementById('surprise').onclick = () => {
 
   updateGradient();
 };
-
-document.getElementById('export-schematic').onclick = exportSchematic;
+document.getElementById('export-schematic').onclick = exportToSchematic;
 
 // Initialize block loading
 loadBlocks();
