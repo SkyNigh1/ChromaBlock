@@ -7,13 +7,6 @@
     "view": "both"
   },
   {
-    "name": "glass",
-    "path": "img/tex/glass/glass.png",
-    "color": { "r": 200, "g": 200, "b": 200 },
-    "alpha": 0.5,
-    "view": "both"
-  },
-  {
     "name": "white_stained_glass",
     "path": "img/tex/glass/white_stained_glass.png",
     "color": { "r": 255, "g": 255, "b": 255 },
