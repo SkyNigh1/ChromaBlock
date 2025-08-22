@@ -1,15 +1,64 @@
-/* Reuse most styles from style.css, with adjustments for 2D gradient */
+/* Reuse most styles from style.css */
 @import url('style.css');
+
+/* Layout container to place sources on the left and gradient on the right */
+.layout-container {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  width: 100%;
+  max-width: 1200px;
+  margin-bottom: 2rem;
+}
+
+.sources {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.source-card {
+  width: 100%;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.07);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.source-card:hover {
+  transform: translateY(-6px) scale(1.05);
+  box-shadow: 0 0 20px rgba(41, 255, 137, 0.4);
+}
+
+.source-card img {
+  width: 60%;
+  height: auto;
+  image-rendering: pixelated;
+}
+
+.gradient-container {
+  flex-grow: 1;
+  padding: 0.8rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 0.8rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
 
 .gradient {
   display: grid;
   gap: 0;
-  justify-content: center;
+  width: 512px;
+  height: 512px;
 }
 
 .gradient-square {
-  width: 32px;
-  height: 32px;
   position: relative;
 }
 
@@ -20,26 +69,23 @@
   image-rendering: pixelated;
 }
 
-.sources {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  justify-items: center;
-}
-
-.source-card {
-  width: 180px;
-  padding: 1rem;
-}
-
-.source-card img {
-  width: 60%;
-  height: auto;
-  image-rendering: pixelated;
-}
-
-@media (max-width: 600px) {
+@media (max-width: 800px) {
+  .layout-container {
+    flex-direction: column;
+    align-items: center;
+  }
   .sources {
-    grid-template-columns: 1fr;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: center;
+  }
+  .source-card {
+    width: 150px;
+  }
+  .gradient {
+    width: 100%;
+    max-width: 512px;
+    height: 512px;
   }
 }

@@ -97,9 +97,14 @@ function updateGradient() {
   const gradient = document.getElementById('gradient');
   gradient.innerHTML = '';
 
+  // Set grid layout with dynamic block size
+  const gridSize = 512; // Fixed grid size in pixels
+  const blockSize = gridSize / size; // Dynamic block size
   gradient.style.display = 'grid';
-  gradient.style.gridTemplateColumns = `repeat(${size}, 32px)`;
-  gradient.style.gridTemplateRows = `repeat(${size}, 32px)`;
+  gradient.style.gridTemplateColumns = `repeat(${size}, ${blockSize}px)`;
+  gradient.style.gridTemplateRows = `repeat(${size}, ${blockSize}px)`;
+  gradient.style.width = `${gridSize}px`;
+  gradient.style.height = `${gridSize}px`;
 
   for (let i = 0; i < size; i++) {
     for (let j = 0; j < size; j++) {
@@ -128,6 +133,8 @@ function updateGradient() {
 
       const div = document.createElement('div');
       div.className = 'gradient-square';
+      div.style.width = `${blockSize}px`;
+      div.style.height = `${blockSize}px`;
 
       if (fillMode === 'exact') {
         div.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
