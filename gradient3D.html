@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SkymcDB • 3D Gradient</title>
-  <link rel="stylesheet" href="style3d.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SkymcDB • Alpha</title>
+  <link rel="stylesheet" href="style3d.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" />
+  <script src="script3d.js" defer></script>
+  <script src="exportSchematic.js" defer></script>
 </head>
 <body>
   <canvas id="background-canvas"></canvas>
-
   <nav>
     <div class="container">
-      <a href="#" class="logo">SkymcDB • Alpha</a>
+      <a href="#" class="logo">SkymcDB</a>
       <div class="nav-links">
         <div class="dropdown">
           <a href="#" class="dropdown-toggle">Gradients</a>
           <div class="dropdown-menu">
-            <a href="index.html">Gradient 1D</a>
+            <a href="gradient1D.html">Gradient 1D</a>
             <a href="gradient2D.html">Gradient 2D</a>
             <a href="gradient3D.html">Gradient 3D</a>
           </div>
@@ -25,77 +26,82 @@
         <a href="#">Noises</a>
         <a href="#">Palette</a>
         <a href="#">Pixel Art</a>
-        <a href="#">GitHub</a>
+        <a href="https://github.com">GitHub</a>
       </div>
     </div>
   </nav>
 
   <main class="container">
-    <h1>3D Minecraft blocks gradient</h1>
-    <p class="description">
-      Choose a base block and optional glass block for each corner, then adjust the size. The gradient interpolates combined base and glass colors, selecting the best base-glass pair or base block alone.
-    </p>
+    <div class="panel">
+      <h1>3D Minecraft blocks gradient</h1>
+      <p class="description">
+        Choose a base block and optional glass block for each corner, then adjust the size. The gradient interpolates combined base and glass colors, selecting the best base-glass pair or base block alone.
+      </p>
+    </div>
 
     <div class="layout-container">
       <div class="sources">
         <div class="source-card">
           <h2>Top-Left</h2>
           <div class="source-item" onclick="openModal('baseTL')">
+            <img id="baseTL-img" class="hidden" alt="Base Top-Left" />
             <div class="source-text">
               <p id="baseTL-label">Minecraft block or color</p>
             </div>
-            <img id="baseTL-img" class="hidden" alt="Base Top-Left">
           </div>
           <div class="source-item" onclick="openModal('glassTL')">
+            <img id="glassTL-img" class="hidden" alt="Glass Top-Left" />
             <div class="source-text">
               <p id="glassTL-label">Glass block, color, or none</p>
             </div>
-            <img id="glassTL-img" class="hidden" alt="Glass Top-Left">
           </div>
         </div>
+
         <div class="source-card">
           <h2>Top-Right</h2>
           <div class="source-item" onclick="openModal('baseTR')">
+            <img id="baseTR-img" class="hidden" alt="Base Top-Right" />
             <div class="source-text">
               <p id="baseTR-label">Minecraft block or color</p>
             </div>
-            <img id="baseTR-img" class="hidden" alt="Base Top-Right">
           </div>
           <div class="source-item" onclick="openModal('glassTR')">
+            <img id="glassTR-img" class="hidden" alt="Glass Top-Right" />
             <div class="source-text">
               <p id="glassTR-label">Glass block, color, or none</p>
             </div>
-            <img id="glassTR-img" class="hidden" alt="Glass Top-Right">
           </div>
         </div>
+
         <div class="source-card">
           <h2>Bottom-Left</h2>
           <div class="source-item" onclick="openModal('baseBL')">
+            <img id="baseBL-img" class="hidden" alt="Base Bottom-Left" />
             <div class="source-text">
               <p id="baseBL-label">Minecraft block or color</p>
             </div>
-            <img id="baseBL-img" class="hidden" alt="Base Bottom-Left">
           </div>
           <div class="source-item" onclick="openModal('glassBL')">
+            <img id="glassBL-img" class="hidden" alt="Glass Bottom-Left" />
             <div class="source-text">
               <p id="glassBL-label">Glass block, color, or none</p>
             </div>
-            <img id="glassBL-img" class="hidden" alt="Glass Bottom-Left">
           </div>
         </div>
+
         <div class="source-card">
           <h2>Bottom-Right</h2>
           <div class="source-item" onclick="openModal('baseBR')">
+            <img id="baseBR-img" class="hidden" alt="Base Bottom-Right" />
             <div class="source-text">
               <p id="baseBR-label">Minecraft block or color</p>
             </div>
-            <img id="baseBR-img" class="hidden" alt="Base Bottom-Right">
           </div>
           <div class="source-item" onclick="openModal('glassBR')">
+            <img id="glassBR-img" class="hidden" alt="Glass Bottom-Right" />
             <div class="source-text">
               <p id="glassBR-label">Glass block, color, or none</p>
             </div>
-            <img id="glassBR-img" class="hidden" alt="Glass Bottom-Right">
           </div>
         </div>
       </div>
@@ -108,17 +114,17 @@
     <div class="controls">
       <div>
         <label for="size">Size (n x n)</label>
-        <input type="number" id="size" min="2" max="32" value="16">
+        <input type="number" id="size" min="1" max="128" value="16" />
       </div>
       <div>
-        <label for="fill-mode">Filling</label>
-        <select id="fill-mode">
-          <option value="blocks">Close blocks</option>
-          <option value="exact">Accurate colours</option>
-        </select>
+        <label>Filling</label>
+        <div class="button-group">
+          <button id="fill-mode" value="best">Close blocks</button>
+          <button id="fill-mode" value="exact">Accurate colours</button>
+        </div>
       </div>
       <div>
-        <label for="view-mode">View of textures</label>
+        <label>View of textures</label>
         <select id="view-mode">
           <option value="both">Both</option>
           <option value="top">Top</option>
@@ -128,24 +134,23 @@
       <div class="button-group">
         <button id="copy">Copy the list</button>
         <button id="surprise">Surprise</button>
-        <button id="surprise">Export to .schematic</button>
+        <button id="export-schematic">Export to .schematic</button>
       </div>
     </div>
   </main>
 
   <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <h2>Choose a block or color</h2>
       <div class="modal-tabs">
         <button id="tab-blocks" class="tab-button">Minecraft Blocks</button>
         <button id="tab-glass" class="tab-button">Glass Blocks</button>
         <button id="tab-color" class="tab-button">Free Color</button>
         <button id="close-modal" class="tab-button close">Close</button>
       </div>
-      <div id="blocks-content" class="blocks-grid hidden"></div>
+      <div id="blocks-content" class="blocks-grid"></div>
       <div id="glass-content" class="blocks-grid hidden"></div>
       <div id="color-content" class="hidden">
-        <input type="color" id="color-picker">
+        <input type="color" id="color-picker" />
         <button id="use-color">Use this color</button>
       </div>
     </div>
@@ -161,7 +166,7 @@
         <div class="footer-section">
           <h3>Explore</h3>
           <ul>
-            <li><a href="index.html">1D Gradient</a></li>
+            <li><a href="gradient1D.html">1D Gradient</a></li>
             <li><a href="gradient2D.html">2D Gradient</a></li>
             <li><a href="gradient3D.html">3D Gradient</a></li>
             <li><a href="#">Noises</a></li>
@@ -175,7 +180,7 @@
             <li><a href="#">Instagram</a></li>
             <li><a href="#">Discord</a></li>
             <li><a href="#">X</a></li>
-            <li><a href="#">GitHub</a></li>
+            <li><a href="https://github.com">GitHub</a></li>
           </ul>
         </div>
         <div class="footer-section">
@@ -191,7 +196,5 @@
       </div>
     </div>
   </footer>
-
-  <script src="script3d.js"></script>
 </body>
 </html>
