@@ -1,4 +1,4 @@
-function exportToSchematic() {
+async function exportToSchematic() {
   const gradient = document.getElementById('gradient');
   const sizeInput = document.getElementById('size');
   const size = parseInt(sizeInput.value) || 16;
@@ -11,6 +11,104 @@ function exportToSchematic() {
 
   console.log('Exporting schematic with size:', size);
 
+  // Load block data from JSON files
+  let blocksData, glassData;
+  try {
+    const [blocksResponse, glassResponse] = await Promise.all([
+      fetch('blocks.json'),
+      fetch('glass.json')
+    ]);
+    blocksData = await blocksResponse.json();
+    glassData = await glassResponse.json();
+  } catch (error) {
+    console.error('Error loading block or glass data:', error);
+    alert('Failed to load block data: ' + error.message);
+    return;
+  }
+
+  // Create block ID and data mappings dynamically
+  const blockNameToId = {};
+  const blockDataValues = {};
+
+  // Base blocks mapping
+  blocksData.forEach(block => {
+    const name = block.name;
+    // Assign legacy IDs based on known blocks; default to stone (ID 1) for unknown
+    if (name === 'stone') blockNameToId[name] = 1;
+    else if (name === 'grass_block') blockNameToId[name] = 2;
+    else if (name === 'cobblestone') blockNameToId[name] = 4;
+    else if (name === 'coal_ore') blockNameToId[name] = 16;
+    else if (name === 'iron_block') blockNameToId[name] = 42;
+    else if (name === 'furnace') blockNameToId[name] = 61;
+    else if (name === 'redstone_ore') blockNameToId[name] = 73;
+    else if (name === 'deepslate_redstone_ore') blockNameToId[name] = 74;
+    else if (name === 'netherrack') blockNameToId[name] = 87;
+    else if (name === 'mycelium') blockNameToId[name] = 110;
+    else if (name === 'nether_bricks') blockNameToId[name] = 112;
+    else if (name === 'coal_block') blockNameToId[name] = 173;
+    else if (name === 'red_nether_bricks') blockNameToId[name] = 215;
+    else if (name === 'observer') blockNameToId[name] = 218;
+    else if (name === 'pink_glazed_terracotta') blockNameToId[name] = 231;
+    else if (name === 'black_glazed_terracotta') blockNameToId[name] = 235;
+    else if (name === 'red_concrete') blockNameToId[name] = 251;
+    else if (name === 'pink_concrete') blockNameToId[name] = 251;
+    else if (name === 'pink_concrete_powder') blockNameToId[name] = 252;
+    else if (name === 'fire_coral_block') blockNameToId[name] = 387;
+    else if (name === 'cracked_nether_bricks') blockNameToId[name] = 406;
+    else if (name === 'suspicious_gravel') blockNameToId[name] = 438;
+    else if (name === 'blast_furnace') blockNameToId[name] = 451;
+    else if (name === 'crafter') blockNameToId[name] = 454;
+    else if (name === 'smithing_table') blockNameToId[name] = 457;
+    else if (name === 'crimson_nylium') blockNameToId[name] = 487;
+    else if (name === 'netherite_block') blockNameToId[name] = 525;
+    else if (name === 'pearlescent_froglight') blockNameToId[name] = 549;
+    else if (name === 'chiseled_deepslate') blockNameToId[name] = 648;
+    else if (name.includes('log') || name.includes('stem')) blockNameToId[name] = 17; // Logs and stems
+    else if (name.includes('terracotta')) blockNameToId[name] = 159; // Terracotta
+    else if (name.includes('wool')) blockNameToId[name] = 35; // Wool
+    else if (name.includes('slab')) blockNameToId[name] = 44; // Slabs
+    else if (name.includes('concrete')) blockNameToId[name] = 251; // Concrete
+    else blockNameToId[name] = 1; // Default to stone
+
+    // Assign data values
+    if (name === 'red_concrete') blockDataValues[name] = 14;
+    else if (name === 'pink_concrete') blockDataValues[name] = 6;
+    else if (name === 'pink_concrete_powder') blockDataValues[name] = 6;
+    else if (name === 'purple_terracotta') blockDataValues[name] = 10;
+    else if (name === 'magenta_terracotta') blockDataValues[name] = 2;
+    else if (name === 'pink_wool') blockDataValues[name] = 6;
+    else if (name === 'stripped_mangrove_log') blockDataValues[name] = 3;
+    else if (name.includes('crimson_stem')) blockDataValues[name] = 4;
+    else if (name === 'stripped_cherry_log') blockDataValues[name] = 5;
+    else blockDataValues[name] = 0; // Default data value
+  });
+
+  // Glass blocks mapping
+  glassData.forEach(glass => {
+    const name = glass.name;
+    blockNameToId[name] = name === 'none' ? 0 : 95; // Air for 'none', stained glass for others
+    if (name !== 'none') {
+      if (name === 'white_stained_glass') blockDataValues[name] = 0;
+      else if (name === 'orange_stained_glass') blockDataValues[name] = 1;
+      else if (name === 'magenta_stained_glass') blockDataValues[name] = 2;
+      else if (name === 'light_blue_stained_glass') blockDataValues[name] = 3;
+      else if (name === 'yellow_stained_glass') blockDataValues[name] = 4;
+      else if (name === 'lime_stained_glass') blockDataValues[name] = 5;
+      else if (name === 'pink_stained_glass') blockDataValues[name] = 6;
+      else if (name === 'gray_stained_glass') blockDataValues[name] = 7;
+      else if (name === 'light_gray_stained_glass') blockDataValues[name] = 8;
+      else if (name === 'cyan_stained_glass') blockDataValues[name] = 9;
+      else if (name === 'purple_stained_glass') blockDataValues[name] = 10;
+      else if (name === 'blue_stained_glass') blockDataValues[name] = 11;
+      else if (name === 'brown_stained_glass') blockDataValues[name] = 12;
+      else if (name === 'green_stained_glass') blockDataValues[name] = 13;
+      else if (name === 'red_stained_glass') blockDataValues[name] = 14;
+      else if (name === 'black_stained_glass') blockDataValues[name] = 15;
+    } else {
+      blockDataValues[name] = 0;
+    }
+  });
+
   // Initialize schematic dimensions
   const width = size;
   const height = 2; // Base layer (y=0) and glass layer (y=1)
@@ -18,95 +116,6 @@ function exportToSchematic() {
   const volume = width * height * length;
   const blocks = new Uint8Array(volume).fill(0); // Default to air (ID 0)
   const data = new Uint8Array(volume).fill(0); // Block metadata
-
-  // Block ID mapping (legacy IDs for .schematic compatibility)
-  const blockNameToId = {
-    'redstone_ore': 73,
-    'blast_furnace': 451,
-    'coal_block': 173,
-    'red_concrete': 251,
-    'stripped_mangrove_log': 17,
-    'iron_block': 42,
-    'suspicious_gravel': 438,
-    'furnace': 61,
-    'cobblestone': 4,
-    'netherrack': 87,
-    'coal_ore': 16,
-    'observer': 218,
-    'crimson_nylium': 487,
-    'stone': 1,
-    'chiseled_deepslate': 648,
-    'grass_block': 2,
-    'smooth_stone': 1,
-    'smooth_stone_slab': 44,
-    'crafter': 454,
-    'netherite_block': 525,
-    'stripped_crimson_stem': 17,
-    'pink_concrete_powder': 252,
-    'pink_concrete': 251,
-    'pearlescent_froglight': 549,
-    'pink_glazed_terracotta': 231,
-    'crimson_stem': 17,
-    'purple_terracotta': 159,
-    'magenta_terracotta': 159,
-    'pink_wool': 35,
-    'mycelium': 110,
-    'nether_bricks': 112,
-    'chiseled_nether_bricks': 405,
-    'cracked_nether_bricks': 406,
-    'fire_coral_block': 387,
-    'black_glazed_terracotta': 235,
-    'smithing_table': 457,
-    'stripped_cherry_log': 17,
-    'red_nether_bricks': 215,
-    'deepslate_redstone_ore': 74,
-    'white_stained_glass': 95,
-    'orange_stained_glass': 95,
-    'magenta_stained_glass': 95,
-    'light_blue_stained_glass': 95,
-    'yellow_stained_glass': 95,
-    'lime_stained_glass': 95,
-    'pink_stained_glass': 95,
-    'gray_stained_glass': 95,
-    'light_gray_stained_glass': 95,
-    'cyan_stained_glass': 95,
-    'purple_stained_glass': 95,
-    'blue_stained_glass': 95,
-    'brown_stained_glass': 95,
-    'green_stained_glass': 95,
-    'red_stained_glass': 95,
-    'black_stained_glass': 95
-  };
-
-  // Data values for blocks
-  const blockDataValues = {
-    'red_concrete': 14,
-    'pink_concrete_powder': 6,
-    'pink_concrete': 6,
-    'purple_terracotta': 10,
-    'magenta_terracotta': 2,
-    'pink_wool': 6,
-    'white_stained_glass': 0,
-    'orange_stained_glass': 1,
-    'magenta_stained_glass': 2,
-    'light_blue_stained_glass': 3,
-    'yellow_stained_glass': 4,
-    'lime_stained_glass': 5,
-    'pink_stained_glass': 6,
-    'gray_stained_glass': 7,
-    'light_gray_stained_glass': 8,
-    'cyan_stained_glass': 9,
-    'purple_stained_glass': 10,
-    'blue_stained_glass': 11,
-    'brown_stained_glass': 12,
-    'green_stained_glass': 13,
-    'red_stained_glass': 14,
-    'black_stained_glass': 15,
-    'stripped_mangrove_log': 3, // Log data for mangrove
-    'stripped_crimson_stem': 4, // Log data for crimson
-    'crimson_stem': 4, // Log data for crimson
-    'stripped_cherry_log': 5 // Log data for cherry
-  };
 
   // Parse gradient squares
   squares.forEach((square, index) => {
