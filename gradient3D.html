@@ -28,66 +28,70 @@
   <main class="container">
     <h1>3D Minecraft blocks gradient</h1>
     <p class="description">
-      Choose four base blocks and optional glass blocks for the corners, then adjust the size. The gradient interpolates combined base and glass colors, selecting the best base-glass pair or base block alone.
+      Choose a base block and optional glass block for each corner, then adjust the size. The gradient interpolates combined base and glass colors, selecting the best base-glass pair or base block alone.
     </p>
 
     <div class="layout-container">
       <div class="sources">
-        <div class="source-card" onclick="openModal('baseTL')">
-          <div class="source-text">
-            <h2>Base Top-Left</h2>
-            <p id="baseTL-label">Minecraft block or color</p>
+        <div class="source-card">
+          <h2>Top-Left</h2>
+          <div class="source-item" onclick="openModal('baseTL')">
+            <div class="source-text">
+              <p id="baseTL-label">Minecraft block or color</p>
+            </div>
+            <img id="baseTL-img" class="hidden" alt="Base Top-Left">
           </div>
-          <img id="baseTL-img" class="hidden" alt="Base Top-Left">
+          <div class="source-item" onclick="openModal('glassTL')">
+            <div class="source-text">
+              <p id="glassTL-label">Glass block, color, or none</p>
+            </div>
+            <img id="glassTL-img" class="hidden" alt="Glass Top-Left">
+          </div>
         </div>
-        <div class="source-card" onclick="openModal('baseTR')">
-          <div class="source-text">
-            <h2>Base Top-Right</h2>
-            <p id="baseTR-label">Minecraft block or color</p>
+        <div class="source-card">
+          <h2>Top-Right</h2>
+          <div class="source-item" onclick="openModal('baseTR')">
+            <div class="source-text">
+              <p id="baseTR-label">Minecraft block or color</p>
+            </div>
+            <img id="baseTR-img" class="hidden" alt="Base Top-Right">
           </div>
-          <img id="baseTR-img" class="hidden" alt="Base Top-Right">
+          <div class="source-item" onclick="openModal('glassTR')">
+            <div class="source-text">
+              <p id="glassTR-label">Glass block, color, or none</p>
+            </div>
+            <img id="glassTR-img" class="hidden" alt="Glass Top-Right">
+          </div>
         </div>
-        <div class="source-card" onclick="openModal('baseBL')">
-          <div class="source-text">
-            <h2>Base Bottom-Left</h2>
-            <p id="baseBL-label">Minecraft block or color</p>
+        <div class="source-card">
+          <h2>Bottom-Left</h2>
+          <div class="source-item" onclick="openModal('baseBL')">
+            <div class="source-text">
+              <p id="baseBL-label">Minecraft block or color</p>
+            </div>
+            <img id="baseBL-img" class="hidden" alt="Base Bottom-Left">
           </div>
-          <img id="baseBL-img" class="hidden" alt="Base Bottom-Left">
+          <div class="source-item" onclick="openModal('glassBL')">
+            <div class="source-text">
+              <p id="glassBL-label">Glass block, color, or none</p>
+            </div>
+            <img id="glassBL-img" class="hidden" alt="Glass Bottom-Left">
+          </div>
         </div>
-        <div class="source-card" onclick="openModal('baseBR')">
-          <div class="source-text">
-            <h2>Base Bottom-Right</h2>
-            <p id="baseBR-label">Minecraft block or color</p>
+        <div class="source-card">
+          <h2>Bottom-Right</h2>
+          <div class="source-item" onclick="openModal('baseBR')">
+            <div class="source-text">
+              <p id="baseBR-label">Minecraft block or color</p>
+            </div>
+            <img id="baseBR-img" class="hidden" alt="Base Bottom-Right">
           </div>
-          <img id="baseBR-img" class="hidden" alt="Base Bottom-Right">
-        </div>
-        <div class="source-card" onclick="openModal('glassTL')">
-          <div class="source-text">
-            <h2>Glass Top-Left</h2>
-            <p id="glassTL-label">Glass block, color, or none</p>
+          <div class="source-item" onclick="openModal('glassBR')">
+            <div class="source-text">
+              <p id="glassBR-label">Glass block, color, or none</p>
+            </div>
+            <img id="glassBR-img" class="hidden" alt="Glass Bottom-Right">
           </div>
-          <img id="glassTL-img" class="hidden" alt="Glass Top-Left">
-        </div>
-        <div class="source-card" onclick="openModal('glassTR')">
-          <div class="source-text">
-            <h2>Glass Top-Right</h2>
-            <p id="glassTR-label">Glass block, color, or none</p>
-          </div>
-          <img id="glassTR-img" class="hidden" alt="Glass Top-Right">
-        </div>
-        <div class="source-card" onclick="openModal('glassBL')">
-          <div class="source-text">
-            <h2>Glass Bottom-Left</h2>
-            <p id="glassBL-label">Glass block, color, or none</p>
-          </div>
-          <img id="glassBL-img" class="hidden" alt="Glass Bottom-Left">
-        </div>
-        <div class="source-card" onclick="openModal('glassBR')">
-          <div class="source-text">
-            <h2>Glass Bottom-Right</h2>
-            <p id="glassBR-label">Glass block, color, or none</p>
-          </div>
-          <img id="glassBR-img" class="hidden" alt="Glass Bottom-Right">
         </div>
       </div>
 
