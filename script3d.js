@@ -156,10 +156,10 @@ function selectColor() {
   updateGradient();
 }
 
-function hexToRgb(hex) {
-  const r = parseInt(hex.slice(1, 3), 16);
-  const g = parseInt(hex.slice(3, 5), 16);
-  const b = parseInt(hex.slice(5, 7), 16);
+function hexToRGB(hex) {
+  let r = parseInt(hex.slice(1, 3), 16);
+  let g = parseInt(hex.slice(3, 5), 16);
+  let b = parseInt(hex.slice(5, 7), 16);
   return { r, g, b };
 }
 
@@ -182,7 +182,6 @@ function updateGradient() {
 
   const gridSize = 512;
   const blockSize = gridSize / size;
-  gradient.style.display = 'grid';
   gradient.style.gridTemplateColumns = `repeat(${size}, ${blockSize}px)`;
   gradient.style.gridTemplateRows = `repeat(${size}, ${blockSize}px)`;
   gradient.style.width = `${gridSize}px`;
@@ -235,6 +234,8 @@ function updateGradient() {
         const glassImg = glass.name !== 'none' ? `<img src="${glass.path}" alt="${glass.name}" class="glass-img" />` : '';
         const tooltip = glass.name === 'none' ? `Base: ${base.name}` : `Base: ${base.name}, Glass: ${glass.name}`;
         div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
+        div.dataset.baseBlock = base.name;
+        div.dataset.glassBlock = glass.name;
       }
       gradient.appendChild(div);
     }
@@ -278,6 +279,238 @@ function findNearestBlockPair(targetColor, viewMode) {
   });
 
   return { base: bestBase, glass: bestGlass };
+}
+
+function getClosestMinecraftBlockId(r, g, b) {
+  const brightness = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+  if (r > g && r > b) {
+    return brightness > 0.5 ? 35 : 159; // Wool or Terracotta (red-dominated)
+  } else if (g > r && g > b) {
+    return brightness > 0.5 ? 35 : 159; // Wool or Terracotta (green-dominated)
+  } else if (b > r && b > g) {
+    return brightness > 0.5 ? 35 : 159; // Wool or Terracotta (blue-dominated)
+  } else {
+    if (brightness > 0.8) return 35; // White wool
+    else if (brightness > 0.6) return 35; // Light gray wool
+    else if (brightness > 0.4) return 35; // Gray wool
+    else if (brightness > 0.2) return 35; // Black wool
+    else return 49; // Obsidian
+  }
+}
+
+function exportSchematic() {
+  const size = parseInt(document.getElementById('size').value) || 16;
+  const gradient = document.getElementById('gradient');
+  const fillMode = document.getElementById('fill-mode').value;
+  const squares = gradient.querySelectorAll('.gradient-square');
+  
+  if (!squares.length) {
+    alert('No gradient data to export!');
+    return;
+  }
+
+  const voxelPositions = [];
+  squares.forEach((square, index) => {
+    const x = index % size;
+    const z = Math.floor(index / size);
+    if (fillMode === 'exact') {
+      const colorMatch = square.style.backgroundColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+      if (colorMatch) {
+        const [, r, g, b] = colorMatch;
+        voxelPositions.push({ x, y: 0, z, blockId: getClosestMinecraftBlockId(parseInt(r), parseInt(g), parseInt(b)) });
+      }
+    } else {
+      const baseBlock = square.dataset.baseBlock;
+      const glassBlock = square.dataset.glassBlock;
+      if (baseBlock) {
+        const base = blocks.find(b => b.name === baseBlock);
+        if (base) {
+          voxelPositions.push({ x, y: 0, z, blockId: getClosestMinecraftBlockId(base.color.r, base.color.g, base.color.b) });
+        }
+        if (glassBlock && glassBlock !== 'none') {
+          const glass = glassBlocks.find(g => g.name === glassBlock);
+          if (glass) {
+            voxelPositions.push({ x, y: 1, z, blockId: getClosestMinecraftBlockId(glass.color.r, glass.color.g, glass.color.b) });
+          }
+        }
+      }
+    }
+  });
+
+  const voxelData = {
+    voxelPositions,
+    voxelSize: 1,
+    boundingBox: {
+      min: { x: 0, y: 0, z: 0 },
+      max: { x: size - 1, y: 1, z: size - 1 }
+    }
+  };
+
+  try {
+    const generator = new SchematicGenerator(voxelData, 35); // Default blockId 35 (wool) for simplicity
+    const { blob, filename, dimensions, blockCount } = generator.generateSchematic();
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    console.log('Schematic exported:', { filename, dimensions, blockCount });
+  } catch (err) {
+    console.error('Export error:', err);
+    alert('Error exporting schematic: ' + err.message);
+  }
+}
+
+class SchematicGenerator {
+  constructor(voxelData, blockId) {
+    this.voxelData = voxelData;
+    this.blockId = blockId;
+    this.voxelPositions = voxelData.voxelPositions;
+    this.voxelSize = voxelData.voxelSize;
+    this.boundingBox = voxelData.boundingBox;
+  }
+
+  generateSchematic() {
+    const minX = Math.min(...this.voxelPositions.map(p => p.x));
+    const maxX = Math.max(...this.voxelPositions.map(p => p.x));
+    const minY = Math.min(...this.voxelPositions.map(p => p.y));
+    const maxY = Math.max(...this.voxelPositions.map(p => p.y));
+    const minZ = Math.min(...this.voxelPositions.map(p => p.z));
+    const maxZ = Math.max(...this.voxelPositions.map(p => p.z));
+
+    const width = maxX - minX + 1;
+    const height = maxY - minY + 1;
+    const length = maxZ - minZ + 1;
+
+    const volume = width * height * length;
+    const blocks = new Uint8Array(volume).fill(0);
+    const data = new Uint8Array(volume).fill(0);
+
+    for (const pos of this.voxelPositions) {
+      const x = pos.x - minX;
+      const y = pos.y - minY;
+      const z = pos.z - minZ;
+      const index = x + z * width + y * width * length;
+      blocks[index] = pos.blockId || this.blockId;
+    }
+
+    const nbtData = {
+      name: 'Schematic',
+      value: {
+        Width: { type: 'short', value: width },
+        Height: { type: 'short', value: height },
+        Length: { type: 'short', value: length },
+        Materials: { type: 'string', value: 'Alpha' },
+        Blocks: { type: 'byteArray', value: blocks },
+        Data: { type: 'byteArray', value: data },
+        WEOffsetX: { type: 'int', value: 0 },
+        WEOffsetY: { type: 'int', value: 0 },
+        WEOffsetZ: { type: 'int', value: 0 }
+      }
+    };
+
+    const nbtBuffer = this.writeNBT(nbtData);
+    const compressed = this.gzipCompress(nbtBuffer);
+
+    return {
+      blob: new Blob([compressed], { type: 'application/octet-stream' }),
+      filename: 'gradient.schematic',
+      dimensions: { width, height, length },
+      blockCount: this.voxelPositions.length
+    };
+  }
+
+  writeNBT(data) {
+    const buffer = [];
+    buffer.push(0x0A);
+    this.writeString(data.name || 'Schematic', buffer);
+    this.writeCompoundContent(data.value, buffer);
+    return new Uint8Array(buffer);
+  }
+
+  writeCompoundContent(compound, buffer) {
+    for (const [key, tag] of Object.entries(compound)) {
+      this.writeNBTTag(tag, key, buffer);
+    }
+    buffer.push(0x00);
+  }
+
+  writeNBTTag(tag, name, buffer) {
+    const tagId = this.getTagId(tag.type);
+    buffer.push(tagId);
+    this.writeString(name, buffer);
+
+    switch (tag.type) {
+      case 'compound':
+        this.writeCompoundContent(tag.value, buffer);
+        break;
+      case 'int':
+        this.writeInt32(tag.value, buffer);
+        break;
+      case 'short':
+        this.writeInt16(tag.value, buffer);
+        break;
+      case 'byteArray':
+        this.writeInt32(tag.value.length, buffer);
+        for (let i = 0; i < tag.value.length; i++) {
+          buffer.push(tag.value[i] & 0xFF);
+        }
+        break;
+      case 'string':
+        this.writeString(tag.value, buffer);
+        break;
+    }
+  }
+
+  writeInt32(value, buffer) {
+    buffer.push(
+      (value >> 24) & 0xFF,
+      (value >> 16) & 0xFF,
+      (value >> 8) & 0xFF,
+      value & 0xFF
+    );
+  }
+
+  writeInt16(value, buffer) {
+    buffer.push(
+      (value >> 8) & 0xFF,
+      value & 0xFF
+    );
+  }
+
+  writeString(str, buffer) {
+    const bytes = new TextEncoder().encode(str);
+    buffer.push((bytes.length >> 8) & 0xFF, bytes.length & 0xFF);
+    bytes.forEach(byte => buffer.push(byte));
+  }
+
+  getTagId(type) {
+    const tagIds = {
+      'byte': 0x01,
+      'short': 0x02,
+      'int': 0x03,
+      'long': 0x04,
+      'float': 0x05,
+      'double': 0x06,
+      'byteArray': 0x07,
+      'string': 0x08,
+      'list': 0x09,
+      'compound': 0x0A,
+      'intArray': 0x0B,
+      'longArray': 0x0C
+    };
+    return tagIds[type] || 0x00;
+  }
+
+  gzipCompress(data) {
+    if (typeof pako === 'undefined') {
+      throw new Error('Pako library not found');
+    }
+    return pako.gzip(data);
+  }
 }
 
 document.getElementById('tab-blocks').onclick = showBlocks;
@@ -353,6 +586,8 @@ document.getElementById('surprise').onclick = () => {
 
   updateGradient();
 };
+
+document.getElementById('export-schematic').onclick = exportSchematic;
 
 // Initialize block loading
 loadBlocks();
