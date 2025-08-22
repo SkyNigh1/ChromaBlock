@@ -249,6 +249,16 @@ function findNearestBlockPair(targetColor, viewMode) {
   const filteredGlass = glassBlocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
   if (filteredBlocks.length === 0) return { base: blocks[0], glass: bestGlass };
 
+  // List of blocks with strong patterns (e.g., glazed terracotta)
+  const patternedBlocks = [
+    'white_glazed_terracotta', 'orange_glazed_terracotta', 'magenta_glazed_terracotta',
+    'light_blue_glazed_terracotta', 'yellow_glazed_terracotta', 'lime_glazed_terracotta',
+    'pink_glazed_terracotta', 'gray_glazed_terracotta', 'light_gray_glazed_terracotta',
+    'cyan_glazed_terracotta', 'purple_glazed_terracotta', 'blue_glazed_terracotta',
+    'brown_glazed_terracotta', 'green_glazed_terracotta', 'red_glazed_terracotta',
+    'black_glazed_terracotta'
+  ];
+
   filteredBlocks.forEach(base => {
     // Try with no glass
     let distance = 
@@ -264,7 +274,9 @@ function findNearestBlockPair(targetColor, viewMode) {
     // Try with each glass block
     filteredGlass.forEach(glass => {
       if (glass.name === 'none') return;
-      const blendedColor = blendColors(base.color, glass);
+      const isPatterned = patternedBlocks.includes(base.name);
+      const effectiveAlpha = isPatterned ? 0.25 : glass.alpha || 0.5; // Reduce glass influence on patterned blocks
+      const blendedColor = blendColors(base.color, { ...glass, alpha: effectiveAlpha });
       distance = 
         Math.pow(blendedColor.r - targetColor.r, 2) +
         Math.pow(blendedColor.g - targetColor.g, 2) +
