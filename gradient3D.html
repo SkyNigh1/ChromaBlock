@@ -28,7 +28,7 @@
   <main class="container">
     <h1>3D Minecraft blocks gradient</h1>
     <p class="description">
-      Choose four base blocks and four glass blocks for the corners, then adjust the size. The gradient combines base blocks with overlaid stained glass using bilinear interpolation.
+      Choose four base blocks and optional glass blocks for the corners, then adjust the size. The gradient interpolates combined base and glass colors, selecting the best base-glass pair or base block alone.
     </p>
 
     <div class="layout-container">
@@ -64,28 +64,28 @@
         <div class="source-card" onclick="openModal('glassTL')">
           <div class="source-text">
             <h2>Glass Top-Left</h2>
-            <p id="glassTL-label">Glass block or color</p>
+            <p id="glassTL-label">Glass block, color, or none</p>
           </div>
           <img id="glassTL-img" class="hidden" alt="Glass Top-Left">
         </div>
         <div class="source-card" onclick="openModal('glassTR')">
           <div class="source-text">
             <h2>Glass Top-Right</h2>
-            <p id="glassTR-label">Glass block or color</p>
+            <p id="glassTR-label">Glass block, color, or none</p>
           </div>
           <img id="glassTR-img" class="hidden" alt="Glass Top-Right">
         </div>
         <div class="source-card" onclick="openModal('glassBL')">
           <div class="source-text">
             <h2>Glass Bottom-Left</h2>
-            <p id="glassBL-label">Glass block or color</p>
+            <p id="glassBL-label">Glass block, color, or none</p>
           </div>
           <img id="glassBL-img" class="hidden" alt="Glass Bottom-Left">
         </div>
         <div class="source-card" onclick="openModal('glassBR')">
           <div class="source-text">
             <h2>Glass Bottom-Right</h2>
-            <p id="glassBR-label">Glass block or color</p>
+            <p id="glassBR-label">Glass block, color, or none</p>
           </div>
           <img id="glassBR-img" class="hidden" alt="Glass Bottom-Right">
         </div>

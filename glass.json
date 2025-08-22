@@ -1,5 +1,12 @@
 [
   {
+    "name": "none",
+    "path": null,
+    "color": { "r": 0, "g": 0, "b": 0 },
+    "alpha": 0.0,
+    "view": "both"
+  },
+  {
     "name": "red_stained_glass",
     "path": "img/tex/glass/red_stained_glass.png",
     "color": { "r": 255, "g": 76, "b": 76 },
