@@ -4547,17 +4547,17 @@
                       "g":  53,
                       "b":  63
                   },
-        "view":  "both"
+        "view":  "side"
     },
     {
-        "name":  "jigsaw",
+        "name":  "jigsaw[orientation=up_north]",
         "path":  "img/tex/top/jigsaw_top.png",
         "color":  {
                       "r":  80,
                       "g":  69,
                       "b":  81
                   },
-        "view":  "top"
+        "view":  "both"
     },
     {
         "name":  "structure_block",
