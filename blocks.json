@@ -1820,7 +1820,7 @@
         "view":  "both"
     },
     {
-        "name":  "barrel",
+        "name":  "barrel[facing=down]",
         "path":  "img/tex/top/barrel_bottom.png",
         "color":  {
                       "r":  115,
@@ -1830,7 +1830,7 @@
         "view":  "both"
     },
     {
-        "name":  "barrel",
+        "name":  "barrel[facing=up]",
         "path":  "img/tex/top/barrel_top.png",
         "color":  {
                       "r":  134,
@@ -1860,7 +1860,7 @@
         "view":  "top"
     },
     {
-        "name":  "barrel",
+        "name":  "barrel[facing=top,open=true]",
         "path":  "img/tex/top/barrel_top_open.png",
         "color":  {
                       "r":  92,
