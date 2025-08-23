@@ -95,7 +95,7 @@ async function exportToSchematic() {
                   ])
                 )
               },
-              Data: { type: "intArray", value: Array.from(blockData) },
+              Data: { type: "byteArray", value: Array.from(blockData) },
               BlockEntities: { type: "list", value: { type: "compound", value: [] } }
             }
           },
@@ -149,9 +149,9 @@ async function exportToSchematic() {
       case "short": writeInt16(tag.value, buffer); break;
       case "long": writeLong(tag.value, buffer); break; // ⚠️ Nouveau
       case "string": writeString(tag.value, buffer); break;
-      case "intArray":
+      case "byteArray":
         writeInt32(tag.value.length, buffer);
-        tag.value.forEach(v => writeInt32(v, buffer));
+        tag.value.forEach(v => buffer.push(v & 0xff));
         break;
       case "compound":
         for (const [k, v] of Object.entries(tag.value)) {
@@ -214,11 +214,12 @@ async function exportToSchematic() {
       byte: 1,
       short: 2,
       int: 3,
-      long: 4, // ⚠️ Nouveau
+      long: 4,
       string: 8,
       list: 9,
       compound: 10,
-      intArray: 11
+      intArray: 11,
+      byteArray: 7 // ⚠️ TAG_Byte_Array
     }[type] || 0;
   }
 
