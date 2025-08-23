@@ -75,8 +75,8 @@
 .gradient {
   display: grid;
   gap: 0;
-  width: 1152px; /* Increased from 768px to 768px * 1.5 */
-  height: 1152px; /* Increased from 768px to 768px * 1.5 */
+  width: fit-content; /* Adapt to content */
+  height: fit-content; /* Adapt to content */
 }
 
 .gradient-square {
@@ -121,8 +121,8 @@
   }
   .gradient {
     width: 100%;
-    max-width: 768px; /* Increased from 512px to 512px * 1.5 */
-    height: 768px; /* Increased from 512px to 512px * 1.5 */
+    max-width: fit-content; /* Adapt to content */
+    height: fit-content; /* Adapt to content */
   }
 }
 
