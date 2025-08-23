@@ -297,7 +297,7 @@
                       "g":  121,
                       "b":  121
                   },
-        "view":  "both"
+        "view":  "side"
     },
     {
         "name":  "bedrock",
@@ -317,7 +317,7 @@
                       "g":  97,
                       "b":  97
                   },
-        "view":  "both"
+        "view":  "top"
     },
     {
         "name":  "dropper",
