@@ -1860,7 +1860,7 @@
         "view":  "top"
     },
     {
-        "name":  "barrel[facing=top,open=true]",
+        "name":  "barrel[facing=up,open=true]",
         "path":  "img/tex/top/barrel_top_open.png",
         "color":  {
                       "r":  92,
