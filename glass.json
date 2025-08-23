@@ -10,112 +10,112 @@
     "name": "white_stained_glass",
     "path": "img/tex/glass/white_stained_glass.png",
     "color": { "r": 255, "g": 255, "b": 255 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "orange_stained_glass",
     "path": "img/tex/glass/orange_stained_glass.png",
     "color": { "r": 255, "g": 147, "b": 41 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "magenta_stained_glass",
     "path": "img/tex/glass/magenta_stained_glass.png",
     "color": { "r": 199, "g": 78, "b": 189 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "light_blue_stained_glass",
     "path": "img/tex/glass/light_blue_stained_glass.png",
     "color": { "r": 102, "g": 153, "b": 216 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "yellow_stained_glass",
     "path": "img/tex/glass/yellow_stained_glass.png",
     "color": { "r": 255, "g": 255, "b": 76 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "lime_stained_glass",
     "path": "img/tex/glass/lime_stained_glass.png",
     "color": { "r": 127, "g": 204, "b": 25 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "pink_stained_glass",
     "path": "img/tex/glass/pink_stained_glass.png",
     "color": { "r": 242, "g": 127, "b": 165 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "gray_stained_glass",
     "path": "img/tex/glass/gray_stained_glass.png",
     "color": { "r": 76, "g": 76, "b": 76 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "light_gray_stained_glass",
     "path": "img/tex/glass/light_gray_stained_glass.png",
     "color": { "r": 153, "g": 153, "b": 153 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "cyan_stained_glass",
     "path": "img/tex/glass/cyan_stained_glass.png",
     "color": { "r": 76, "g": 127, "b": 153 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "purple_stained_glass",
     "path": "img/tex/glass/purple_stained_glass.png",
     "color": { "r": 127, "g": 63, "b": 178 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "blue_stained_glass",
     "path": "img/tex/glass/blue_stained_glass.png",
     "color": { "r": 51, "g": 76, "b": 255 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "brown_stained_glass",
     "path": "img/tex/glass/brown_stained_glass.png",
     "color": { "r": 102, "g": 76, "b": 51 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "green_stained_glass",
     "path": "img/tex/glass/green_stained_glass.png",
     "color": { "r": 76, "g": 255, "b": 76 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "red_stained_glass",
     "path": "img/tex/glass/red_stained_glass.png",
     "color": { "r": 255, "g": 76, "b": 76 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   },
   {
     "name": "black_stained_glass",
     "path": "img/tex/glass/black_stained_glass.png",
     "color": { "r": 25, "g": 25, "b": 25 },
-    "alpha": 0.5,
+    "alpha": 0.4,
     "view": "both"
   }
 ]
