@@ -3841,16 +3841,6 @@
     },
     {
         "name":  "trial_spawner",
-        "path":  "img/tex/top/trial_spawner_top_ejecting_reward_ominous.png",
-        "color":  {
-                      "r":  33,
-                      "g":  55,
-                      "b":  69
-                  },
-        "view":  "top"
-    },
-    {
-        "name":  "trial_spawner",
         "path":  "img/tex/top/trial_spawner_top_inactive_ominous.png",
         "color":  {
                       "r":  49,
@@ -3900,32 +3890,12 @@
         "view":  "both"
     },
     {
-        "name":  "vault",
-        "path":  "img/tex/top/vault_top_ejecting.png",
-        "color":  {
-                      "r":  42,
-                      "g":  47,
-                      "b":  54
-                  },
-        "view":  "top"
-    },
-    {
         "name":  "lodestone",
         "path":  "img/tex/top/lodestone_top.png",
         "color":  {
                       "r":  147,
                       "g":  149,
                       "b":  152
-                  },
-        "view":  "top"
-    },
-    {
-        "name":  "trial_spawner",
-        "path":  "img/tex/top/trial_spawner_top_ejecting_reward.png",
-        "color":  {
-                      "r":  46,
-                      "g":  52,
-                      "b":  61
                   },
         "view":  "top"
     },
@@ -3998,16 +3968,6 @@
                       "b":  140
                   },
         "view":  "both"
-    },
-    {
-        "name":  "vault",
-        "path":  "img/tex/top/vault_top_ejecting_ominous.png",
-        "color":  {
-                      "r":  45,
-                      "g":  47,
-                      "b":  51
-                  },
-        "view":  "top"
     },
     {
         "name":  "clay",
