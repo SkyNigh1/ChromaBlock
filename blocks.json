@@ -3380,7 +3380,7 @@
         "view":  "both"
     },
     {
-        "name":  "vault",
+        "name":  "vault[ominous=true]",
         "path":  "img/tex/top/vault_top_ominous.png",
         "color":  {
                       "r":  68,
@@ -4060,7 +4060,7 @@
         "view":  "both"
     },
     {
-        "name":  "warped_stem",
+        "name":  "warped_hyphae",
         "path":  "img/tex/top/warped_stem.png",
         "color":  {
                       "r":  57,
@@ -4920,7 +4920,7 @@
         "view":  "top"
     },
     {
-        "name":  "crimson_stem",
+        "name":  "crimson_hyphae",
         "path":  "img/tex/top/crimson_stem.png",
         "color":  {
                       "r":  93,
