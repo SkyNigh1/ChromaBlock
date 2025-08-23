@@ -1540,16 +1540,6 @@
         "view":  "both"
     },
     {
-        "name":  "smoker",
-        "path":  "img/tex/top/smoker_bottom.png",
-        "color":  {
-                      "r":  107,
-                      "g":  105,
-                      "b":  103
-                  },
-        "view":  "top"
-    },
-    {
         "name":  "iron_ore",
         "path":  "img/tex/top/iron_ore.png",
         "color":  {
