@@ -153,6 +153,10 @@ async function exportToSchematic() {
         writeInt32(tag.value.length, buffer);
         tag.value.forEach(v => buffer.push(v & 0xff));
         break;
+      case "intArray":
+        writeInt32(tag.value.length, buffer);
+        tag.value.forEach(v => writeInt32(v, buffer));
+        break;
       case "compound":
         for (const [k, v] of Object.entries(tag.value)) {
           writeTag(v, buffer, k);
@@ -227,6 +231,7 @@ async function exportToSchematic() {
   try {
     const nbtBuffer = writeNBT(nbtData);
     console.log(`NBT buffer size: ${nbtBuffer.length} bytes`);
+    console.log(`First 32 bytes:`, Array.from(nbtBuffer.slice(0, 32)).map(b => b.toString(16).padStart(2, '0')).join(' '));
     
     const compressed = pako.gzip(nbtBuffer);
     console.log(`Compressed size: ${compressed.length} bytes`);
