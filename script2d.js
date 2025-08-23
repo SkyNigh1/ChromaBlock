@@ -98,7 +98,7 @@ function updateGradient() {
   gradient.innerHTML = '';
 
   // Set grid layout with dynamic block size
-  const gridSize = 770; // Fixed grid size in pixels
+  const gridSize = 785; // Fixed grid size in pixels
   const blockSize = gridSize / size; // Dynamic block size
   gradient.style.display = 'grid';
   gradient.style.gridTemplateColumns = `repeat(${size}, ${blockSize}px)`;
