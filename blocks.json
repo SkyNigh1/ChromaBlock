@@ -120,7 +120,7 @@
         "view":  "both"
     },
     {
-        "name":  "observer",
+        "name":  "observer[facing=down]",
         "path":  "img/tex/top/observer_back.png",
         "color":  {
                       "r":  71,
@@ -210,7 +210,7 @@
         "view":  "both"
     },
     {
-        "name":  "observer",
+        "name":  "observer[facing=down,powered=true]",
         "path":  "img/tex/top/observer_back_on.png",
         "color":  {
                       "r":  76,
@@ -237,10 +237,10 @@
                       "g":  167,
                       "b":  167
                   },
-        "view":  "both"
+        "view":  "side"
     },
     {
-        "name":  "observer",
+        "name":  "observer[facing=up]",
         "path":  "img/tex/top/observer_front.png",
         "color":  {
                       "r":  103,
@@ -330,7 +330,7 @@
         "view":  "both"
     },
     {
-        "name":  "piston",
+        "name":  "piston[facing=down]",
         "path":  "img/tex/top/piston_bottom.png",
         "color":  {
                       "r":  97,
@@ -760,7 +760,7 @@
         "view":  "both"
     },
     {
-        "name":  "creaking_heart",
+        "name":  "creaking_heart[axis=x]",
         "path":  "img/tex/side/creaking_heart.png",
         "color":  {
                       "r":  82,
@@ -870,7 +870,7 @@
         "view":  "both"
     },
     {
-        "name":  "creaking_heart",
+        "name":  "creaking_heart[axis=x]",
         "path":  "img/tex/side/creaking_heart_dormant.png",
         "color":  {
                       "r":  102,
@@ -950,7 +950,7 @@
         "view":  "top"
     },
     {
-        "name":  "creaking_heart",
+        "name":  "creaking_heart[axis=x,active=true]",
         "path":  "img/tex/side/creaking_heart_awake.png",
         "color":  {
                       "r":  149,
@@ -1040,7 +1040,7 @@
         "view":  "both"
     },
     {
-        "name":  "creaking_heart",
+        "name":  "creaking_heart[active=true]",
         "path":  "img/tex/top/creaking_heart_top_awake.png",
         "color":  {
                       "r":  153,
@@ -1210,7 +1210,7 @@
         "view":  "both"
     },
     {
-        "name":  "copper_bulb",
+        "name":  "copper_bulb[lit=true,powered=true]",
         "path":  "img/tex/top/copper_bulb_lit_powered.png",
         "color":  {
                       "r":  216,
@@ -1260,7 +1260,7 @@
         "view":  "top"
     },
     {
-        "name":  "copper_bulb",
+        "name":  "copper_bulb[lit=true]",
         "path":  "img/tex/top/copper_bulb_lit.png",
         "color":  {
                       "r":  215,
@@ -1480,7 +1480,7 @@
         "view":  "side"
     },
     {
-        "name":  "exposed_copper_bulb",
+        "name":  "exposed_copper_bulb[lit=true,powered=true]",
         "path":  "img/tex/top/exposed_copper_bulb_lit_powered.png",
         "color":  {
                       "r":  195,
@@ -1500,7 +1500,7 @@
         "view":  "both"
     },
     {
-        "name":  "exposed_copper_bulb",
+        "name":  "exposed_copper_bulb[lit=true]",
         "path":  "img/tex/top/exposed_copper_bulb_lit.png",
         "color":  {
                       "r":  194,
@@ -1580,7 +1580,7 @@
         "view":  "both"
     },
     {
-        "name":  "redstone_lamp_on",
+        "name":  "redstone_lamp[lit=true]",
         "path":  "img/tex/top/redstone_lamp_on.png",
         "color":  {
                       "r":  142,
@@ -2220,7 +2220,7 @@
         "view":  "side"
     },
     {
-        "name":  "mushroom_block",
+        "name":  "brown_mushroom_block[up=false]",
         "path":  "img/tex/top/mushroom_block_inside.png",
         "color":  {
                       "r":  201,
@@ -2260,7 +2260,7 @@
         "view":  "both"
     },
     {
-        "name":  "piston",
+        "name":  "piston[facing=up]",
         "path":  "img/tex/top/piston_top.png",
         "color":  {
                       "r":  153,
@@ -2810,7 +2810,7 @@
         "view":  "both"
     },
     {
-        "name":  "weathered_copper_bulb",
+        "name":  "weathered_copper_bulb[lit=true,powered=true]",
         "path":  "img/tex/top/weathered_copper_bulb_lit_powered.png",
         "color":  {
                       "r":  157,
@@ -2860,7 +2860,7 @@
         "view":  "both"
     },
     {
-        "name":  "weathered_copper_bulb",
+        "name":  "weathered_copper_bulb[lit=true]",
         "path":  "img/tex/top/weathered_copper_bulb_lit.png",
         "color":  {
                       "r":  156,
@@ -3060,7 +3060,7 @@
         "view":  "both"
     },
     {
-        "name":  "oxidized_copper_bulb",
+        "name":  "oxidized_copper_bulb[lit=true,powered=true]",
         "path":  "img/tex/top/oxidized_copper_bulb_lit_powered.png",
         "color":  {
                       "r":  136,
@@ -3110,7 +3110,7 @@
         "view":  "both"
     },
     {
-        "name":  "oxidized_copper_bulb",
+        "name":  "oxidized_copper_bulb[lit=true]",
         "path":  "img/tex/top/oxidized_copper_bulb_lit.png",
         "color":  {
                       "r":  134,
@@ -3160,7 +3160,7 @@
         "view":  "both"
     },
     {
-        "name":  "sticky_piston",
+        "name":  "sticky_piston[facing=up]",
         "path":  "img/tex/top/piston_top_sticky.png",
         "color":  {
                       "r":  122,
