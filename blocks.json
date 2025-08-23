@@ -960,16 +960,6 @@
         "view":  "side"
     },
     {
-        "name":  "creaking_heart",
-        "path":  "img/tex/top/creaking_heart_top_dormant.png",
-        "color":  {
-                      "r":  101,
-                      "g":  64,
-                      "b":  44
-                  },
-        "view":  "top"
-    },
-    {
         "name":  "exposed_chiseled_copper",
         "path":  "img/tex/top/exposed_chiseled_copper.png",
         "color":  {
@@ -1038,16 +1028,6 @@
                       "b":  119
                   },
         "view":  "both"
-    },
-    {
-        "name":  "creaking_heart[active=true]",
-        "path":  "img/tex/top/creaking_heart_top_awake.png",
-        "color":  {
-                      "r":  153,
-                      "g":  84,
-                      "b":  44
-                  },
-        "view":  "top"
     },
     {
         "name":  "redstone_lamp",
@@ -3007,7 +2987,7 @@
                       "g":  146,
                       "b":  30
                   },
-        "view":  "both"
+        "view":  "side"
     },
     {
         "name":  "melon",
@@ -4006,16 +3986,6 @@
                       "r":  141,
                       "g":  180,
                       "b":  250
-                  },
-        "view":  "both"
-    },
-    {
-        "name":  "ice",
-        "path":  "img/tex/top/ice.png",
-        "color":  {
-                      "r":  145,
-                      "g":  183,
-                      "b":  253
                   },
         "view":  "both"
     },
