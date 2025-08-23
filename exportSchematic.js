@@ -25,6 +25,10 @@ async function exportToSchematic() {
   // Palette
   const palette = {};
   let paletteIndex = 0;
+  
+  // ⚠️ IMPORTANT : Forcer l'air à l'index 0
+  palette["minecraft:air"] = paletteIndex++;
+  
   function getPaletteIndex(name) {
     if (!(name in palette)) palette[name] = paletteIndex++;
     return palette[name];
@@ -35,7 +39,7 @@ async function exportToSchematic() {
   const height = 2;
   const length = size;
   const volume = width * height * length;
-  const blockData = new Int32Array(volume).fill(0);
+  const blockData = new Int32Array(volume).fill(0); // 0 = air maintenant ✅
 
   // Remplissage depuis gradient
   let validBlocks = 0;
