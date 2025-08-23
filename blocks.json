@@ -180,7 +180,7 @@
         "view":  "both"
     },
     {
-        "name":  "grass_block",
+        "name":  "grass_block[snowy=true]",
         "path":  "img/tex/top/grass_block_top.png",
         "color":  {
                       "r":  147,
