@@ -50,7 +50,6 @@
   border-radius: 0.5rem;
 }
 
-
 .source-text p {
   font-size: 0.85rem;
   margin: 0;
@@ -76,8 +75,8 @@
 .gradient {
   display: grid;
   gap: 0;
-  width: 768px;
-  height: 768px;
+  width: 1152px; /* Increased from 768px to 768px * 1.5 */
+  height: 1152px; /* Increased from 768px to 768px * 1.5 */
 }
 
 .gradient-square {
@@ -122,8 +121,8 @@
   }
   .gradient {
     width: 100%;
-    max-width: 512px;
-    height: 512px;
+    max-width: 768px; /* Increased from 512px to 512px * 1.5 */
+    height: 768px; /* Increased from 512px to 512px * 1.5 */
   }
 }
 
