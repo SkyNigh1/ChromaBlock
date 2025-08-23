@@ -180,7 +180,7 @@ function updateGradient() {
   const gradient = document.getElementById('gradient');
   gradient.innerHTML = '';
 
-  const gridSize = 750;
+  const gridSize = 735;
   const blockSize = gridSize / size;
   gradient.style.display = 'grid';
   gradient.style.gridTemplateColumns = `repeat(${size}, ${blockSize}px)`;
