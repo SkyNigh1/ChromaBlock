@@ -68,33 +68,66 @@ async function exportToSchematic() {
 
   console.log(`Palette size=${paletteIndex}, Blocks=${validBlocks}`);
 
-  // NBT structure (Sponge Schematic v2)
+  // NBT structure (Sponge Schematic v3) - STRUCTURE CORRIGÉE
   const nbtData = {
     type: "compound",
-    name: "",
+    name: "Schematic", // ⚠️ NOM IMPORTANT pour la racine
     value: {
-      SchematicVersion: { type: "int", value: 2 },
-      Version: { type: "int", value: 2 },
-      DataVersion: { type: "int", value: 3953 }, // 1.21.4
+      Version: { type: "int", value: 3 }, // v3
+      DataVersion: { type: "int", value: 4189 }, // 1.21.4
       Width: { type: "short", value: width },
       Height: { type: "short", value: height },
       Length: { type: "short", value: length },
       Offset: { type: "intArray", value: [0, 0, 0] },
-      PaletteMax: { type: "int", value: paletteIndex },
-      Palette: {
+      
+      // Structure Blocks (v3)
+      Blocks: {
         type: "compound",
-        value: Object.fromEntries(
-          Object.entries(palette).map(([name, idx]) => [
-            name, { type: "int", value: idx }
-          ])
-        )
+        value: {
+          Palette: {
+            type: "compound",
+            value: Object.fromEntries(
+              Object.entries(palette).map(([name, idx]) => [
+                name, { type: "int", value: idx }
+              ])
+            )
+          },
+          Data: { type: "intArray", value: Array.from(blockData) },
+          BlockEntities: { type: "list", value: { type: "compound", value: [] } }
+        }
       },
-      BlockData: { type: "intArray", value: Array.from(blockData) },
-      BlockEntities: { type: "list", value: { type: "compound", value: [] } }
+      
+      // Métadonnées WorldEdit (v3)
+      Metadata: {
+        type: "compound",
+        value: {
+          WorldEdit: {
+            type: "compound",
+            value: {
+              Platforms: {
+                type: "compound",
+                value: {
+                  "intellectualsites:bukkit": {
+                    type: "compound",
+                    value: {
+                      Name: { type: "string", value: "Bukkit-Official" },
+                      Version: { type: "string", value: "2.12.3" }
+                    }
+                  }
+                }
+              },
+              EditingPlatform: { type: "string", value: "intellectualsites.bukkit" },
+              Version: { type: "string", value: "2.12.3" },
+              Origin: { type: "intArray", value: [0, 0, 0] }
+            }
+          },
+          Date: { type: "long", value: Date.now() } // Timestamp en millisecondes
+        }
+      }
     }
   };
 
-  // --- NBT Writer ---
+  // --- NBT Writer (avec support long) ---
   function writeNBT(root) {
     const buffer = [];
     writeTag(root, buffer);
@@ -109,6 +142,7 @@ async function exportToSchematic() {
     switch (tag.type) {
       case "int": writeInt32(tag.value, buffer); break;
       case "short": writeInt16(tag.value, buffer); break;
+      case "long": writeLong(tag.value, buffer); break; // ⚠️ Nouveau
       case "string": writeString(tag.value, buffer); break;
       case "intArray":
         writeInt32(tag.value.length, buffer);
@@ -138,6 +172,7 @@ async function exportToSchematic() {
   function writeInt16(val, buffer) {
     buffer.push((val >> 8) & 0xff, val & 0xff);
   }
+
   function writeInt32(val, buffer) {
     buffer.push(
       (val >> 24) & 0xff,
@@ -146,16 +181,35 @@ async function exportToSchematic() {
       val & 0xff
     );
   }
+
+  // ⚠️ Support des long (8 octets)
+  function writeLong(val, buffer) {
+    // JavaScript ne gère pas bien les entiers 64-bit
+    // On utilise BigInt si nécessaire, sinon on split en 2×32bit
+    if (typeof val === 'bigint') {
+      const high = Number(val >> 32n);
+      const low = Number(val & 0xffffffffn);
+      writeInt32(high, buffer);
+      writeInt32(low, buffer);
+    } else {
+      // Pour les timestamps normaux, la partie haute est 0
+      writeInt32(Math.floor(val / 0x100000000), buffer); // High
+      writeInt32(val & 0xffffffff, buffer); // Low
+    }
+  }
+
   function writeString(str, buffer) {
     const bytes = new TextEncoder().encode(str);
     writeInt16(bytes.length, buffer);
     buffer.push(...bytes);
   }
+
   function getTagId(type) {
     return {
       byte: 1,
       short: 2,
       int: 3,
+      long: 4, // ⚠️ Nouveau
       string: 8,
       list: 9,
       compound: 10,
@@ -166,7 +220,11 @@ async function exportToSchematic() {
   // Compression GZIP
   try {
     const nbtBuffer = writeNBT(nbtData);
+    console.log(`NBT buffer size: ${nbtBuffer.length} bytes`);
+    
     const compressed = pako.gzip(nbtBuffer);
+    console.log(`Compressed size: ${compressed.length} bytes`);
+    
     const blob = new Blob([compressed], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -176,7 +234,7 @@ async function exportToSchematic() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert(`.schem exported! ${validBlocks} blocks processed.`);
+    alert(`.schem v3 exported! ${validBlocks} blocks processed.`);
   } catch (err) {
     alert("Export failed: " + err.message);
     console.error(err);
