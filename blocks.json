@@ -327,7 +327,7 @@
                       "g":  121,
                       "b":  121
                   },
-        "view":  "both"
+        "view":  "side"
     },
     {
         "name":  "piston[facing=down]",
