@@ -470,7 +470,7 @@
         "view":  "both"
     },
     {
-        "name":  "stripped_mangrove_log",
+        "name":  "stripped_mangrove_wood",
         "path":  "img/tex/top/stripped_mangrove_log.png",
         "color":  {
                       "r":  119,
@@ -590,7 +590,7 @@
         "view":  "top"
     },
     {
-        "name":  "pale_oak_log",
+        "name":  "pale_oak_wood",
         "path":  "img/tex/top/pale_oak_log.png",
         "color":  {
                       "r":  87,
@@ -680,7 +680,7 @@
         "view":  "both"
     },
     {
-        "name":  "stripped_pale_oak_log",
+        "name":  "stripped_pale_oak_wood",
         "path":  "img/tex/top/stripped_pale_oak_log.png",
         "color":  {
                       "r":  245,
@@ -800,7 +800,7 @@
         "view":  "both"
     },
     {
-        "name":  "stripped_acacia_log",
+        "name":  "stripped_acacia_wood",
         "path":  "img/tex/top/stripped_acacia_log.png",
         "color":  {
                       "r":  174,
@@ -1590,7 +1590,7 @@
         "view":  "both"
     },
     {
-        "name":  "spruce_log",
+        "name":  "spruce_log_wood",
         "path":  "img/tex/top/spruce_log.png",
         "color":  {
                       "r":  58,
@@ -1810,7 +1810,7 @@
         "view":  "top"
     },
     {
-        "name":  "stripped_jungle_log",
+        "name":  "stripped_jungle_wood",
         "path":  "img/tex/top/stripped_jungle_log.png",
         "color":  {
                       "r":  171,
@@ -1840,7 +1840,7 @@
         "view":  "both"
     },
     {
-        "name":  "stripped_dark_oak_log",
+        "name":  "stripped_dark_oak_wood",
         "path":  "img/tex/top/stripped_dark_oak_log.png",
         "color":  {
                       "r":  72,
@@ -1930,7 +1930,7 @@
         "view":  "side"
     },
     {
-        "name":  "stripped_spruce_log",
+        "name":  "stripped_spruce_wood",
         "path":  "img/tex/top/stripped_spruce_log.png",
         "color":  {
                       "r":  115,
@@ -1940,7 +1940,7 @@
         "view":  "both"
     },
     {
-        "name":  "acacia_log",
+        "name":  "acacia_wood",
         "path":  "img/tex/top/acacia_log.png",
         "color":  {
                       "r":  103,
@@ -1950,7 +1950,7 @@
         "view":  "both"
     },
     {
-        "name":  "dark_oak_log",
+        "name":  "dark_oak_wood",
         "path":  "img/tex/top/dark_oak_log.png",
         "color":  {
                       "r":  60,
@@ -1990,7 +1990,7 @@
         "view":  "side"
     },
     {
-        "name":  "oak_log",
+        "name":  "oak_wood",
         "path":  "img/tex/top/oak_log.png",
         "color":  {
                       "r":  109,
@@ -2020,7 +2020,7 @@
         "view":  "both"
     },
     {
-        "name":  "mangrove_log",
+        "name":  "mangrove_wood",
         "path":  "img/tex/top/mangrove_log.png",
         "color":  {
                       "r":  83,
@@ -2320,7 +2320,7 @@
         "view":  "both"
     },
     {
-        "name":  "stripped_oak_log",
+        "name":  "stripped_oak_wood",
         "path":  "img/tex/top/stripped_oak_log.png",
         "color":  {
                       "r":  177,
@@ -2440,7 +2440,7 @@
         "view":  "both"
     },
     {
-        "name":  "jungle_log",
+        "name":  "jungle_wood",
         "path":  "img/tex/top/jungle_log.png",
         "color":  {
                       "r":  85,
@@ -2510,7 +2510,7 @@
         "view":  "both"
     },
     {
-        "name":  "stripped_birch_log",
+        "name":  "stripped_birch_wood",
         "path":  "img/tex/top/stripped_birch_log.png",
         "color":  {
                       "r":  196,
@@ -2740,7 +2740,7 @@
         "view":  "top"
     },
     {
-        "name":  "birch_log",
+        "name":  "birch_wood",
         "path":  "img/tex/top/birch_log.png",
         "color":  {
                       "r":  216,
@@ -3780,7 +3780,7 @@
         "view":  "both"
     },
     {
-        "name":  "trial_spawner",
+        "name":  "trial_spawner[ominous=true,",
         "path":  "img/tex/top/trial_spawner_top_active_ominous.png",
         "color":  {
                       "r":  49,
@@ -4720,7 +4720,7 @@
         "view":  "both"
     },
     {
-        "name":  "cherry_log",
+        "name":  "cherry_wood",
         "path":  "img/tex/side/cherry_log.png",
         "color":  {
                       "r":  54,
@@ -4950,7 +4950,7 @@
         "view":  "side"
     },
     {
-        "name":  "stripped_cherry_log",
+        "name":  "stripped_cherry_wood",
         "path":  "img/tex/top/stripped_cherry_log.png",
         "color":  {
                       "r":  215,
