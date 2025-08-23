@@ -25,7 +25,7 @@ async function exportToSchematic() {
     return;
   }
 
-  // Construire la liste des blocs disponibles
+  // Construire la liste des blocs valides
   const blockNames = blocksData.map(b => "minecraft:" + b.name);
   const glassNames = glassData.map(g =>
     g.name === "none" ? "minecraft:air" : "minecraft:" + g.name
@@ -34,22 +34,21 @@ async function exportToSchematic() {
   // Palette + indexation
   const palette = {};
   let paletteIndex = 0;
-
   function getPaletteIndex(name) {
-    if (!palette[name]) {
+    if (!(name in palette)) {
       palette[name] = paletteIndex++;
     }
     return palette[name];
   }
 
-  // Dimensions du schéma
+  // Dimensions
   const width = size;
-  const height = 2;
+  const height = 2; // base + couche verre
   const length = size;
   const volume = width * height * length;
-  const blockData = new Int32Array(volume).fill(0); // Index palette
+  const blockData = new Int32Array(volume).fill(0);
 
-  // Remplir BlockData
+  // Remplissage
   let validBlocks = 0;
   squares.forEach((square, index) => {
     const x = index % width;
@@ -63,9 +62,7 @@ async function exportToSchematic() {
     const baseMatch = tooltip.match(/Base: ([^,]+)/);
     const glassMatch = tooltip.match(/Glass: ([^,]+)/);
 
-    if (baseMatch) {
-      baseName = "minecraft:" + baseMatch[1].trim();
-    }
+    if (baseMatch) baseName = "minecraft:" + baseMatch[1].trim();
     if (glassMatch && glassMatch[1].trim() !== "none") {
       glassName = "minecraft:" + glassMatch[1].trim();
     }
@@ -77,18 +74,19 @@ async function exportToSchematic() {
       const glassIndex = x + z * width + 1 * width * length;
       blockData[glassIndex] = getPaletteIndex(glassName);
     }
+
     validBlocks++;
   });
 
   console.log(`Processed ${validBlocks} blocks into palette of size ${paletteIndex}`);
 
-  // Construire le NBT .schem v2
+  // === Structure NBT Schematic v2 ===
   const nbtData = {
-    name: '',
+    name: '', // racine non nommée
     value: {
       SchematicVersion: { type: 'int', value: 2 },
       Version: { type: 'int', value: 2 },
-      DataVersion: { type: 'int', value: 3953 }, // MC 1.21.4
+      DataVersion: { type: 'int', value: 3953 }, // 1.21.4
       Width: { type: 'short', value: width },
       Height: { type: 'short', value: height },
       Length: { type: 'short', value: length },
@@ -96,21 +94,24 @@ async function exportToSchematic() {
       PaletteMax: { type: 'int', value: paletteIndex },
       Palette: {
         type: 'compound',
-        value: Object.fromEntries(Object.entries(palette).map(([name, idx]) => [
-          name, { type: 'int', value: idx }
-        ]))
+        value: Object.fromEntries(
+          Object.entries(palette).map(([name, idx]) => [
+            name, { type: 'int', value: idx }
+          ])
+        )
       },
       BlockData: { type: 'intArray', value: Array.from(blockData) },
       BlockEntities: { type: 'list', value: { type: 'compound', value: [] } }
     }
   };
 
-  // === Écriture NBT adaptée au format ===
-  function writeNBT(data) {
+  // --- Écriture NBT ---
+  function writeNBT(root) {
     const buffer = [];
-    buffer.push(0x0A); // Compound start
-    writeString(data.name, buffer);
-    writeCompoundContent(data.value, buffer);
+    buffer.push(0x0A); // TAG_Compound
+    writeString(root.name, buffer);
+    writeCompoundContent(root.value, buffer);
+    buffer.push(0x00); // End root
     return new Uint8Array(buffer);
   }
 
@@ -118,7 +119,7 @@ async function exportToSchematic() {
     for (const [key, tag] of Object.entries(compound)) {
       writeNBTTag(tag, key, buffer);
     }
-    buffer.push(0x00); // TAG_End
+    buffer.push(0x00); // End compound
   }
 
   function writeNBTTag(tag, name, buffer) {
@@ -127,17 +128,20 @@ async function exportToSchematic() {
     writeString(name, buffer);
 
     switch (tag.type) {
-      case 'int': writeInt32(tag.value, buffer); break;
+      case 'byte': buffer.push(tag.value & 0xff); break;
       case 'short': writeInt16(tag.value, buffer); break;
+      case 'int': writeInt32(tag.value, buffer); break;
       case 'string': writeString(tag.value, buffer); break;
+
       case 'intArray':
         writeInt32(tag.value.length, buffer);
         tag.value.forEach(v => writeInt32(v, buffer));
         break;
+
       case 'compound':
         writeCompoundContent(tag.value, buffer);
-        buffer.push(0x00);
         break;
+
       case 'list':
         buffer.push(getTagId(tag.value.type));
         writeInt32(tag.value.value.length, buffer);
@@ -165,10 +169,19 @@ async function exportToSchematic() {
     buffer.push(...bytes);
   }
   function getTagId(type) {
-    return { byte:1, short:2, int:3, intArray:11, string:8, list:9, compound:10 }[type] || 0;
+    return {
+      byte: 1,
+      short: 2,
+      int: 3,
+      string: 8,
+      list: 9,
+      compound: 10,
+      byteArray: 7,
+      intArray: 11
+    }[type] || 0;
   }
 
-  // Compression et téléchargement
+  // Compression + téléchargement
   try {
     const nbtBuffer = writeNBT(nbtData);
     const compressed = pako.gzip(nbtBuffer);
