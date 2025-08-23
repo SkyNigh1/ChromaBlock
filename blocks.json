@@ -3140,7 +3140,7 @@
         "view":  "top"
     },
     {
-        "name":  "reinforced_deepslate",
+        "name":  "reinforced_deepslate[facing=up]",
         "path":  "img/tex/top/reinforced_deepslate_top.png",
         "color":  {
                       "r":  80,
@@ -3270,7 +3270,7 @@
         "view":  "both"
     },
     {
-        "name":  "reinforced_deepslate",
+        "name":  "reinforced_deepslate[facing=down]",
         "path":  "img/tex/top/reinforced_deepslate_bottom.png",
         "color":  {
                       "r":  79,
