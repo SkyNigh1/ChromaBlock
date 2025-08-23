@@ -71,57 +71,62 @@ async function exportToSchematic() {
   // NBT structure (Sponge Schematic v3) - STRUCTURE CORRIGÉE
   const nbtData = {
     type: "compound",
-    name: "Schematic", // ⚠️ NOM IMPORTANT pour la racine
+    name: "", // ⚠️ Racine ANONYME
     value: {
-      Version: { type: "int", value: 3 }, // v3
-      DataVersion: { type: "int", value: 4189 }, // 1.21.4
-      Width: { type: "short", value: width },
-      Height: { type: "short", value: height },
-      Length: { type: "short", value: length },
-      Offset: { type: "intArray", value: [0, 0, 0] },
-      
-      // Structure Blocks (v3)
-      Blocks: {
+      Schematic: { // ⚠️ Le tag "Schematic" est À L'INTÉRIEUR de la racine
         type: "compound",
         value: {
-          Palette: {
-            type: "compound",
-            value: Object.fromEntries(
-              Object.entries(palette).map(([name, idx]) => [
-                name, { type: "int", value: idx }
-              ])
-            )
-          },
-          Data: { type: "intArray", value: Array.from(blockData) },
-          BlockEntities: { type: "list", value: { type: "compound", value: [] } }
-        }
-      },
-      
-      // Métadonnées WorldEdit (v3)
-      Metadata: {
-        type: "compound",
-        value: {
-          WorldEdit: {
+          Version: { type: "int", value: 3 }, // v3
+          DataVersion: { type: "int", value: 4189 }, // 1.21.4
+          Width: { type: "short", value: width },
+          Height: { type: "short", value: height },
+          Length: { type: "short", value: length },
+          Offset: { type: "intArray", value: [0, 0, 0] },
+          
+          // Structure Blocks (v3)
+          Blocks: {
             type: "compound",
             value: {
-              Platforms: {
+              Palette: {
                 type: "compound",
-                value: {
-                  "intellectualsites:bukkit": {
-                    type: "compound",
-                    value: {
-                      Name: { type: "string", value: "Bukkit-Official" },
-                      Version: { type: "string", value: "2.12.3" }
-                    }
-                  }
-                }
+                value: Object.fromEntries(
+                  Object.entries(palette).map(([name, idx]) => [
+                    name, { type: "int", value: idx }
+                  ])
+                )
               },
-              EditingPlatform: { type: "string", value: "intellectualsites.bukkit" },
-              Version: { type: "string", value: "2.12.3" },
-              Origin: { type: "intArray", value: [0, 0, 0] }
+              Data: { type: "intArray", value: Array.from(blockData) },
+              BlockEntities: { type: "list", value: { type: "compound", value: [] } }
             }
           },
-          Date: { type: "long", value: Date.now() } // Timestamp en millisecondes
+          
+          // Métadonnées WorldEdit (v3)
+          Metadata: {
+            type: "compound",
+            value: {
+              WorldEdit: {
+                type: "compound",
+                value: {
+                  Platforms: {
+                    type: "compound",
+                    value: {
+                      "intellectualsites:bukkit": {
+                        type: "compound",
+                        value: {
+                          Name: { type: "string", value: "Bukkit-Official" },
+                          Version: { type: "string", value: "2.12.3" }
+                        }
+                      }
+                    }
+                  },
+                  EditingPlatform: { type: "string", value: "intellectualsites.bukkit" },
+                  Version: { type: "string", value: "2.12.3" },
+                  Origin: { type: "intArray", value: [0, 0, 0] }
+                }
+              },
+              Date: { type: "long", value: Date.now() } // Timestamp en millisecondes
+            }
+          }
         }
       }
     }
