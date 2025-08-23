@@ -95,7 +95,7 @@ async function exportToSchematic() {
                   ])
                 )
               },
-              Data: { type: "byteArray", value: Array.from(blockData) },
+              Data: { type: "varintArray", value: Array.from(blockData) },
               BlockEntities: { type: "list", value: { type: "compound", value: [] } }
             }
           },
@@ -149,9 +149,9 @@ async function exportToSchematic() {
       case "short": writeInt16(tag.value, buffer); break;
       case "long": writeLong(tag.value, buffer); break; // ⚠️ Nouveau
       case "string": writeString(tag.value, buffer); break;
-      case "byteArray":
+      case "varintArray":
         writeInt32(tag.value.length, buffer);
-        tag.value.forEach(v => buffer.push(v & 0xff));
+        tag.value.forEach(v => writeVarInt(v, buffer));
         break;
       case "intArray":
         writeInt32(tag.value.length, buffer);
@@ -207,6 +207,15 @@ async function exportToSchematic() {
     }
   }
 
+  // ⚠️ Support VarInt (encodage variable pour gros nombres)
+  function writeVarInt(value, buffer) {
+    while (value >= 0x80) {
+      buffer.push((value & 0x7F) | 0x80);
+      value >>>= 7;
+    }
+    buffer.push(value & 0x7F);
+  }
+
   function writeString(str, buffer) {
     const bytes = new TextEncoder().encode(str);
     writeInt16(bytes.length, buffer);
@@ -223,7 +232,8 @@ async function exportToSchematic() {
       list: 9,
       compound: 10,
       intArray: 11,
-      byteArray: 7 // ⚠️ TAG_Byte_Array
+      byteArray: 7,
+      varintArray: 12 // ⚠️ Sponge custom tag pour VarInt arrays
     }[type] || 0;
   }
 
