@@ -1580,7 +1580,7 @@
         "view":  "both"
     },
     {
-        "name":  "spruce_log_wood",
+        "name":  "spruce_wood",
         "path":  "img/tex/top/spruce_log.png",
         "color":  {
                       "r":  58,
@@ -3820,7 +3820,7 @@
         "view":  "both"
     },
     {
-        "name":  "trial_spawner",
+        "name":  "trial_spawner[ominous=true]",
         "path":  "img/tex/top/trial_spawner_top_inactive_ominous.png",
         "color":  {
                       "r":  49,
