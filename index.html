@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChromaBlock - Craft Stunning Minecraft Gradients</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/css/index.css">
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo">ChromaBlock</a>
+      <div class="nav-links">
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Gradients</a>
+          <div class="dropdown-menu">
+            <a href="gradient1D.html">Gradient 1D</a>
+            <a href="gradient2D.html">Gradient 2D</a>
+            <a href="gradient3D.html">Gradient 3D</a>
+          </div>
+        </div>
+        <a href="#">Noises</a>
+        <a href="#">Palette</a>
+        <a href="#">Pixel Art</a >GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero-section">
+      <h1>Welcome to ChromaBlock</h1>
+      <p class="description">
+        Create breathtaking Minecraft block gradients with ease. Blend blocks, glass, and colors to craft unique designs for your builds.
+      </p>
+      <a href="gradient3D.html" class="hero-button">Start Crafting</a>
+    </section>
+
+    <section class="presentation-section">
+      <h2>Why ChromaBlock?</h2>
+      <p class="presentation-text">
+        ChromaBlock empowers Minecraft enthusiasts to design stunning gradients using blocks and glass textures. Whether you're building in 1D, 2D, or 3D, our intuitive tools make creativity effortless.
+      </p>
+      <div class="features">
+        <div class="feature-card">
+          <h3>Intuitive Design</h3>
+          <p>Select blocks and customize gradients with a user-friendly interface.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Versatile Gradients</h3>
+          <p>Create 1D, 2D, or 3D gradients with precise color blending.</p>
+        </div>
+        <div class="feature-card">
+          <h3>Minecraft Integration</h3>
+          <p>Export your designs to .schematic files for easy in-game use.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>ChromaBlock</h3>
+          <p>Create stunning Minecraft block gradients with ease.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="gradient1D.html">1D Gradient</a></li>
+            <li><a href="gradient2D.html">2D Gradient</a></li>
+            <li><a href="gradient3D.html">3D Gradient</a></li>
+            <li><a href="#">Noises</a></li>
+            <li><a href="#">Palette</a></li>
+            <li><a href="#">Pixel Art</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">X</a></li>
+            <li><a href="#">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 ChromaBlock. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Particle animation for background canvas
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        this.opacity = Math.min(Math.max(this.opacity + (Math.random() * 0.02 - 0.01), 0.3), 0.8);
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(41, 255, 137, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 50; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
