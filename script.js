@@ -180,7 +180,6 @@ function blendColors(baseColor, glassBlock) {
 
 function updateGradient() {
   if (!sourceA || !sourceB) return;
-  if (glassEnabled && (!glassA || !glassB)) return;
   
   const length = parseInt(document.getElementById('length').value) || 16;
   const viewMode = document.getElementById('view-mode').value;
@@ -188,57 +187,115 @@ function updateGradient() {
   gradient.innerHTML = '';
 
   for (let i = 0; i < length; i++) {
-    const t = i / (length - 1);
-    
-    // Calculate base color interpolation
-    const baseR = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
-    const baseG = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
-    const baseB = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
-    
-    let finalColor = { r: baseR, g: baseG, b: baseB };
-    
-    // Apply glass blending if enabled
-    if (glassEnabled && glassA && glassB) {
-      // Interpolate glass color/transparency
-      const glassAColor = glassA.name === 'none' ? null : glassA.color;
-      const glassBColor = glassB.name === 'none' ? null : glassB.color;
-      
-      if (glassAColor && glassBColor) {
-        const glassR = Math.round(glassAColor.r + (glassBColor.r - glassAColor.r) * t);
-        const glassG = Math.round(glassAColor.g + (glassBColor.g - glassAColor.g) * t);
-        const glassB = Math.round(glassAColor.b + (glassBColor.b - glassAColor.b) * t);
-        const interpolatedGlass = { 
-          color: { r: glassR, g: glassG, b: glassB }, 
-          alpha: 0.5, 
-          name: 'interpolated' 
-        };
-        finalColor = blendColors(finalColor, interpolatedGlass);
-      } else if (glassAColor) {
-        const alpha = (1 - t) * 0.5;
-        const interpolatedGlass = { color: glassAColor, alpha: alpha, name: 'interpolated' };
-        finalColor = blendColors(finalColor, interpolatedGlass);
-      } else if (glassBColor) {
-        const alpha = t * 0.5;
-        const interpolatedGlass = { color: glassBColor, alpha: alpha, name: 'interpolated' };
-        finalColor = blendColors(finalColor, interpolatedGlass);
-      }
-    }
+    const t = length === 1 ? 0 : i / (length - 1);
     
     const div = document.createElement('div');
     div.className = 'gradient-square';
     
     if (fillMode === 'exact') {
+      // Mode couleur exacte - interpolation simple
+      const baseR = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
+      const baseG = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
+      const baseB = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
+      
+      let finalColor = { r: baseR, g: baseG, b: baseB };
+      
+      // Apply glass blending if enabled
+      if (glassEnabled && glassA && glassB) {
+        const glassAColor = glassA.name === 'none' ? null : glassA.color;
+        const glassBColor = glassB.name === 'none' ? null : glassB.color;
+        
+        if (glassAColor && glassBColor) {
+          const glassR = Math.round(glassAColor.r + (glassBColor.r - glassAColor.r) * t);
+          const glassG = Math.round(glassAColor.g + (glassBColor.g - glassAColor.g) * t);
+          const glassB = Math.round(glassAColor.b + (glassBColor.b - glassAColor.b) * t);
+          const interpolatedGlass = { 
+            color: { r: glassR, g: glassG, b: glassB }, 
+            alpha: 0.5, 
+            name: 'interpolated' 
+          };
+          finalColor = blendColors(finalColor, interpolatedGlass);
+        } else if (glassAColor) {
+          const alpha = (1 - t) * 0.5;
+          const interpolatedGlass = { color: glassAColor, alpha: alpha, name: 'interpolated' };
+          finalColor = blendColors(finalColor, interpolatedGlass);
+        } else if (glassBColor) {
+          const alpha = t * 0.5;
+          const interpolatedGlass = { color: glassBColor, alpha: alpha, name: 'interpolated' };
+          finalColor = blendColors(finalColor, interpolatedGlass);
+        }
+      }
+      
       div.style.backgroundColor = `rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})`;
       div.innerHTML = `<span class="tooltip">Color: rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})</span>`;
     } else {
+      // Mode blocs - CORRECTION 2: Gérer les extrémités correctement
       if (glassEnabled) {
-        const { base, glass } = findNearestBlockPair(finalColor, viewMode);
-        const baseImg = `<img src="${base.path}" alt="${base.name}" class="base-img" />`;
-        const glassImg = glass.name !== 'none' ? `<img src="${glass.path}" alt="${glass.name}" class="glass-img" />` : '';
-        const tooltip = glass.name === 'none' ? `Base: ${base.name}` : `Base: ${base.name}, Glass: ${glass.name}`;
+        let baseBlock, glassBlock;
+        
+        // CORRECTION: Forcer les sources sélectionnées aux extrémités
+        if (i === 0) {
+          // Premier bloc : utiliser sourceA et glassA
+          baseBlock = sourceA.path ? sourceA : findNearestBlock(sourceA.color, viewMode);
+          glassBlock = glassA;
+        } else if (i === length - 1) {
+          // Dernier bloc : utiliser sourceB et glassB
+          baseBlock = sourceB.path ? sourceB : findNearestBlock(sourceB.color, viewMode);
+          glassBlock = glassB;
+        } else {
+          // Blocs intermédiaires : interpolation et recherche du meilleur match
+          const baseR = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
+          const baseG = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
+          const baseB = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
+          
+          let targetColor = { r: baseR, g: baseG, b: baseB };
+          
+          // Interpoler le verre aussi
+          const glassAColor = glassA.name === 'none' ? null : glassA.color;
+          const glassBColor = glassB.name === 'none' ? null : glassB.color;
+          
+          if (glassAColor && glassBColor) {
+            const glassR = Math.round(glassAColor.r + (glassBColor.r - glassAColor.r) * t);
+            const glassG = Math.round(glassAColor.g + (glassBColor.g - glassAColor.g) * t);
+            const glassB = Math.round(glassAColor.b + (glassBColor.b - glassAColor.b) * t);
+            const interpolatedGlass = { 
+              color: { r: glassR, g: glassG, b: glassB }, 
+              alpha: 0.5, 
+              name: 'interpolated' 
+            };
+            targetColor = blendColors(targetColor, interpolatedGlass);
+          }
+          
+          const result = findNearestBlockPair(targetColor, viewMode);
+          baseBlock = result.base;
+          glassBlock = result.glass;
+        }
+        
+        const baseImg = `<img src="${baseBlock.path}" alt="${baseBlock.name}" class="base-img" />`;
+        const glassImg = glassBlock.name !== 'none' ? `<img src="${glassBlock.path}" alt="${glassBlock.name}" class="glass-img" />` : '';
+        const tooltip = glassBlock.name === 'none' ? `Base: ${baseBlock.name}` : `Base: ${baseBlock.name}, Glass: ${glassBlock.name}`;
         div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
       } else {
-        const nearestBlock = findNearestBlock(finalColor, viewMode);
+        // Mode sans verre
+        let nearestBlock;
+        
+        // CORRECTION: Forcer les sources sélectionnées aux extrémités
+        if (i === 0) {
+          // Premier bloc : utiliser sourceA
+          nearestBlock = sourceA.path ? sourceA : findNearestBlock(sourceA.color, viewMode);
+        } else if (i === length - 1) {
+          // Dernier bloc : utiliser sourceB
+          nearestBlock = sourceB.path ? sourceB : findNearestBlock(sourceB.color, viewMode);
+        } else {
+          // Blocs intermédiaires : interpolation
+          const baseR = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
+          const baseG = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
+          const baseB = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
+          const finalColor = { r: baseR, g: baseG, b: baseB };
+          
+          nearestBlock = findNearestBlock(finalColor, viewMode);
+        }
+        
         div.innerHTML = `<img src="${nearestBlock.path}" alt="${nearestBlock.name}" /><span class="tooltip">${nearestBlock.name}</span>`;
       }
     }
@@ -381,4 +438,4 @@ document.getElementById('surprise').onclick = () => {
 };
 
 // Initialize block loading
-loadBlocks();
+loadBlocks(); blendColors(targetColor, interpolatedGlass);
