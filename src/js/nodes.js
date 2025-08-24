@@ -1,4 +1,4 @@
-import { noise } from 'https://unpkg.com/noisejs@2.1.0/noise.js';
+import { noise } from 'https://cdn.jsdelivr.net/npm/noisejs@2.1.0/noise.min.js';
 
 export function initNodes() {
   class PerlinNoiseComponent extends Rete.Component {
