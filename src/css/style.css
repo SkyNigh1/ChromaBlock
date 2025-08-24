@@ -109,7 +109,7 @@ main.container {
 .hero-section {
   position: relative;
   padding: 2rem;
-  background: url('img/banner/banner1.png') no-repeat center center/cover;
+  background: url('../../img/banner/banner1.png') no-repeat center center/cover;
   border-radius: 1rem;
   text-align: center;
   margin-bottom: 2rem;
