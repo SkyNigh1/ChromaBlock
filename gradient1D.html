@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChromaBlock</title>
+  <link rel="icon" href="img/logo/logo.ico" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="src/css/style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+</head>
+<body>
+    <canvas id="background-canvas"></canvas>
+  <nav>
+    <div class="container">
+      <a href="#" class="logo">ChromaBlock</a>
+      <div class="nav-links">
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Gradients</a>
+          <div class="dropdown-menu">
+            <a href="gradient1D.html">Gradient 1D</a>
+            <a href="gradient2D.html">Gradient 2D</a>
+            <a href="gradient3D.html">Gradient 3D</a>
+          </div>
+        </div>
+        <a href="#">Noises</a>
+        <a href="#">Palette</a>
+        <a href="#">Pixel Art</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero-section">
+      <h1>1D Minecraft blocks gradient</h1>
+      <p class="description">
+        Choose two sources (block or color), optional glass overlay, then adjust the length. The gradient is filled with the nearest blocks in medium color.
+      </p>
+    </section>
+
+    <div class="sources">
+      <div id="sourceA" class="source-card" onclick="openModal('sourceA')">
+        <h2>Source A</h2>
+        <p id="sourceA-label">Minecraft block or color</p>
+        <img id="sourceA-img" src="" class="hidden" />
+      </div>
+      <div id="sourceB" class="source-card" onclick="openModal('sourceB')">
+        <h2>Source B</h2>
+        <p id="sourceB-label">Minecraft block or color</p>
+        <img id="sourceB-img" src="" class="hidden" />
+      </div>
+    </div>
+
+    <!-- Glass overlay checkbox -->
+    <div class="glass-overlay-section panel">
+      <label class="glass-checkbox">
+        <input type="checkbox" id="enable-glass"> Enable glass overlay
+      </label>
+    </div>
+
+    <!-- Glass sources (hidden by default) -->
+    <div id="glass-sources" class="sources hidden">
+      <div id="glassA" class="source-card" onclick="openModal('glassA')">
+        <h2>Glass A</h2>
+        <p id="glassA-label">Glass block, color, or none</p>
+        <img id="glassA-img" src="" class="hidden" />
+      </div>
+      <div id="glassB" class="source-card" onclick="openModal('glassB')">
+        <h2>Glass B</h2>
+        <p id="glassB-label">Glass block, color, or none</p>
+        <img id="glassB-img" src="" class="hidden" />
+      </div>
+    </div>
+
+    <div class="gradient-container">
+      <div id="gradient" class="gradient"></div>
+    </div>
+
+    <div class="controls">
+      <div>
+        <label for="length">Length</label>
+        <input id="length" type="number" value="16" min="1" />
+      </div>
+      <div>
+        <label for="fill-mode">Filling</label>
+        <button id="fill-mode" class="button">Close Blocks</button>
+      </div>
+      <div>
+        <label for="view-mode">View of textures</label>
+        <select id="view-mode">
+          <option value="both">Both</option>
+          <option value="top">Top</option>
+          <option value="side">Side</option>
+        </select>
+      </div>
+      <div class="button-group">
+        <button id="copy">Copy the list</button>
+        <button id="surprise">Surprise</button>
+        <button id="export-schematic">Export to .schem</button>
+      </div>
+    </div>
+  </main>
+
+  <div id="modal" class="modal hidden">
+    <div class="modal-content">
+      <h2>Choose a block or color</h2>
+      <div class="modal-tabs">
+        <button id="tab-blocks" class="tab-button active">Minecraft Blocks</button>
+        <button id="tab-glass" class="tab-button">Glass Blocks</button>
+        <button id="tab-color" class="tab-button">Free Color</button>
+        <button id="close-modal" class="tab-button close">Close</button>
+      </div>
+
+      <div id="blocks-content" class="blocks-grid"></div>
+      <div id="glass-content" class="blocks-grid hidden"></div>
+      <div id="color-content" class="hidden">
+        <input type="color" id="color-picker" />
+        <button id="use-color" class="modal-button">Use this color</button>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>ChromaBlock</h3>
+          <p>Create stunning Minecraft block gradients with ease.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="#">1D Gradient</a></li>
+            <li><a href="#">2D Gradient</a></li>
+            <li><a href="#">Noises</a></li>
+            <li><a href="#">Palette</a></li>
+            <li><a href="#">Pixel Art</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="https://instagram.com" target="_blank">Instagram</a></li>
+            <li><a href="https://discord.com" target="_blank">Discord</a></li>
+            <li><a href="https://x.com" target="_blank">X</a></li>
+            <li><a href="https://github.com" target="_blank">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2025 ChromaBlock. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="src/js/script1d.js"></script>
+  <script src="src/js/exportSchematic.js"></script>
+</body>
+</html>

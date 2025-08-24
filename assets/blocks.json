@@ -1,0 +1,4932 @@
+[
+    {
+        "name":  "redstone_ore",
+        "path":  "img/tex/top/redstone_ore.png",
+        "color":  {
+                      "r":  140,
+                      "g":  109,
+                      "b":  109
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blast_furnace",
+        "path":  "img/tex/side/blast_furnace_side.png",
+        "color":  {
+                      "r":  107,
+                      "g":  107,
+                      "b":  107
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "coal_block",
+        "path":  "img/tex/top/coal_block.png",
+        "color":  {
+                      "r":  16,
+                      "g":  15,
+                      "b":  15
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_concrete",
+        "path":  "img/tex/top/red_concrete.png",
+        "color":  {
+                      "r":  142,
+                      "g":  32,
+                      "b":  32
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_mangrove_log",
+        "path":  "img/tex/top/stripped_mangrove_log_top.png",
+        "color":  {
+                      "r":  109,
+                      "g":  43,
+                      "b":  43
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "iron_block",
+        "path":  "img/tex/top/iron_block.png",
+        "color":  {
+                      "r":  220,
+                      "g":  220,
+                      "b":  220
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "suspicious_gravel",
+        "path":  "img/tex/top/suspicious_gravel_2.png",
+        "color":  {
+                      "r":  126,
+                      "g":  120,
+                      "b":  120
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "furnace",
+        "path":  "img/tex/top/furnace_top.png",
+        "color":  {
+                      "r":  110,
+                      "g":  109,
+                      "b":  109
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "cobblestone",
+        "path":  "img/tex/top/cobblestone.png",
+        "color":  {
+                      "r":  127,
+                      "g":  127,
+                      "b":  127
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blast_furnace",
+        "path":  "img/tex/side/blast_furnace_front.png",
+        "color":  {
+                      "r":  107,
+                      "g":  107,
+                      "b":  107
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "netherrack",
+        "path":  "img/tex/top/netherrack.png",
+        "color":  {
+                      "r":  97,
+                      "g":  38,
+                      "b":  38
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "coal_ore",
+        "path":  "img/tex/top/coal_ore.png",
+        "color":  {
+                      "r":  105,
+                      "g":  105,
+                      "b":  105
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "observer[facing=down]",
+        "path":  "img/tex/top/observer_back.png",
+        "color":  {
+                      "r":  71,
+                      "g":  69,
+                      "b":  69
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crimson_nylium",
+        "path":  "img/tex/side/crimson_nylium_side.png",
+        "color":  {
+                      "r":  107,
+                      "g":  26,
+                      "b":  26
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "observer",
+        "path":  "img/tex/top/observer_top.png",
+        "color":  {
+                      "r":  98,
+                      "g":  98,
+                      "b":  98
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "observer",
+        "path":  "img/tex/side/observer_side.png",
+        "color":  {
+                      "r":  70,
+                      "g":  68,
+                      "b":  68
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "stone",
+        "path":  "img/tex/top/stone.png",
+        "color":  {
+                      "r":  125,
+                      "g":  125,
+                      "b":  125
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_deepslate",
+        "path":  "img/tex/top/chiseled_deepslate.png",
+        "color":  {
+                      "r":  54,
+                      "g":  54,
+                      "b":  54
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "grass_block[snowy=true]",
+        "path":  "img/tex/top/grass_block_top.png",
+        "color":  {
+                      "r":  147,
+                      "g":  147,
+                      "b":  147
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "smooth_stone",
+        "path":  "img/tex/top/smooth_stone.png",
+        "color":  {
+                      "r":  158,
+                      "g":  158,
+                      "b":  158
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crimson_nylium",
+        "path":  "img/tex/top/crimson_nylium.png",
+        "color":  {
+                      "r":  130,
+                      "g":  31,
+                      "b":  31
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "observer[facing=down,powered=true]",
+        "path":  "img/tex/top/observer_back_on.png",
+        "color":  {
+                      "r":  76,
+                      "g":  68,
+                      "b":  68
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/top/crafter_top_crafting.png",
+        "color":  {
+                      "r":  139,
+                      "g":  100,
+                      "b":  100
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "smooth_stone_slab",
+        "path":  "img/tex/top/smooth_stone_slab_side.png",
+        "color":  {
+                      "r":  167,
+                      "g":  167,
+                      "b":  167
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "observer[facing=up]",
+        "path":  "img/tex/top/observer_front.png",
+        "color":  {
+                      "r":  103,
+                      "g":  103,
+                      "b":  103
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/top/crafter_bottom.png",
+        "color":  {
+                      "r":  78,
+                      "g":  78,
+                      "b":  78
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "furnace",
+        "path":  "img/tex/side/furnace_front.png",
+        "color":  {
+                      "r":  91,
+                      "g":  91,
+                      "b":  91
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "pink_terracotta",
+        "path":  "img/tex/top/pink_terracotta.png",
+        "color":  {
+                      "r":  161,
+                      "g":  78,
+                      "b":  78
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "diorite",
+        "path":  "img/tex/top/diorite.png",
+        "color":  {
+                      "r":  188,
+                      "g":  188,
+                      "b":  188
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dispenser",
+        "path":  "img/tex/top/dispenser_front.png",
+        "color":  {
+                      "r":  122,
+                      "g":  121,
+                      "b":  121
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "bedrock",
+        "path":  "img/tex/top/bedrock.png",
+        "color":  {
+                      "r":  85,
+                      "g":  85,
+                      "b":  85
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dispenser",
+        "path":  "img/tex/top/dispenser_front_vertical.png",
+        "color":  {
+                      "r":  98,
+                      "g":  97,
+                      "b":  97
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "dropper",
+        "path":  "img/tex/top/dropper_front.png",
+        "color":  {
+                      "r":  122,
+                      "g":  121,
+                      "b":  121
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "piston[facing=down]",
+        "path":  "img/tex/top/piston_bottom.png",
+        "color":  {
+                      "r":  97,
+                      "g":  96,
+                      "b":  96
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "furnace",
+        "path":  "img/tex/side/furnace_side.png",
+        "color":  {
+                      "r":  120,
+                      "g":  120,
+                      "b":  120
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "cracked_deepslate_tiles",
+        "path":  "img/tex/top/cracked_deepslate_tiles.png",
+        "color":  {
+                      "r":  52,
+                      "g":  52,
+                      "b":  52
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "smithing_table",
+        "path":  "img/tex/side/smithing_table_side.png",
+        "color":  {
+                      "r":  55,
+                      "g":  35,
+                      "b":  35
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "andesite",
+        "path":  "img/tex/top/andesite.png",
+        "color":  {
+                      "r":  136,
+                      "g":  136,
+                      "b":  136
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_mushroom_block",
+        "path":  "img/tex/top/red_mushroom_block.png",
+        "color":  {
+                      "r":  200,
+                      "g":  46,
+                      "b":  45
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_concrete_powder",
+        "path":  "img/tex/top/red_concrete_powder.png",
+        "color":  {
+                      "r":  168,
+                      "g":  54,
+                      "b":  50
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_wool",
+        "path":  "img/tex/top/red_wool.png",
+        "color":  {
+                      "r":  160,
+                      "g":  39,
+                      "b":  34
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "tnt",
+        "path":  "img/tex/side/tnt_side.png",
+        "color":  {
+                      "r":  182,
+                      "g":  88,
+                      "b":  84
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "red_glazed_terracotta",
+        "path":  "img/tex/top/red_glazed_terracotta.png",
+        "color":  {
+                      "r":  181,
+                      "g":  59,
+                      "b":  53
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "nether_quartz_ore",
+        "path":  "img/tex/top/nether_quartz_ore.png",
+        "color":  {
+                      "r":  117,
+                      "g":  65,
+                      "b":  62
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cherry_log",
+        "path":  "img/tex/top/cherry_log_top.png",
+        "color":  {
+                      "r":  185,
+                      "g":  141,
+                      "b":  137
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mangrove_planks",
+        "path":  "img/tex/top/mangrove_planks.png",
+        "color":  {
+                      "r":  117,
+                      "g":  54,
+                      "b":  48
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pale_oak_planks",
+        "path":  "img/tex/top/pale_oak_planks.png",
+        "color":  {
+                      "r":  227,
+                      "g":  217,
+                      "b":  216
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_mangrove_wood",
+        "path":  "img/tex/top/stripped_mangrove_log.png",
+        "color":  {
+                      "r":  119,
+                      "g":  54,
+                      "b":  47
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_pale_oak_log",
+        "path":  "img/tex/top/stripped_pale_oak_log_top.png",
+        "color":  {
+                      "r":  235,
+                      "g":  226,
+                      "b":  225
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mangrove_log",
+        "path":  "img/tex/top/mangrove_log_top.png",
+        "color":  {
+                      "r":  102,
+                      "g":  48,
+                      "b":  42
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "tnt",
+        "path":  "img/tex/top/tnt_top.png",
+        "color":  {
+                      "r":  142,
+                      "g":  62,
+                      "b":  53
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "stripped_cherry_log",
+        "path":  "img/tex/top/stripped_cherry_log_top.png",
+        "color":  {
+                      "r":  221,
+                      "g":  164,
+                      "b":  157
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cherry_planks",
+        "path":  "img/tex/top/cherry_planks.png",
+        "color":  {
+                      "r":  226,
+                      "g":  178,
+                      "b":  172
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "redstone_block",
+        "path":  "img/tex/top/redstone_block.png",
+        "color":  {
+                      "r":  175,
+                      "g":  24,
+                      "b":  5
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "target",
+        "path":  "img/tex/top/target_side.png",
+        "color":  {
+                      "r":  229,
+                      "g":  176,
+                      "b":  168
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "warped_nylium",
+        "path":  "img/tex/side/warped_nylium_side.png",
+        "color":  {
+                      "r":  72,
+                      "g":  61,
+                      "b":  59
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "red_terracotta",
+        "path":  "img/tex/top/red_terracotta.png",
+        "color":  {
+                      "r":  143,
+                      "g":  61,
+                      "b":  46
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "nether_gold_ore",
+        "path":  "img/tex/top/nether_gold_ore.png",
+        "color":  {
+                      "r":  115,
+                      "g":  54,
+                      "b":  42
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pearlescent_froglight",
+        "path":  "img/tex/top/pearlescent_froglight_top.png",
+        "color":  {
+                      "r":  245,
+                      "g":  240,
+                      "b":  239
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "pale_oak_wood",
+        "path":  "img/tex/top/pale_oak_log.png",
+        "color":  {
+                      "r":  87,
+                      "g":  77,
+                      "b":  75
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "suspicious_gravel",
+        "path":  "img/tex/top/suspicious_gravel_1.png",
+        "color":  {
+                      "r":  128,
+                      "g":  123,
+                      "b":  122
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "suspicious_gravel",
+        "path":  "img/tex/top/suspicious_gravel_3.png",
+        "color":  {
+                      "r":  124,
+                      "g":  119,
+                      "b":  118
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pale_oak_log",
+        "path":  "img/tex/top/pale_oak_log_top.png",
+        "color":  {
+                      "r":  198,
+                      "g":  189,
+                      "b":  187
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "target",
+        "path":  "img/tex/top/target_top.png",
+        "color":  {
+                      "r":  226,
+                      "g":  170,
+                      "b":  157
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "suspicious_gravel",
+        "path":  "img/tex/top/suspicious_gravel_0.png",
+        "color":  {
+                      "r":  129,
+                      "g":  125,
+                      "b":  124
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "gravel",
+        "path":  "img/tex/top/gravel.png",
+        "color":  {
+                      "r":  131,
+                      "g":  127,
+                      "b":  126
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "ancient_debris",
+        "path":  "img/tex/top/ancient_debris_side.png",
+        "color":  {
+                      "r":  95,
+                      "g":  63,
+                      "b":  55
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bricks",
+        "path":  "img/tex/top/bricks.png",
+        "color":  {
+                      "r":  150,
+                      "g":  97,
+                      "b":  83
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_pale_oak_wood",
+        "path":  "img/tex/top/stripped_pale_oak_log.png",
+        "color":  {
+                      "r":  245,
+                      "g":  238,
+                      "b":  236
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "ancient_debris",
+        "path":  "img/tex/top/ancient_debris_top.png",
+        "color":  {
+                      "r":  94,
+                      "g":  66,
+                      "b":  58
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cut_copper",
+        "path":  "img/tex/top/cut_copper.png",
+        "color":  {
+                      "r":  191,
+                      "g":  106,
+                      "b":  80
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "gilded_blackstone",
+        "path":  "img/tex/top/gilded_blackstone.png",
+        "color":  {
+                      "r":  55,
+                      "g":  42,
+                      "b":  38
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_gray_terracotta",
+        "path":  "img/tex/top/light_gray_terracotta.png",
+        "color":  {
+                      "r":  135,
+                      "g":  106,
+                      "b":  97
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_copper",
+        "path":  "img/tex/top/chiseled_copper.png",
+        "color":  {
+                      "r":  184,
+                      "g":  100,
+                      "b":  73
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "copper_block",
+        "path":  "img/tex/top/copper_block.png",
+        "color":  {
+                      "r":  192,
+                      "g":  107,
+                      "b":  79
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_granite",
+        "path":  "img/tex/top/polished_granite.png",
+        "color":  {
+                      "r":  154,
+                      "g":  106,
+                      "b":  89
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "creaking_heart[axis=x]",
+        "path":  "img/tex/side/creaking_heart.png",
+        "color":  {
+                      "r":  82,
+                      "g":  68,
+                      "b":  63
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "creaking_heart",
+        "path":  "img/tex/top/creaking_heart_top.png",
+        "color":  {
+                      "r":  73,
+                      "g":  59,
+                      "b":  54
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "granite",
+        "path":  "img/tex/top/granite.png",
+        "color":  {
+                      "r":  149,
+                      "g":  103,
+                      "b":  85
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "black_terracotta",
+        "path":  "img/tex/top/black_terracotta.png",
+        "color":  {
+                      "r":  37,
+                      "g":  22,
+                      "b":  16
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_acacia_wood",
+        "path":  "img/tex/top/stripped_acacia_log.png",
+        "color":  {
+                      "r":  174,
+                      "g":  92,
+                      "b":  59
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "magma_block",
+        "path":  "img/tex/top/magma.png",
+        "color":  {
+                      "r":  141,
+                      "g":  62,
+                      "b":  30
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "copper_bulb",
+        "path":  "img/tex/top/copper_bulb_powered.png",
+        "color":  {
+                      "r":  156,
+                      "g":  86,
+                      "b":  57
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "copper_bulb",
+        "path":  "img/tex/top/copper_bulb.png",
+        "color":  {
+                      "r":  156,
+                      "g":  86,
+                      "b":  57
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dead_brain_coral_block",
+        "path":  "img/tex/top/dead_brain_coral_block.png",
+        "color":  {
+                      "r":  124,
+                      "g":  117,
+                      "b":  114
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "terracotta",
+        "path":  "img/tex/top/terracotta.png",
+        "color":  {
+                      "r":  152,
+                      "g":  94,
+                      "b":  67
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "gray_terracotta",
+        "path":  "img/tex/top/gray_terracotta.png",
+        "color":  {
+                      "r":  57,
+                      "g":  42,
+                      "b":  35
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "creaking_heart[axis=x]",
+        "path":  "img/tex/side/creaking_heart_dormant.png",
+        "color":  {
+                      "r":  102,
+                      "g":  66,
+                      "b":  49
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "dead_bubble_coral_block",
+        "path":  "img/tex/top/dead_bubble_coral_block.png",
+        "color":  {
+                      "r":  131,
+                      "g":  123,
+                      "b":  119
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dead_fire_coral_block",
+        "path":  "img/tex/top/dead_fire_coral_block.png",
+        "color":  {
+                      "r":  131,
+                      "g":  123,
+                      "b":  119
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "acacia_planks",
+        "path":  "img/tex/top/acacia_planks.png",
+        "color":  {
+                      "r":  168,
+                      "g":  90,
+                      "b":  50
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_resin_bricks",
+        "path":  "img/tex/top/chiseled_resin_bricks.png",
+        "color":  {
+                      "r":  200,
+                      "g":  84,
+                      "b":  24
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "raw_copper_block",
+        "path":  "img/tex/top/raw_copper_block.png",
+        "color":  {
+                      "r":  154,
+                      "g":  105,
+                      "b":  79
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "acacia_log",
+        "path":  "img/tex/top/acacia_log_top.png",
+        "color":  {
+                      "r":  150,
+                      "g":  88,
+                      "b":  55
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_acacia_log",
+        "path":  "img/tex/top/stripped_acacia_log_top.png",
+        "color":  {
+                      "r":  166,
+                      "g":  91,
+                      "b":  51
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "creaking_heart[axis=x,active=true]",
+        "path":  "img/tex/side/creaking_heart_awake.png",
+        "color":  {
+                      "r":  149,
+                      "g":  84,
+                      "b":  49
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "exposed_chiseled_copper",
+        "path":  "img/tex/top/exposed_chiseled_copper.png",
+        "color":  {
+                      "r":  154,
+                      "g":  119,
+                      "b":  100
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "resin_bricks",
+        "path":  "img/tex/top/resin_bricks.png",
+        "color":  {
+                      "r":  205,
+                      "g":  88,
+                      "b":  24
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "white_terracotta",
+        "path":  "img/tex/top/white_terracotta.png",
+        "color":  {
+                      "r":  209,
+                      "g":  178,
+                      "b":  161
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dripstone_block",
+        "path":  "img/tex/top/dripstone_block.png",
+        "color":  {
+                      "r":  134,
+                      "g":  107,
+                      "b":  92
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "exposed_copper_bulb",
+        "path":  "img/tex/top/exposed_copper_bulb_powered.png",
+        "color":  {
+                      "r":  136,
+                      "g":  106,
+                      "b":  89
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dead_horn_coral_block",
+        "path":  "img/tex/top/dead_horn_coral_block.png",
+        "color":  {
+                      "r":  133,
+                      "g":  126,
+                      "b":  122
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dead_tube_coral_block",
+        "path":  "img/tex/top/dead_tube_coral_block.png",
+        "color":  {
+                      "r":  130,
+                      "g":  123,
+                      "b":  119
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "redstone_lamp",
+        "path":  "img/tex/top/redstone_lamp.png",
+        "color":  {
+                      "r":  95,
+                      "g":  54,
+                      "b":  30
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jukebox",
+        "path":  "img/tex/top/jukebox_top.png",
+        "color":  {
+                      "r":  93,
+                      "g":  64,
+                      "b":  47
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "orange_terracotta",
+        "path":  "img/tex/top/orange_terracotta.png",
+        "color":  {
+                      "r":  161,
+                      "g":  83,
+                      "b":  37
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "command_block",
+        "path":  "img/tex/top/command_block_side.png",
+        "color":  {
+                      "r":  177,
+                      "g":  133,
+                      "b":  107
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "command_block",
+        "path":  "img/tex/top/command_block_back.png",
+        "color":  {
+                      "r":  173,
+                      "g":  131,
+                      "b":  106
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jukebox",
+        "path":  "img/tex/top/jukebox_side.png",
+        "color":  {
+                      "r":  88,
+                      "g":  58,
+                      "b":  40
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "note_block",
+        "path":  "img/tex/top/note_block.png",
+        "color":  {
+                      "r":  88,
+                      "g":  58,
+                      "b":  40
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "command_block",
+        "path":  "img/tex/top/command_block_front.png",
+        "color":  {
+                      "r":  180,
+                      "g":  135,
+                      "b":  108
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "exposed_cut_copper",
+        "path":  "img/tex/top/exposed_cut_copper.png",
+        "color":  {
+                      "r":  154,
+                      "g":  121,
+                      "b":  101
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "exposed_copper",
+        "path":  "img/tex/top/exposed_copper.png",
+        "color":  {
+                      "r":  161,
+                      "g":  125,
+                      "b":  103
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "soul_soil",
+        "path":  "img/tex/top/soul_soil.png",
+        "color":  {
+                      "r":  75,
+                      "g":  57,
+                      "b":  46
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mycelium",
+        "path":  "img/tex/side/mycelium_side.png",
+        "color":  {
+                      "r":  113,
+                      "g":  87,
+                      "b":  71
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "brown_terracotta",
+        "path":  "img/tex/top/brown_terracotta.png",
+        "color":  {
+                      "r":  77,
+                      "g":  51,
+                      "b":  35
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "command_block",
+        "path":  "img/tex/top/command_block_conditional.png",
+        "color":  {
+                      "r":  178,
+                      "g":  133,
+                      "b":  105
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "resin_block",
+        "path":  "img/tex/top/resin_block.png",
+        "color":  {
+                      "r":  217,
+                      "g":  99,
+                      "b":  25
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "soul_sand",
+        "path":  "img/tex/top/soul_sand.png",
+        "color":  {
+                      "r":  81,
+                      "g":  62,
+                      "b":  50
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "copper_bulb[lit=true,powered=true]",
+        "path":  "img/tex/top/copper_bulb_lit_powered.png",
+        "color":  {
+                      "r":  216,
+                      "g":  149,
+                      "b":  106
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "exposed_copper_bulb",
+        "path":  "img/tex/top/exposed_copper_bulb.png",
+        "color":  {
+                      "r":  135,
+                      "g":  107,
+                      "b":  89
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "rooted_dirt",
+        "path":  "img/tex/top/rooted_dirt.png",
+        "color":  {
+                      "r":  144,
+                      "g":  103,
+                      "b":  76
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "loom",
+        "path":  "img/tex/side/loom_side.png",
+        "color":  {
+                      "r":  145,
+                      "g":  101,
+                      "b":  72
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafting_table",
+        "path":  "img/tex/top/crafting_table_top.png",
+        "color":  {
+                      "r":  119,
+                      "g":  73,
+                      "b":  42
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "copper_bulb[lit=true]",
+        "path":  "img/tex/top/copper_bulb_lit.png",
+        "color":  {
+                      "r":  215,
+                      "g":  150,
+                      "b":  106
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mud_bricks",
+        "path":  "img/tex/top/mud_bricks.png",
+        "color":  {
+                      "r":  137,
+                      "g":  103,
+                      "b":  79
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_iron_ore",
+        "path":  "img/tex/top/deepslate_iron_ore.png",
+        "color":  {
+                      "r":  106,
+                      "g":  99,
+                      "b":  94
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "brown_wool",
+        "path":  "img/tex/top/brown_wool.png",
+        "color":  {
+                      "r":  114,
+                      "g":  71,
+                      "b":  40
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "packed_mud",
+        "path":  "img/tex/top/packed_mud.png",
+        "color":  {
+                      "r":  142,
+                      "g":  106,
+                      "b":  79
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "brown_concrete_powder",
+        "path":  "img/tex/top/brown_concrete_powder.png",
+        "color":  {
+                      "r":  125,
+                      "g":  84,
+                      "b":  53
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "brown_concrete",
+        "path":  "img/tex/top/brown_concrete.png",
+        "color":  {
+                      "r":  96,
+                      "g":  59,
+                      "b":  31
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dirt",
+        "path":  "img/tex/top/dirt.png",
+        "color":  {
+                      "r":  134,
+                      "g":  96,
+                      "b":  67
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "orange_concrete",
+        "path":  "img/tex/top/orange_concrete.png",
+        "color":  {
+                      "r":  224,
+                      "g":  97,
+                      "b":  0
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "coarse_dirt",
+        "path":  "img/tex/top/coarse_dirt.png",
+        "color":  {
+                      "r":  119,
+                      "g":  85,
+                      "b":  59
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jungle_planks",
+        "path":  "img/tex/top/jungle_planks.png",
+        "color":  {
+                      "r":  160,
+                      "g":  115,
+                      "b":  80
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_sand",
+        "path":  "img/tex/top/red_sand.png",
+        "color":  {
+                      "r":  190,
+                      "g":  102,
+                      "b":  33
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_sandstone",
+        "path":  "img/tex/top/red_sandstone_top.png",
+        "color":  {
+                      "r":  181,
+                      "g":  97,
+                      "b":  31
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "brown_mushroom_block",
+        "path":  "img/tex/top/brown_mushroom_block.png",
+        "color":  {
+                      "r":  149,
+                      "g":  111,
+                      "b":  81
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_red_sandstone",
+        "path":  "img/tex/side/chiseled_red_sandstone.png",
+        "color":  {
+                      "r":  183,
+                      "g":  96,
+                      "b":  27
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "cut_red_sandstone",
+        "path":  "img/tex/side/cut_red_sandstone.png",
+        "color":  {
+                      "r":  189,
+                      "g":  101,
+                      "b":  31
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "cartography_table",
+        "path":  "img/tex/side/cartography_table_side1.png",
+        "color":  {
+                      "r":  70,
+                      "g":  50,
+                      "b":  34
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "red_sandstone",
+        "path":  "img/tex/side/red_sandstone_bottom.png",
+        "color":  {
+                      "r":  185,
+                      "g":  98,
+                      "b":  28
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "red_sandstone",
+        "path":  "img/tex/side/red_sandstone.png",
+        "color":  {
+                      "r":  186,
+                      "g":  99,
+                      "b":  29
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "shroomlight",
+        "path":  "img/tex/top/shroomlight.png",
+        "color":  {
+                      "r":  240,
+                      "g":  146,
+                      "b":  70
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "orange_wool",
+        "path":  "img/tex/top/orange_wool.png",
+        "color":  {
+                      "r":  240,
+                      "g":  118,
+                      "b":  19
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "podzol",
+        "path":  "img/tex/side/podzol_side.png",
+        "color":  {
+                      "r":  122,
+                      "g":  87,
+                      "b":  57
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "exposed_copper_bulb[lit=true,powered=true]",
+        "path":  "img/tex/top/exposed_copper_bulb_lit_powered.png",
+        "color":  {
+                      "r":  195,
+                      "g":  144,
+                      "b":  99
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "raw_iron_block",
+        "path":  "img/tex/top/raw_iron_block.png",
+        "color":  {
+                      "r":  166,
+                      "g":  135,
+                      "b":  107
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "exposed_copper_bulb[lit=true]",
+        "path":  "img/tex/top/exposed_copper_bulb_lit.png",
+        "color":  {
+                      "r":  194,
+                      "g":  145,
+                      "b":  100
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_bookshelf",
+        "path":  "img/tex/side/chiseled_bookshelf_occupied.png",
+        "color":  {
+                      "r":  121,
+                      "g":  94,
+                      "b":  69
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "composter",
+        "path":  "img/tex/side/composter_side.png",
+        "color":  {
+                      "r":  112,
+                      "g":  70,
+                      "b":  31
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "cartography_table",
+        "path":  "img/tex/side/cartography_table_side2.png",
+        "color":  {
+                      "r":  81,
+                      "g":  61,
+                      "b":  42
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "stripped_jungle_log",
+        "path":  "img/tex/top/stripped_jungle_log_top.png",
+        "color":  {
+                      "r":  165,
+                      "g":  122,
+                      "b":  81
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jungle_log",
+        "path":  "img/tex/top/jungle_log_top.png",
+        "color":  {
+                      "r":  149,
+                      "g":  109,
+                      "b":  70
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "iron_ore",
+        "path":  "img/tex/top/iron_ore.png",
+        "color":  {
+                      "r":  136,
+                      "g":  129,
+                      "b":  122
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "redstone_lamp[lit=true]",
+        "path":  "img/tex/top/redstone_lamp_on.png",
+        "color":  {
+                      "r":  142,
+                      "g":  101,
+                      "b":  60
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dark_oak_planks",
+        "path":  "img/tex/top/dark_oak_planks.png",
+        "color":  {
+                      "r":  66,
+                      "g":  43,
+                      "b":  20
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "muddy_mangrove_roots",
+        "path":  "img/tex/top/muddy_mangrove_roots_side.png",
+        "color":  {
+                      "r":  68,
+                      "g":  58,
+                      "b":  48
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "spruce_wood",
+        "path":  "img/tex/top/spruce_log.png",
+        "color":  {
+                      "r":  58,
+                      "g":  37,
+                      "b":  16
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blast_furnace",
+        "path":  "img/tex/side/blast_furnace_front_on.png",
+        "color":  {
+                      "r":  115,
+                      "g":  110,
+                      "b":  105
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "smoker",
+        "path":  "img/tex/top/smoker_top.png",
+        "color":  {
+                      "r":  85,
+                      "g":  83,
+                      "b":  81
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "carved_pumpkin",
+        "path":  "img/tex/side/carved_pumpkin.png",
+        "color":  {
+                      "r":  150,
+                      "g":  84,
+                      "b":  17
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "orange_concrete_powder",
+        "path":  "img/tex/top/orange_concrete_powder.png",
+        "color":  {
+                      "r":  227,
+                      "g":  131,
+                      "b":  31
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dark_oak_log",
+        "path":  "img/tex/top/dark_oak_log_top.png",
+        "color":  {
+                      "r":  67,
+                      "g":  45,
+                      "b":  22
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_dark_oak_log",
+        "path":  "img/tex/top/stripped_dark_oak_log_top.png",
+        "color":  {
+                      "r":  65,
+                      "g":  44,
+                      "b":  22
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "muddy_mangrove_roots",
+        "path":  "img/tex/top/muddy_mangrove_roots_top.png",
+        "color":  {
+                      "r":  70,
+                      "g":  58,
+                      "b":  45
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "pumpkin",
+        "path":  "img/tex/side/pumpkin_side.png",
+        "color":  {
+                      "r":  195,
+                      "g":  114,
+                      "b":  24
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_south_triggered.png",
+        "color":  {
+                      "r":  126,
+                      "g":  112,
+                      "b":  96
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "quartz_block",
+        "path":  "img/tex/top/quartz_block_bottom.png",
+        "color":  {
+                      "r":  236,
+                      "g":  230,
+                      "b":  223
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "quartz_pillar",
+        "path":  "img/tex/top/quartz_pillar_top.png",
+        "color":  {
+                      "r":  235,
+                      "g":  229,
+                      "b":  222
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "quartz_block",
+        "path":  "img/tex/top/quartz_block_top.png",
+        "color":  {
+                      "r":  235,
+                      "g":  229,
+                      "b":  222
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "quartz_block",
+        "path":  "img/tex/top/quartz_block_side.png",
+        "color":  {
+                      "r":  235,
+                      "g":  229,
+                      "b":  222
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "glowstone",
+        "path":  "img/tex/top/glowstone.png",
+        "color":  {
+                      "r":  171,
+                      "g":  131,
+                      "b":  84
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pumpkin",
+        "path":  "img/tex/top/pumpkin_top.png",
+        "color":  {
+                      "r":  198,
+                      "g":  118,
+                      "b":  24
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "barrel",
+        "path":  "img/tex/top/barrel_side.png",
+        "color":  {
+                      "r":  107,
+                      "g":  81,
+                      "b":  50
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "spruce_planks",
+        "path":  "img/tex/top/spruce_planks.png",
+        "color":  {
+                      "r":  114,
+                      "g":  84,
+                      "b":  48
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "loom",
+        "path":  "img/tex/side/loom_front.png",
+        "color":  {
+                      "r":  148,
+                      "g":  118,
+                      "b":  82
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "quartz_pillar",
+        "path":  "img/tex/top/quartz_pillar.png",
+        "color":  {
+                      "r":  235,
+                      "g":  230,
+                      "b":  224
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "spruce_log",
+        "path":  "img/tex/top/spruce_log_top.png",
+        "color":  {
+                      "r":  108,
+                      "g":  80,
+                      "b":  46
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "loom",
+        "path":  "img/tex/top/loom_top.png",
+        "color":  {
+                      "r":  142,
+                      "g":  119,
+                      "b":  91
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "stripped_jungle_wood",
+        "path":  "img/tex/top/stripped_jungle_log.png",
+        "color":  {
+                      "r":  171,
+                      "g":  132,
+                      "b":  84
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "barrel[facing=down]",
+        "path":  "img/tex/top/barrel_bottom.png",
+        "color":  {
+                      "r":  115,
+                      "g":  85,
+                      "b":  48
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "barrel[facing=up]",
+        "path":  "img/tex/top/barrel_top.png",
+        "color":  {
+                      "r":  134,
+                      "g":  100,
+                      "b":  58
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_dark_oak_wood",
+        "path":  "img/tex/top/stripped_dark_oak_log.png",
+        "color":  {
+                      "r":  72,
+                      "g":  56,
+                      "b":  36
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cartography_table",
+        "path":  "img/tex/top/cartography_table_top.png",
+        "color":  {
+                      "r":  103,
+                      "g":  87,
+                      "b":  67
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "barrel[facing=up,open=true]",
+        "path":  "img/tex/top/barrel_top_open.png",
+        "color":  {
+                      "r":  92,
+                      "g":  67,
+                      "b":  34
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_spruce_log",
+        "path":  "img/tex/top/stripped_spruce_log_top.png",
+        "color":  {
+                      "r":  105,
+                      "g":  80,
+                      "b":  46
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "smoker",
+        "path":  "img/tex/side/smoker_front_on.png",
+        "color":  {
+                      "r":  118,
+                      "g":  96,
+                      "b":  66
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "podzol",
+        "path":  "img/tex/top/podzol_top.png",
+        "color":  {
+                      "r":  91,
+                      "g":  63,
+                      "b":  24
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_west_crafting.png",
+        "color":  {
+                      "r":  130,
+                      "g":  115,
+                      "b":  94
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_west_triggered.png",
+        "color":  {
+                      "r":  130,
+                      "g":  115,
+                      "b":  94
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "stripped_spruce_wood",
+        "path":  "img/tex/top/stripped_spruce_log.png",
+        "color":  {
+                      "r":  115,
+                      "g":  89,
+                      "b":  52
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "acacia_wood",
+        "path":  "img/tex/top/acacia_log.png",
+        "color":  {
+                      "r":  103,
+                      "g":  96,
+                      "b":  86
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dark_oak_wood",
+        "path":  "img/tex/top/dark_oak_log.png",
+        "color":  {
+                      "r":  60,
+                      "g":  46,
+                      "b":  26
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_bookshelf",
+        "path":  "img/tex/side/chiseled_bookshelf_empty.png",
+        "color":  {
+                      "r":  90,
+                      "g":  70,
+                      "b":  41
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "smoker",
+        "path":  "img/tex/side/smoker_side.png",
+        "color":  {
+                      "r":  102,
+                      "g":  91,
+                      "b":  75
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_south.png",
+        "color":  {
+                      "r":  123,
+                      "g":  112,
+                      "b":  96
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "oak_wood",
+        "path":  "img/tex/top/oak_log.png",
+        "color":  {
+                      "r":  109,
+                      "g":  85,
+                      "b":  50
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crafting_table",
+        "path":  "img/tex/side/crafting_table_front.png",
+        "color":  {
+                      "r":  129,
+                      "g":  105,
+                      "b":  70
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "honeycomb_block",
+        "path":  "img/tex/top/honeycomb_block.png",
+        "color":  {
+                      "r":  229,
+                      "g":  148,
+                      "b":  29
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mangrove_wood",
+        "path":  "img/tex/top/mangrove_log.png",
+        "color":  {
+                      "r":  83,
+                      "g":  66,
+                      "b":  41
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "smoker",
+        "path":  "img/tex/side/smoker_front.png",
+        "color":  {
+                      "r":  87,
+                      "g":  75,
+                      "b":  57
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafting_table",
+        "path":  "img/tex/side/crafting_table_side.png",
+        "color":  {
+                      "r":  128,
+                      "g":  102,
+                      "b":  63
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "mangrove_roots",
+        "path":  "img/tex/top/mangrove_roots_top.png",
+        "color":  {
+                      "r":  51,
+                      "g":  41,
+                      "b":  26
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_east_crafting.png",
+        "color":  {
+                      "r":  128,
+                      "g":  114,
+                      "b":  93
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_east_triggered.png",
+        "color":  {
+                      "r":  128,
+                      "g":  114,
+                      "b":  93
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "bookshelf",
+        "path":  "img/tex/side/bookshelf.png",
+        "color":  {
+                      "r":  117,
+                      "g":  94,
+                      "b":  59
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "bee_nest",
+        "path":  "img/tex/side/bee_nest_front.png",
+        "color":  {
+                      "r":  183,
+                      "g":  141,
+                      "b":  76
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "mushroom_stem",
+        "path":  "img/tex/top/mushroom_stem.png",
+        "color":  {
+                      "r":  203,
+                      "g":  196,
+                      "b":  185
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "beehive",
+        "path":  "img/tex/side/beehive_front_honey.png",
+        "color":  {
+                      "r":  167,
+                      "g":  131,
+                      "b":  74
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "fletching_table",
+        "path":  "img/tex/side/fletching_table_side.png",
+        "color":  {
+                      "r":  191,
+                      "g":  167,
+                      "b":  129
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "bee_nest",
+        "path":  "img/tex/side/bee_nest_side.png",
+        "color":  {
+                      "r":  196,
+                      "g":  150,
+                      "b":  77
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "chiseled_quartz_block",
+        "path":  "img/tex/top/chiseled_quartz_block.png",
+        "color":  {
+                      "r":  231,
+                      "g":  226,
+                      "b":  218
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oak_log",
+        "path":  "img/tex/top/oak_log_top.png",
+        "color":  {
+                      "r":  151,
+                      "g":  121,
+                      "b":  73
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "piston",
+        "path":  "img/tex/top/piston_side.png",
+        "color":  {
+                      "r":  109,
+                      "g":  104,
+                      "b":  96
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_north.png",
+        "color":  {
+                      "r":  113,
+                      "g":  108,
+                      "b":  100
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "quartz_bricks",
+        "path":  "img/tex/top/quartz_bricks.png",
+        "color":  {
+                      "r":  234,
+                      "g":  229,
+                      "b":  221
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jack_o_lantern",
+        "path":  "img/tex/side/jack_o_lantern.png",
+        "color":  {
+                      "r":  214,
+                      "g":  152,
+                      "b":  52
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "brown_mushroom_block[up=false]",
+        "path":  "img/tex/top/mushroom_block_inside.png",
+        "color":  {
+                      "r":  201,
+                      "g":  170,
+                      "b":  120
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_west.png",
+        "color":  {
+                      "r":  128,
+                      "g":  115,
+                      "b":  94
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_east.png",
+        "color":  {
+                      "r":  127,
+                      "g":  114,
+                      "b":  93
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "brown_glazed_terracotta",
+        "path":  "img/tex/top/brown_glazed_terracotta.png",
+        "color":  {
+                      "r":  119,
+                      "g":  106,
+                      "b":  85
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "piston[facing=up]",
+        "path":  "img/tex/top/piston_top.png",
+        "color":  {
+                      "r":  153,
+                      "g":  127,
+                      "b":  85
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "chiseled_bookshelf",
+        "path":  "img/tex/side/chiseled_bookshelf_side.png",
+        "color":  {
+                      "r":  175,
+                      "g":  141,
+                      "b":  86
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/side/crafter_north_crafting.png",
+        "color":  {
+                      "r":  103,
+                      "g":  95,
+                      "b":  82
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "oak_planks",
+        "path":  "img/tex/top/oak_planks.png",
+        "color":  {
+                      "r":  162,
+                      "g":  130,
+                      "b":  78
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "beehive",
+        "path":  "img/tex/side/beehive_front.png",
+        "color":  {
+                      "r":  159,
+                      "g":  128,
+                      "b":  77
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "beehive",
+        "path":  "img/tex/side/beehive_side.png",
+        "color":  {
+                      "r":  157,
+                      "g":  126,
+                      "b":  75
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "chiseled_bookshelf",
+        "path":  "img/tex/top/chiseled_bookshelf_top.png",
+        "color":  {
+                      "r":  178,
+                      "g":  144,
+                      "b":  88
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "stripped_oak_log",
+        "path":  "img/tex/top/stripped_oak_log_top.png",
+        "color":  {
+                      "r":  160,
+                      "g":  129,
+                      "b":  77
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_oak_wood",
+        "path":  "img/tex/top/stripped_oak_log.png",
+        "color":  {
+                      "r":  177,
+                      "g":  144,
+                      "b":  86
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bee_nest",
+        "path":  "img/tex/side/bee_nest_front_honey.png",
+        "color":  {
+                      "r":  194,
+                      "g":  151,
+                      "b":  75
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "chiseled_quartz_block",
+        "path":  "img/tex/top/chiseled_quartz_block_top.png",
+        "color":  {
+                      "r":  231,
+                      "g":  226,
+                      "b":  217
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "deepslate_gold_ore",
+        "path":  "img/tex/top/deepslate_gold_ore.png",
+        "color":  {
+                      "r":  115,
+                      "g":  102,
+                      "b":  78
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "yellow_terracotta",
+        "path":  "img/tex/top/yellow_terracotta.png",
+        "color":  {
+                      "r":  186,
+                      "g":  133,
+                      "b":  35
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bee_nest",
+        "path":  "img/tex/top/bee_nest_top.png",
+        "color":  {
+                      "r":  202,
+                      "g":  160,
+                      "b":  74
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "dirt_path",
+        "path":  "img/tex/top/dirt_path_top.png",
+        "color":  {
+                      "r":  148,
+                      "g":  121,
+                      "b":  65
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "furnace",
+        "path":  "img/tex/side/furnace_front_on.png",
+        "color":  {
+                      "r":  121,
+                      "g":  112,
+                      "b":  93
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "grass_block",
+        "path":  "img/tex/side/grass_block_side.png",
+        "color":  {
+                      "r":  126,
+                      "g":  107,
+                      "b":  65
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "gold_ore",
+        "path":  "img/tex/top/gold_ore.png",
+        "color":  {
+                      "r":  145,
+                      "g":  133,
+                      "b":  106
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jungle_wood",
+        "path":  "img/tex/top/jungle_log.png",
+        "color":  {
+                      "r":  85,
+                      "g":  67,
+                      "b":  25
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "raw_gold_block",
+        "path":  "img/tex/top/raw_gold_block.png",
+        "color":  {
+                      "r":  221,
+                      "g":  169,
+                      "b":  46
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "yellow_concrete",
+        "path":  "img/tex/top/yellow_concrete.png",
+        "color":  {
+                      "r":  240,
+                      "g":  175,
+                      "b":  21
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "fletching_table",
+        "path":  "img/tex/side/fletching_table_front.png",
+        "color":  {
+                      "r":  173,
+                      "g":  155,
+                      "b":  111
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "yellow_glazed_terracotta",
+        "path":  "img/tex/top/yellow_glazed_terracotta.png",
+        "color":  {
+                      "r":  234,
+                      "g":  192,
+                      "b":  88
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_birch_log",
+        "path":  "img/tex/top/stripped_birch_log_top.png",
+        "color":  {
+                      "r":  191,
+                      "g":  171,
+                      "b":  116
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "suspicious_sand",
+        "path":  "img/tex/top/suspicious_sand_3.png",
+        "color":  {
+                      "r":  210,
+                      "g":  193,
+                      "b":  145
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_birch_wood",
+        "path":  "img/tex/top/stripped_birch_log.png",
+        "color":  {
+                      "r":  196,
+                      "g":  176,
+                      "b":  118
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "suspicious_sand",
+        "path":  "img/tex/top/suspicious_sand_2.png",
+        "color":  {
+                      "r":  214,
+                      "g":  198,
+                      "b":  151
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "yellow_wool",
+        "path":  "img/tex/top/yellow_wool.png",
+        "color":  {
+                      "r":  248,
+                      "g":  197,
+                      "b":  39
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "birch_log",
+        "path":  "img/tex/top/birch_log_top.png",
+        "color":  {
+                      "r":  193,
+                      "g":  179,
+                      "b":  135
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "birch_planks",
+        "path":  "img/tex/top/birch_planks.png",
+        "color":  {
+                      "r":  192,
+                      "g":  175,
+                      "b":  121
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "hay_block",
+        "path":  "img/tex/top/hay_block_side.png",
+        "color":  {
+                      "r":  166,
+                      "g":  136,
+                      "b":  38
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "suspicious_sand",
+        "path":  "img/tex/top/suspicious_sand_1.png",
+        "color":  {
+                      "r":  216,
+                      "g":  202,
+                      "b":  156
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_sandstone",
+        "path":  "img/tex/side/chiseled_sandstone.png",
+        "color":  {
+                      "r":  216,
+                      "g":  202,
+                      "b":  155
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "suspicious_sand",
+        "path":  "img/tex/top/suspicious_sand_0.png",
+        "color":  {
+                      "r":  217,
+                      "g":  204,
+                      "b":  159
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sand",
+        "path":  "img/tex/top/sand.png",
+        "color":  {
+                      "r":  219,
+                      "g":  207,
+                      "b":  163
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sandstone",
+        "path":  "img/tex/side/sandstone_bottom.png",
+        "color":  {
+                      "r":  215,
+                      "g":  202,
+                      "b":  154
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "sandstone",
+        "path":  "img/tex/side/sandstone.png",
+        "color":  {
+                      "r":  216,
+                      "g":  203,
+                      "b":  155
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "gold_block",
+        "path":  "img/tex/top/gold_block.png",
+        "color":  {
+                      "r":  246,
+                      "g":  208,
+                      "b":  61
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cut_sandstone",
+        "path":  "img/tex/side/cut_sandstone.png",
+        "color":  {
+                      "r":  217,
+                      "g":  206,
+                      "b":  159
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "stripped_bamboo_block",
+        "path":  "img/tex/top/stripped_bamboo_block_top.png",
+        "color":  {
+                      "r":  178,
+                      "g":  158,
+                      "b":  72
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "ochre_froglight",
+        "path":  "img/tex/top/ochre_froglight_side.png",
+        "color":  {
+                      "r":  245,
+                      "g":  233,
+                      "b":  181
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "yellow_concrete_powder",
+        "path":  "img/tex/top/yellow_concrete_powder.png",
+        "color":  {
+                      "r":  232,
+                      "g":  199,
+                      "b":  54
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bone_block",
+        "path":  "img/tex/top/bone_block_side.png",
+        "color":  {
+                      "r":  229,
+                      "g":  225,
+                      "b":  207
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bamboo_mosaic",
+        "path":  "img/tex/top/bamboo_mosaic.png",
+        "color":  {
+                      "r":  190,
+                      "g":  170,
+                      "b":  78
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bamboo_planks",
+        "path":  "img/tex/top/bamboo_planks.png",
+        "color":  {
+                      "r":  193,
+                      "g":  173,
+                      "b":  80
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_bamboo_block",
+        "path":  "img/tex/top/stripped_bamboo_block.png",
+        "color":  {
+                      "r":  193,
+                      "g":  173,
+                      "b":  80
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "hay_block",
+        "path":  "img/tex/top/hay_block_top.png",
+        "color":  {
+                      "r":  165,
+                      "g":  139,
+                      "b":  12
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sandstone",
+        "path":  "img/tex/top/sandstone_top.png",
+        "color":  {
+                      "r":  223,
+                      "g":  214,
+                      "b":  170
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "birch_wood",
+        "path":  "img/tex/top/birch_log.png",
+        "color":  {
+                      "r":  216,
+                      "g":  215,
+                      "b":  210
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "ochre_froglight",
+        "path":  "img/tex/top/ochre_froglight_top.png",
+        "color":  {
+                      "r":  250,
+                      "g":  245,
+                      "b":  206
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "horn_coral_block",
+        "path":  "img/tex/top/horn_coral_block.png",
+        "color":  {
+                      "r":  216,
+                      "g":  199,
+                      "b":  66
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "orange_glazed_terracotta",
+        "path":  "img/tex/top/orange_glazed_terracotta.png",
+        "color":  {
+                      "r":  154,
+                      "g":  147,
+                      "b":  91
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bone_block",
+        "path":  "img/tex/top/bone_block_top.png",
+        "color":  {
+                      "r":  209,
+                      "g":  206,
+                      "b":  179
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "weathered_copper_bulb[lit=true,powered=true]",
+        "path":  "img/tex/top/weathered_copper_bulb_lit_powered.png",
+        "color":  {
+                      "r":  157,
+                      "g":  155,
+                      "b":  97
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sponge",
+        "path":  "img/tex/top/sponge.png",
+        "color":  {
+                      "r":  195,
+                      "g":  192,
+                      "b":  74
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_gray_wool",
+        "path":  "img/tex/top/light_gray_wool.png",
+        "color":  {
+                      "r":  142,
+                      "g":  142,
+                      "b":  134
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_gray_concrete",
+        "path":  "img/tex/top/light_gray_concrete.png",
+        "color":  {
+                      "r":  125,
+                      "g":  125,
+                      "b":  115
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_gray_concrete_powder",
+        "path":  "img/tex/top/light_gray_concrete_powder.png",
+        "color":  {
+                      "r":  154,
+                      "g":  154,
+                      "b":  148
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "weathered_copper_bulb[lit=true]",
+        "path":  "img/tex/top/weathered_copper_bulb_lit.png",
+        "color":  {
+                      "r":  156,
+                      "g":  157,
+                      "b":  98
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bamboo_block",
+        "path":  "img/tex/top/bamboo_block_top.png",
+        "color":  {
+                      "r":  139,
+                      "g":  141,
+                      "b":  62
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "end_stone",
+        "path":  "img/tex/top/end_stone.png",
+        "color":  {
+                      "r":  219,
+                      "g":  222,
+                      "b":  158
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "wet_sponge",
+        "path":  "img/tex/top/wet_sponge.png",
+        "color":  {
+                      "r":  171,
+                      "g":  181,
+                      "b":  70
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "end_stone_bricks",
+        "path":  "img/tex/top/end_stone_bricks.png",
+        "color":  {
+                      "r":  218,
+                      "g":  224,
+                      "b":  162
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "tuff",
+        "path":  "img/tex/top/tuff.png",
+        "color":  {
+                      "r":  108,
+                      "g":  109,
+                      "b":  102
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "flowering_azalea",
+        "path":  "img/tex/top/flowering_azalea_top.png",
+        "color":  {
+                      "r":  112,
+                      "g":  121,
+                      "b":  64
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "green_terracotta",
+        "path":  "img/tex/top/green_terracotta.png",
+        "color":  {
+                      "r":  76,
+                      "g":  83,
+                      "b":  42
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bamboo_block",
+        "path":  "img/tex/top/bamboo_block.png",
+        "color":  {
+                      "r":  127,
+                      "g":  144,
+                      "b":  57
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "copper_ore",
+        "path":  "img/tex/top/copper_ore.png",
+        "color":  {
+                      "r":  124,
+                      "g":  125,
+                      "b":  120
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lime_terracotta",
+        "path":  "img/tex/top/lime_terracotta.png",
+        "color":  {
+                      "r":  103,
+                      "g":  117,
+                      "b":  52
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lime_glazed_terracotta",
+        "path":  "img/tex/top/lime_glazed_terracotta.png",
+        "color":  {
+                      "r":  162,
+                      "g":  197,
+                      "b":  55
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_copper_ore",
+        "path":  "img/tex/top/deepslate_copper_ore.png",
+        "color":  {
+                      "r":  92,
+                      "g":  93,
+                      "b":  89
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "calcite",
+        "path":  "img/tex/top/calcite.png",
+        "color":  {
+                      "r":  223,
+                      "g":  224,
+                      "b":  220
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "melon",
+        "path":  "img/tex/top/melon_side.png",
+        "color":  {
+                      "r":  114,
+                      "g":  146,
+                      "b":  30
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "melon",
+        "path":  "img/tex/top/melon_top.png",
+        "color":  {
+                      "r":  111,
+                      "g":  144,
+                      "b":  30
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "green_concrete_powder",
+        "path":  "img/tex/top/green_concrete_powder.png",
+        "color":  {
+                      "r":  97,
+                      "g":  119,
+                      "b":  44
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "azalea",
+        "path":  "img/tex/top/azalea_top.png",
+        "color":  {
+                      "r":  101,
+                      "g":  124,
+                      "b":  47
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "green_wool",
+        "path":  "img/tex/top/green_wool.png",
+        "color":  {
+                      "r":  84,
+                      "g":  109,
+                      "b":  27
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "moss_block",
+        "path":  "img/tex/top/moss_block.png",
+        "color":  {
+                      "r":  89,
+                      "g":  109,
+                      "b":  45
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_copper_bulb[lit=true,powered=true]",
+        "path":  "img/tex/top/oxidized_copper_bulb_lit_powered.png",
+        "color":  {
+                      "r":  136,
+                      "g":  152,
+                      "b":  102
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "green_concrete",
+        "path":  "img/tex/top/green_concrete.png",
+        "color":  {
+                      "r":  73,
+                      "g":  91,
+                      "b":  36
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mossy_cobblestone",
+        "path":  "img/tex/top/mossy_cobblestone.png",
+        "color":  {
+                      "r":  110,
+                      "g":  118,
+                      "b":  94
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "green_glazed_terracotta",
+        "path":  "img/tex/top/green_glazed_terracotta.png",
+        "color":  {
+                      "r":  117,
+                      "g":  142,
+                      "b":  67
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mossy_stone_bricks",
+        "path":  "img/tex/top/mossy_stone_bricks.png",
+        "color":  {
+                      "r":  115,
+                      "g":  121,
+                      "b":  105
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_copper_bulb[lit=true]",
+        "path":  "img/tex/top/oxidized_copper_bulb_lit.png",
+        "color":  {
+                      "r":  134,
+                      "g":  154,
+                      "b":  104
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dried_kelp_block",
+        "path":  "img/tex/top/dried_kelp_top.png",
+        "color":  {
+                      "r":  50,
+                      "g":  58,
+                      "b":  38
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "chiseled_tuff_bricks",
+        "path":  "img/tex/top/chiseled_tuff_bricks_top.png",
+        "color":  {
+                      "r":  110,
+                      "g":  113,
+                      "b":  106
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "lime_concrete_powder",
+        "path":  "img/tex/top/lime_concrete_powder.png",
+        "color":  {
+                      "r":  125,
+                      "g":  189,
+                      "b":  41
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lime_wool",
+        "path":  "img/tex/top/lime_wool.png",
+        "color":  {
+                      "r":  112,
+                      "g":  185,
+                      "b":  25
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sticky_piston[facing=up]",
+        "path":  "img/tex/top/piston_top_sticky.png",
+        "color":  {
+                      "r":  122,
+                      "g":  149,
+                      "b":  91
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "reinforced_deepslate",
+        "path":  "img/tex/top/reinforced_deepslate_top.png",
+        "color":  {
+                      "r":  80,
+                      "g":  82,
+                      "b":  78
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "lime_concrete",
+        "path":  "img/tex/top/lime_concrete.png",
+        "color":  {
+                      "r":  94,
+                      "g":  168,
+                      "b":  24
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dried_kelp_block",
+        "path":  "img/tex/side/dried_kelp_side.png",
+        "color":  {
+                      "r":  38,
+                      "g":  48,
+                      "b":  29
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "tuff_bricks",
+        "path":  "img/tex/top/tuff_bricks.png",
+        "color":  {
+                      "r":  98,
+                      "g":  102,
+                      "b":  95
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_tuff_bricks",
+        "path":  "img/tex/side/chiseled_tuff_bricks.png",
+        "color":  {
+                      "r":  98,
+                      "g":  103,
+                      "b":  95
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "chiseled_tuff",
+        "path":  "img/tex/side/chiseled_tuff.png",
+        "color":  {
+                      "r":  89,
+                      "g":  94,
+                      "b":  86
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "chiseled_tuff",
+        "path":  "img/tex/top/chiseled_tuff_top.png",
+        "color":  {
+                      "r":  93,
+                      "g":  98,
+                      "b":  91
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "pale_moss_block",
+        "path":  "img/tex/top/pale_moss_block.png",
+        "color":  {
+                      "r":  106,
+                      "g":  112,
+                      "b":  104
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "reinforced_deepslate",
+        "path":  "img/tex/top/reinforced_deepslate_side.png",
+        "color":  {
+                      "r":  102,
+                      "g":  109,
+                      "b":  100
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "slime_block",
+        "path":  "img/tex/top/slime_block.png",
+        "color":  {
+                      "r":  111,
+                      "g":  192,
+                      "b":  91
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "verdant_froglight",
+        "path":  "img/tex/top/verdant_froglight_side.png",
+        "color":  {
+                      "r":  211,
+                      "g":  234,
+                      "b":  208
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "verdant_froglight",
+        "path":  "img/tex/top/verdant_froglight_top.png",
+        "color":  {
+                      "r":  229,
+                      "g":  244,
+                      "b":  228
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "weathered_cut_copper",
+        "path":  "img/tex/top/weathered_cut_copper.png",
+        "color":  {
+                      "r":  109,
+                      "g":  145,
+                      "b":  107
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "weathered_copper",
+        "path":  "img/tex/top/weathered_copper.png",
+        "color":  {
+                      "r":  108,
+                      "g":  153,
+                      "b":  110
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "weathered_copper_bulb",
+        "path":  "img/tex/top/weathered_copper_bulb_powered.png",
+        "color":  {
+                      "r":  94,
+                      "g":  125,
+                      "b":  98
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "weathered_chiseled_copper",
+        "path":  "img/tex/top/weathered_chiseled_copper.png",
+        "color":  {
+                      "r":  104,
+                      "g":  150,
+                      "b":  111
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "weathered_copper_bulb",
+        "path":  "img/tex/top/weathered_copper_bulb.png",
+        "color":  {
+                      "r":  92,
+                      "g":  126,
+                      "b":  99
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "emerald_ore",
+        "path":  "img/tex/top/emerald_ore.png",
+        "color":  {
+                      "r":  108,
+                      "g":  136,
+                      "b":  115
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "emerald_block",
+        "path":  "img/tex/top/emerald_block.png",
+        "color":  {
+                      "r":  42,
+                      "g":  203,
+                      "b":  87
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_tuff",
+        "path":  "img/tex/top/polished_tuff.png",
+        "color":  {
+                      "r":  97,
+                      "g":  104,
+                      "b":  99
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_emerald_ore",
+        "path":  "img/tex/top/deepslate_emerald_ore.png",
+        "color":  {
+                      "r":  78,
+                      "g":  104,
+                      "b":  87
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_andesite",
+        "path":  "img/tex/top/polished_andesite.png",
+        "color":  {
+                      "r":  132,
+                      "g":  134,
+                      "b":  133
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "vault[ominous=true]",
+        "path":  "img/tex/top/vault_top_ominous.png",
+        "color":  {
+                      "r":  68,
+                      "g":  72,
+                      "b":  70
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "chain_command_block",
+        "path":  "img/tex/top/chain_command_block_side.png",
+        "color":  {
+                      "r":  131,
+                      "g":  161,
+                      "b":  147
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chain_command_block",
+        "path":  "img/tex/top/chain_command_block_front.png",
+        "color":  {
+                      "r":  132,
+                      "g":  165,
+                      "b":  150
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chain_command_block",
+        "path":  "img/tex/top/chain_command_block_back.png",
+        "color":  {
+                      "r":  129,
+                      "g":  156,
+                      "b":  144
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chain_command_block",
+        "path":  "img/tex/top/chain_command_block_conditional.png",
+        "color":  {
+                      "r":  129,
+                      "g":  161,
+                      "b":  147
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "white_glazed_terracotta",
+        "path":  "img/tex/top/white_glazed_terracotta.png",
+        "color":  {
+                      "r":  188,
+                      "g":  212,
+                      "b":  202
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "dark_prismarine",
+        "path":  "img/tex/top/dark_prismarine.png",
+        "color":  {
+                      "r":  51,
+                      "g":  91,
+                      "b":  75
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_copper_bulb",
+        "path":  "img/tex/top/oxidized_copper_bulb_powered.png",
+        "color":  {
+                      "r":  72,
+                      "g":  130,
+                      "b":  108
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_copper",
+        "path":  "img/tex/top/oxidized_copper.png",
+        "color":  {
+                      "r":  82,
+                      "g":  162,
+                      "b":  132
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_chiseled_copper",
+        "path":  "img/tex/top/oxidized_chiseled_copper.png",
+        "color":  {
+                      "r":  83,
+                      "g":  161,
+                      "b":  132
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_copper_bulb",
+        "path":  "img/tex/top/oxidized_copper_bulb.png",
+        "color":  {
+                      "r":  70,
+                      "g":  132,
+                      "b":  109
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "oxidized_cut_copper",
+        "path":  "img/tex/top/oxidized_cut_copper.png",
+        "color":  {
+                      "r":  79,
+                      "g":  153,
+                      "b":  126
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sea_lantern",
+        "path":  "img/tex/top/sea_lantern.png",
+        "color":  {
+                      "r":  172,
+                      "g":  200,
+                      "b":  190
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "warped_nylium",
+        "path":  "img/tex/top/warped_nylium.png",
+        "color":  {
+                      "r":  43,
+                      "g":  114,
+                      "b":  101
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "prismarine_bricks",
+        "path":  "img/tex/top/prismarine_bricks.png",
+        "color":  {
+                      "r":  99,
+                      "g":  171,
+                      "b":  158
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "warped_planks",
+        "path":  "img/tex/top/warped_planks.png",
+        "color":  {
+                      "r":  43,
+                      "g":  104,
+                      "b":  99
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "diamond_block",
+        "path":  "img/tex/top/diamond_block.png",
+        "color":  {
+                      "r":  98,
+                      "g":  237,
+                      "b":  228
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_warped_stem",
+        "path":  "img/tex/top/stripped_warped_stem_top.png",
+        "color":  {
+                      "r":  52,
+                      "g":  128,
+                      "b":  124
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "diamond_ore",
+        "path":  "img/tex/top/diamond_ore.png",
+        "color":  {
+                      "r":  121,
+                      "g":  141,
+                      "b":  140
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_warped_stem",
+        "path":  "img/tex/top/stripped_warped_stem.png",
+        "color":  {
+                      "r":  57,
+                      "g":  150,
+                      "b":  147
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cyan_terracotta",
+        "path":  "img/tex/top/cyan_terracotta.png",
+        "color":  {
+                      "r":  86,
+                      "g":  91,
+                      "b":  91
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "white_concrete_powder",
+        "path":  "img/tex/top/white_concrete_powder.png",
+        "color":  {
+                      "r":  225,
+                      "g":  227,
+                      "b":  227
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_diamond_ore",
+        "path":  "img/tex/top/deepslate_diamond_ore.png",
+        "color":  {
+                      "r":  83,
+                      "g":  106,
+                      "b":  106
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "snow_block",
+        "path":  "img/tex/top/snow.png",
+        "color":  {
+                      "r":  249,
+                      "g":  254,
+                      "b":  254
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "powder_snow",
+        "path":  "img/tex/top/powder_snow.png",
+        "color":  {
+                      "r":  248,
+                      "g":  253,
+                      "b":  253
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "white_wool",
+        "path":  "img/tex/top/white_wool.png",
+        "color":  {
+                      "r":  233,
+                      "g":  236,
+                      "b":  236
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "warped_stem",
+        "path":  "img/tex/top/warped_stem_top.png",
+        "color":  {
+                      "r":  53,
+                      "g":  109,
+                      "b":  110
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "warped_wart_block",
+        "path":  "img/tex/top/warped_wart_block.png",
+        "color":  {
+                      "r":  22,
+                      "g":  119,
+                      "b":  121
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_gray_glazed_terracotta",
+        "path":  "img/tex/top/light_gray_glazed_terracotta.png",
+        "color":  {
+                      "r":  144,
+                      "g":  166,
+                      "b":  167
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cyan_wool",
+        "path":  "img/tex/top/cyan_wool.png",
+        "color":  {
+                      "r":  21,
+                      "g":  137,
+                      "b":  145
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cyan_concrete_powder",
+        "path":  "img/tex/top/cyan_concrete_powder.png",
+        "color":  {
+                      "r":  36,
+                      "g":  147,
+                      "b":  157
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cyan_glazed_terracotta",
+        "path":  "img/tex/top/cyan_glazed_terracotta.png",
+        "color":  {
+                      "r":  52,
+                      "g":  118,
+                      "b":  125
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "prismarine",
+        "path":  "img/tex/top/prismarine.png",
+        "color":  {
+                      "r":  101,
+                      "g":  158,
+                      "b":  166
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "white_concrete",
+        "path":  "img/tex/top/white_concrete.png",
+        "color":  {
+                      "r":  207,
+                      "g":  213,
+                      "b":  214
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cyan_concrete",
+        "path":  "img/tex/top/cyan_concrete.png",
+        "color":  {
+                      "r":  21,
+                      "g":  119,
+                      "b":  136
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_blue_concrete_powder",
+        "path":  "img/tex/top/light_blue_concrete_powder.png",
+        "color":  {
+                      "r":  74,
+                      "g":  180,
+                      "b":  213
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_blue_wool",
+        "path":  "img/tex/top/light_blue_wool.png",
+        "color":  {
+                      "r":  58,
+                      "g":  175,
+                      "b":  217
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "gray_glazed_terracotta",
+        "path":  "img/tex/top/gray_glazed_terracotta.png",
+        "color":  {
+                      "r":  83,
+                      "g":  90,
+                      "b":  93
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sculk_sensor",
+        "path":  "img/tex/top/sculk_sensor_bottom.png",
+        "color":  {
+                      "r":  13,
+                      "g":  27,
+                      "b":  33
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "sculk",
+        "path":  "img/tex/top/sculk.png",
+        "color":  {
+                      "r":  13,
+                      "g":  27,
+                      "b":  33
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "trial_spawner[ominous=true,",
+        "path":  "img/tex/top/trial_spawner_top_active_ominous.png",
+        "color":  {
+                      "r":  49,
+                      "g":  83,
+                      "b":  100
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "gray_wool",
+        "path":  "img/tex/top/gray_wool.png",
+        "color":  {
+                      "r":  62,
+                      "g":  68,
+                      "b":  71
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_blue_concrete",
+        "path":  "img/tex/top/light_blue_concrete.png",
+        "color":  {
+                      "r":  35,
+                      "g":  137,
+                      "b":  198
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "gray_concrete_powder",
+        "path":  "img/tex/top/gray_concrete_powder.png",
+        "color":  {
+                      "r":  76,
+                      "g":  81,
+                      "b":  84
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "trial_spawner",
+        "path":  "img/tex/top/trial_spawner_top_inactive.png",
+        "color":  {
+                      "r":  56,
+                      "g":  82,
+                      "b":  98
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "light_blue_glazed_terracotta",
+        "path":  "img/tex/top/light_blue_glazed_terracotta.png",
+        "color":  {
+                      "r":  94,
+                      "g":  164,
+                      "b":  208
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "trial_spawner[ominous=true]",
+        "path":  "img/tex/top/trial_spawner_top_inactive_ominous.png",
+        "color":  {
+                      "r":  49,
+                      "g":  74,
+                      "b":  90
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "trial_spawner",
+        "path":  "img/tex/top/trial_spawner_top_active.png",
+        "color":  {
+                      "r":  62,
+                      "g":  80,
+                      "b":  92
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "vault",
+        "path":  "img/tex/top/vault_top.png",
+        "color":  {
+                      "r":  54,
+                      "g":  69,
+                      "b":  79
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "polished_diorite",
+        "path":  "img/tex/top/polished_diorite.png",
+        "color":  {
+                      "r":  192,
+                      "g":  193,
+                      "b":  194
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "gray_concrete",
+        "path":  "img/tex/top/gray_concrete.png",
+        "color":  {
+                      "r":  54,
+                      "g":  57,
+                      "b":  61
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lodestone",
+        "path":  "img/tex/top/lodestone_top.png",
+        "color":  {
+                      "r":  147,
+                      "g":  149,
+                      "b":  152
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "blue_ice",
+        "path":  "img/tex/top/blue_ice.png",
+        "color":  {
+                      "r":  116,
+                      "g":  167,
+                      "b":  253
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "frosted_ice",
+        "path":  "img/tex/top/frosted_ice_3.png",
+        "color":  {
+                      "r":  135,
+                      "g":  178,
+                      "b":  252
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "frosted_ice",
+        "path":  "img/tex/top/frosted_ice_0.png",
+        "color":  {
+                      "r":  140,
+                      "g":  181,
+                      "b":  252
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "frosted_ice",
+        "path":  "img/tex/top/frosted_ice_1.png",
+        "color":  {
+                      "r":  139,
+                      "g":  180,
+                      "b":  252
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "frosted_ice",
+        "path":  "img/tex/top/frosted_ice_2.png",
+        "color":  {
+                      "r":  138,
+                      "g":  179,
+                      "b":  252
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "packed_ice",
+        "path":  "img/tex/top/packed_ice.png",
+        "color":  {
+                      "r":  141,
+                      "g":  180,
+                      "b":  250
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lapis_block",
+        "path":  "img/tex/top/lapis_block.png",
+        "color":  {
+                      "r":  30,
+                      "g":  67,
+                      "b":  140
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "clay",
+        "path":  "img/tex/top/clay.png",
+        "color":  {
+                      "r":  160,
+                      "g":  166,
+                      "b":  179
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_lapis_ore",
+        "path":  "img/tex/top/deepslate_lapis_ore.png",
+        "color":  {
+                      "r":  79,
+                      "g":  90,
+                      "b":  115
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lapis_ore",
+        "path":  "img/tex/top/lapis_ore.png",
+        "color":  {
+                      "r":  107,
+                      "g":  117,
+                      "b":  141
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "black_concrete",
+        "path":  "img/tex/top/black_concrete.png",
+        "color":  {
+                      "r":  8,
+                      "g":  10,
+                      "b":  15
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "tube_coral_block",
+        "path":  "img/tex/top/tube_coral_block.png",
+        "color":  {
+                      "r":  49,
+                      "g":  87,
+                      "b":  206
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "black_wool",
+        "path":  "img/tex/top/black_wool.png",
+        "color":  {
+                      "r":  20,
+                      "g":  21,
+                      "b":  25
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blue_glazed_terracotta",
+        "path":  "img/tex/top/blue_glazed_terracotta.png",
+        "color":  {
+                      "r":  47,
+                      "g":  64,
+                      "b":  139
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "black_concrete_powder",
+        "path":  "img/tex/top/black_concrete_powder.png",
+        "color":  {
+                      "r":  25,
+                      "g":  26,
+                      "b":  31
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "basalt",
+        "path":  "img/tex/top/basalt_top.png",
+        "color":  {
+                      "r":  80,
+                      "g":  81,
+                      "b":  86
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "warped_hyphae",
+        "path":  "img/tex/top/warped_stem.png",
+        "color":  {
+                      "r":  57,
+                      "g":  59,
+                      "b":  77
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "smithing_table",
+        "path":  "img/tex/top/smithing_table_top.png",
+        "color":  {
+                      "r":  57,
+                      "g":  58,
+                      "b":  70
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "blue_wool",
+        "path":  "img/tex/top/blue_wool.png",
+        "color":  {
+                      "r":  53,
+                      "g":  57,
+                      "b":  157
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blue_concrete_powder",
+        "path":  "img/tex/top/blue_concrete_powder.png",
+        "color":  {
+                      "r":  70,
+                      "g":  73,
+                      "b":  166
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blue_concrete",
+        "path":  "img/tex/top/blue_concrete.png",
+        "color":  {
+                      "r":  44,
+                      "g":  46,
+                      "b":  143
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_deepslate",
+        "path":  "img/tex/top/polished_deepslate.png",
+        "color":  {
+                      "r":  72,
+                      "g":  72,
+                      "b":  73
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_coal_ore",
+        "path":  "img/tex/top/deepslate_coal_ore.png",
+        "color":  {
+                      "r":  74,
+                      "g":  74,
+                      "b":  76
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate",
+        "path":  "img/tex/top/deepslate.png",
+        "color":  {
+                      "r":  80,
+                      "g":  80,
+                      "b":  82
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate",
+        "path":  "img/tex/top/deepslate_top.png",
+        "color":  {
+                      "r":  87,
+                      "g":  87,
+                      "b":  89
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "deepslate_tiles",
+        "path":  "img/tex/top/deepslate_tiles.png",
+        "color":  {
+                      "r":  54,
+                      "g":  54,
+                      "b":  55
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_bricks",
+        "path":  "img/tex/top/deepslate_bricks.png",
+        "color":  {
+                      "r":  70,
+                      "g":  70,
+                      "b":  71
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blast_furnace",
+        "path":  "img/tex/top/blast_furnace_top.png",
+        "color":  {
+                      "r":  80,
+                      "g":  80,
+                      "b":  81
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "cracked_deepslate_bricks",
+        "path":  "img/tex/top/cracked_deepslate_bricks.png",
+        "color":  {
+                      "r":  64,
+                      "g":  64,
+                      "b":  65
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_basalt",
+        "path":  "img/tex/top/polished_basalt_side.png",
+        "color":  {
+                      "r":  88,
+                      "g":  88,
+                      "b":  91
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cobbled_deepslate",
+        "path":  "img/tex/top/cobbled_deepslate.png",
+        "color":  {
+                      "r":  77,
+                      "g":  77,
+                      "b":  80
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "lodestone",
+        "path":  "img/tex/side/lodestone_side.png",
+        "color":  {
+                      "r":  119,
+                      "g":  119,
+                      "b":  123
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "smooth_basalt",
+        "path":  "img/tex/top/smooth_basalt.png",
+        "color":  {
+                      "r":  72,
+                      "g":  72,
+                      "b":  78
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "light_blue_terracotta",
+        "path":  "img/tex/top/light_blue_terracotta.png",
+        "color":  {
+                      "r":  113,
+                      "g":  108,
+                      "b":  137
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "basalt",
+        "path":  "img/tex/top/basalt_side.png",
+        "color":  {
+                      "r":  73,
+                      "g":  72,
+                      "b":  77
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "repeating_command_block",
+        "path":  "img/tex/top/repeating_command_block_front.png",
+        "color":  {
+                      "r":  129,
+                      "g":  111,
+                      "b":  176
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "repeating_command_block",
+        "path":  "img/tex/top/repeating_command_block_conditional.png",
+        "color":  {
+                      "r":  127,
+                      "g":  109,
+                      "b":  171
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "repeating_command_block",
+        "path":  "img/tex/top/repeating_command_block_side.png",
+        "color":  {
+                      "r":  128,
+                      "g":  110,
+                      "b":  170
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "repeating_command_block",
+        "path":  "img/tex/top/repeating_command_block_back.png",
+        "color":  {
+                      "r":  127,
+                      "g":  109,
+                      "b":  166
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "obsidian",
+        "path":  "img/tex/top/obsidian.png",
+        "color":  {
+                      "r":  15,
+                      "g":  10,
+                      "b":  24
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "amethyst_block",
+        "path":  "img/tex/top/amethyst_block.png",
+        "color":  {
+                      "r":  133,
+                      "g":  97,
+                      "b":  191
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "respawn_anchor",
+        "path":  "img/tex/top/respawn_anchor_top_off.png",
+        "color":  {
+                      "r":  33,
+                      "g":  21,
+                      "b":  52
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "budding_amethyst",
+        "path":  "img/tex/top/budding_amethyst.png",
+        "color":  {
+                      "r":  132,
+                      "g":  96,
+                      "b":  186
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "respawn_anchor",
+        "path":  "img/tex/side/respawn_anchor_side0.png",
+        "color":  {
+                      "r":  39,
+                      "g":  23,
+                      "b":  62
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "respawn_anchor",
+        "path":  "img/tex/side/respawn_anchor_side1.png",
+        "color":  {
+                      "r":  42,
+                      "g":  26,
+                      "b":  64
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "respawn_anchor",
+        "path":  "img/tex/side/respawn_anchor_side2.png",
+        "color":  {
+                      "r":  44,
+                      "g":  28,
+                      "b":  65
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "crying_obsidian",
+        "path":  "img/tex/top/crying_obsidian.png",
+        "color":  {
+                      "r":  32,
+                      "g":  10,
+                      "b":  60
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blue_terracotta",
+        "path":  "img/tex/top/blue_terracotta.png",
+        "color":  {
+                      "r":  74,
+                      "g":  59,
+                      "b":  91
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "respawn_anchor",
+        "path":  "img/tex/side/respawn_anchor_side4.png",
+        "color":  {
+                      "r":  49,
+                      "g":  32,
+                      "b":  68
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "respawn_anchor",
+        "path":  "img/tex/side/respawn_anchor_side3.png",
+        "color":  {
+                      "r":  47,
+                      "g":  30,
+                      "b":  66
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "polished_basalt",
+        "path":  "img/tex/top/polished_basalt_top.png",
+        "color":  {
+                      "r":  99,
+                      "g":  98,
+                      "b":  100
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "purple_concrete",
+        "path":  "img/tex/top/purple_concrete.png",
+        "color":  {
+                      "r":  100,
+                      "g":  31,
+                      "b":  156
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "purple_glazed_terracotta",
+        "path":  "img/tex/top/purple_glazed_terracotta.png",
+        "color":  {
+                      "r":  109,
+                      "g":  47,
+                      "b":  152
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "purple_wool",
+        "path":  "img/tex/top/purple_wool.png",
+        "color":  {
+                      "r":  121,
+                      "g":  42,
+                      "b":  172
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "purple_concrete_powder",
+        "path":  "img/tex/top/purple_concrete_powder.png",
+        "color":  {
+                      "r":  131,
+                      "g":  55,
+                      "b":  177
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_polished_blackstone",
+        "path":  "img/tex/top/chiseled_polished_blackstone.png",
+        "color":  {
+                      "r":  53,
+                      "g":  48,
+                      "b":  56
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_blackstone",
+        "path":  "img/tex/top/polished_blackstone.png",
+        "color":  {
+                      "r":  53,
+                      "g":  48,
+                      "b":  56
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "tinted_glass",
+        "path":  "img/tex/top/tinted_glass.png",
+        "color":  {
+                      "r":  43,
+                      "g":  38,
+                      "b":  45
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "polished_blackstone_bricks",
+        "path":  "img/tex/top/polished_blackstone_bricks.png",
+        "color":  {
+                      "r":  48,
+                      "g":  42,
+                      "b":  49
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "structure_block",
+        "path":  "img/tex/top/structure_block.png",
+        "color":  {
+                      "r":  88,
+                      "g":  74,
+                      "b":  90
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "jigsaw",
+        "path":  "img/tex/top/jigsaw_side.png",
+        "color":  {
+                      "r":  62,
+                      "g":  53,
+                      "b":  63
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "jigsaw[orientation=up_north]",
+        "path":  "img/tex/top/jigsaw_top.png",
+        "color":  {
+                      "r":  80,
+                      "g":  69,
+                      "b":  81
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "structure_block",
+        "path":  "img/tex/top/structure_block_corner.png",
+        "color":  {
+                      "r":  68,
+                      "g":  57,
+                      "b":  69
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "structure_block",
+        "path":  "img/tex/top/structure_block_load.png",
+        "color":  {
+                      "r":  69,
+                      "g":  57,
+                      "b":  70
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "structure_block",
+        "path":  "img/tex/top/structure_block_data.png",
+        "color":  {
+                      "r":  79,
+                      "g":  65,
+                      "b":  80
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "structure_block",
+        "path":  "img/tex/top/structure_block_save.png",
+        "color":  {
+                      "r":  86,
+                      "g":  71,
+                      "b":  87
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_stone_bricks",
+        "path":  "img/tex/top/chiseled_stone_bricks.png",
+        "color":  {
+                      "r":  119,
+                      "g":  118,
+                      "b":  119
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "purpur_block",
+        "path":  "img/tex/top/purpur_block.png",
+        "color":  {
+                      "r":  169,
+                      "g":  125,
+                      "b":  169
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "purpur_pillar",
+        "path":  "img/tex/top/purpur_pillar_top.png",
+        "color":  {
+                      "r":  171,
+                      "g":  128,
+                      "b":  171
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "purpur_pillar",
+        "path":  "img/tex/top/purpur_pillar.png",
+        "color":  {
+                      "r":  171,
+                      "g":  129,
+                      "b":  171
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cracked_stone_bricks",
+        "path":  "img/tex/top/cracked_stone_bricks.png",
+        "color":  {
+                      "r":  118,
+                      "g":  117,
+                      "b":  118
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stone_bricks",
+        "path":  "img/tex/top/stone_bricks.png",
+        "color":  {
+                      "r":  122,
+                      "g":  121,
+                      "b":  122
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mud",
+        "path":  "img/tex/top/mud.png",
+        "color":  {
+                      "r":  60,
+                      "g":  57,
+                      "b":  60
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "bubble_coral_block",
+        "path":  "img/tex/top/bubble_coral_block.png",
+        "color":  {
+                      "r":  165,
+                      "g":  26,
+                      "b":  162
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "magenta_concrete_powder",
+        "path":  "img/tex/top/magenta_concrete_powder.png",
+        "color":  {
+                      "r":  192,
+                      "g":  83,
+                      "b":  184
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "magenta_concrete",
+        "path":  "img/tex/top/magenta_concrete.png",
+        "color":  {
+                      "r":  169,
+                      "g":  48,
+                      "b":  159
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "magenta_wool",
+        "path":  "img/tex/top/magenta_wool.png",
+        "color":  {
+                      "r":  189,
+                      "g":  68,
+                      "b":  179
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cracked_polished_blackstone_bricks",
+        "path":  "img/tex/top/cracked_polished_blackstone_bricks.png",
+        "color":  {
+                      "r":  44,
+                      "g":  37,
+                      "b":  43
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "magenta_glazed_terracotta",
+        "path":  "img/tex/top/magenta_glazed_terracotta.png",
+        "color":  {
+                      "r":  208,
+                      "g":  100,
+                      "b":  191
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blackstone",
+        "path":  "img/tex/top/blackstone_top.png",
+        "color":  {
+                      "r":  42,
+                      "g":  36,
+                      "b":  41
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "blackstone",
+        "path":  "img/tex/top/blackstone.png",
+        "color":  {
+                      "r":  42,
+                      "g":  35,
+                      "b":  40
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "brain_coral_block",
+        "path":  "img/tex/top/brain_coral_block.png",
+        "color":  {
+                      "r":  207,
+                      "g":  91,
+                      "b":  159
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cherry_wood",
+        "path":  "img/tex/side/cherry_log.png",
+        "color":  {
+                      "r":  54,
+                      "g":  33,
+                      "b":  44
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crimson_planks",
+        "path":  "img/tex/top/crimson_planks.png",
+        "color":  {
+                      "r":  101,
+                      "g":  48,
+                      "b":  70
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_crimson_stem",
+        "path":  "img/tex/top/stripped_crimson_stem.png",
+        "color":  {
+                      "r":  137,
+                      "g":  57,
+                      "b":  90
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "netherite_block",
+        "path":  "img/tex/top/netherite_block.png",
+        "color":  {
+                      "r":  66,
+                      "g":  61,
+                      "b":  63
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "stripped_crimson_stem",
+        "path":  "img/tex/top/stripped_crimson_stem_top.png",
+        "color":  {
+                      "r":  121,
+                      "g":  56,
+                      "b":  82
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "pink_concrete_powder",
+        "path":  "img/tex/top/pink_concrete_powder.png",
+        "color":  {
+                      "r":  228,
+                      "g":  153,
+                      "b":  181
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pink_concrete",
+        "path":  "img/tex/top/pink_concrete.png",
+        "color":  {
+                      "r":  213,
+                      "g":  101,
+                      "b":  142
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pearlescent_froglight",
+        "path":  "img/tex/top/pearlescent_froglight_side.png",
+        "color":  {
+                      "r":  235,
+                      "g":  224,
+                      "b":  228
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pink_glazed_terracotta",
+        "path":  "img/tex/top/pink_glazed_terracotta.png",
+        "color":  {
+                      "r":  235,
+                      "g":  154,
+                      "b":  181
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crimson_stem",
+        "path":  "img/tex/top/crimson_stem_top.png",
+        "color":  {
+                      "r":  112,
+                      "g":  49,
+                      "b":  70
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "purple_terracotta",
+        "path":  "img/tex/top/purple_terracotta.png",
+        "color":  {
+                      "r":  118,
+                      "g":  70,
+                      "b":  86
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "magenta_terracotta",
+        "path":  "img/tex/top/magenta_terracotta.png",
+        "color":  {
+                      "r":  149,
+                      "g":  88,
+                      "b":  108
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "pink_wool",
+        "path":  "img/tex/top/pink_wool.png",
+        "color":  {
+                      "r":  237,
+                      "g":  141,
+                      "b":  172
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "mycelium",
+        "path":  "img/tex/top/mycelium_top.png",
+        "color":  {
+                      "r":  111,
+                      "g":  98,
+                      "b":  101
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "nether_bricks",
+        "path":  "img/tex/top/nether_bricks.png",
+        "color":  {
+                      "r":  44,
+                      "g":  21,
+                      "b":  26
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "chiseled_nether_bricks",
+        "path":  "img/tex/top/chiseled_nether_bricks.png",
+        "color":  {
+                      "r":  45,
+                      "g":  22,
+                      "b":  27
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "cracked_nether_bricks",
+        "path":  "img/tex/top/cracked_nether_bricks.png",
+        "color":  {
+                      "r":  40,
+                      "g":  20,
+                      "b":  23
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "fire_coral_block",
+        "path":  "img/tex/top/fire_coral_block.png",
+        "color":  {
+                      "r":  163,
+                      "g":  35,
+                      "b":  46
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/top/crafter_top.png",
+        "color":  {
+                      "r":  112,
+                      "g":  98,
+                      "b":  99
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "crafter",
+        "path":  "img/tex/top/crafter_top_triggered.png",
+        "color":  {
+                      "r":  114,
+                      "g":  98,
+                      "b":  99
+                  },
+        "view":  "top"
+    },
+    {
+        "name":  "crimson_hyphae",
+        "path":  "img/tex/top/crimson_stem.png",
+        "color":  {
+                      "r":  93,
+                      "g":  26,
+                      "b":  30
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "black_glazed_terracotta",
+        "path":  "img/tex/top/black_glazed_terracotta.png",
+        "color":  {
+                      "r":  67,
+                      "g":  30,
+                      "b":  32
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "smithing_table",
+        "path":  "img/tex/side/smithing_table_front.png",
+        "color":  {
+                      "r":  56,
+                      "g":  37,
+                      "b":  38
+                  },
+        "view":  "side"
+    },
+    {
+        "name":  "stripped_cherry_wood",
+        "path":  "img/tex/top/stripped_cherry_log.png",
+        "color":  {
+                      "r":  215,
+                      "g":  145,
+                      "b":  148
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "red_nether_bricks",
+        "path":  "img/tex/top/red_nether_bricks.png",
+        "color":  {
+                      "r":  69,
+                      "g":  7,
+                      "b":  9
+                  },
+        "view":  "both"
+    },
+    {
+        "name":  "deepslate_redstone_ore",
+        "path":  "img/tex/top/deepslate_redstone_ore.png",
+        "color":  {
+                      "r":  104,
+                      "g":  73,
+                      "b":  74
+                  },
+        "view":  "both"
+    }
+]

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>404 - Page Not Found | ChromaBlock</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/css/404.css">
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+
+  <nav>
+    <div class="container">
+      <a href="gradient3D.html" class="logo">ChromaBlock</a>
+      <div class="nav-links">
+        <div class="dropdown">
+          <a href="#" class="dropdown-toggle">Gradients</a>
+          <div class="dropdown-menu">
+            <a href="gradient1D.html">Gradient 1D</a>
+            <a href="gradient2D.html">Gradient 2D</a>
+            <a href="gradient3D.html">Gradient 3D</a>
+          </div>
+        </div>
+        <a href="#">Noises</a>
+        <a href="#">Palette</a>
+        <a href="#">Pixel Art</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="error-section">
+      <h1 class="error-code">404</h1>
+      <p class="error-message">Oops! This page is lost in the Minecraft void.</p>
+      <p class="error-submessage">It seems you've wandered too far from the Overworld. Let's get you back to crafting gradients!</p>
+      <a href="gradient3D.html" class="error-button">Back to Home</a>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>ChromaBlock</h3>
+          <p>Create stunning Minecraft block gradients with ease.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="gradient1D.html">1D Gradient</a></li>
+            <li><a href="gradient2D.html">2D Gradient</a></li>
+            <li><a href="gradient3D.html">3D Gradient</a></li>
+            <li><a href="#">Noises</a></li>
+            <li><a href="#">Palette</a></li>
+            <li><a href="#">Pixel Art</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">X</a></li>
+            <li><a href="#">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 ChromaBlock. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Particle animation for background canvas
+    const canvas = document.getElementById('background-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 3 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+        this.opacity = Math.random() * 0.5 + 0.3;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width) this.speedX *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.speedY *= -1;
+        this.opacity = Math.min(Math.max(this.opacity + (Math.random() * 0.02 - 0.01), 0.3), 0.8);
+      }
+
+      draw() {
+        ctx.fillStyle = `rgba(41, 255, 137, ${this.opacity})`;
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function initParticles() {
+      particles = [];
+      for (let i = 0; i < 50; i++) {
+        particles.push(new Particle());
+      }
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      requestAnimationFrame(animate);
+    }
+
+    initParticles();
+    animate();
+  </script>
+</body>
+</html>
