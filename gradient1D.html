@@ -7,6 +7,7 @@
   <link rel="icon" href="img/logo/logo.ico" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
 </head>
 <body>
     <canvas id="background-canvas"></canvas>
@@ -34,7 +35,7 @@
     <section class="hero-section">
       <h1>1D Minecraft blocks gradient</h1>
       <p class="description">
-        Choose two sources (block or color), then adjust the length. The gradient is filled with the nearest blocks in medium color.
+        Choose two sources (block or color), optional glass overlay, then adjust the length. The gradient is filled with the nearest blocks in medium color.
       </p>
     </section>
 
@@ -51,6 +52,27 @@
       </div>
     </div>
 
+    <!-- Glass overlay checkbox -->
+    <div class="glass-overlay-section panel">
+      <label class="glass-checkbox">
+        <input type="checkbox" id="enable-glass"> Enable glass overlay
+      </label>
+    </div>
+
+    <!-- Glass sources (hidden by default) -->
+    <div id="glass-sources" class="sources hidden">
+      <div id="glassA" class="source-card" onclick="openModal('glassA')">
+        <h2>Glass A</h2>
+        <p id="glassA-label">Glass block, color, or none</p>
+        <img id="glassA-img" src="" class="hidden" />
+      </div>
+      <div id="glassB" class="source-card" onclick="openModal('glassB')">
+        <h2>Glass B</h2>
+        <p id="glassB-label">Glass block, color, or none</p>
+        <img id="glassB-img" src="" class="hidden" />
+      </div>
+    </div>
+
     <div class="gradient-container">
       <div id="gradient" class="gradient"></div>
     </div>
@@ -61,11 +83,8 @@
         <input id="length" type="number" value="16" min="1" />
       </div>
       <div>
-        <label for="fill-mode">filling</label>
-        <select id="fill-mode">
-          <option value="nearest">Close blocks</option>
-          <option value="exact">Accurate colours</option>
-        </select>
+        <label for="fill-mode">Filling</label>
+        <button id="fill-mode" class="button">Close Blocks</button>
       </div>
       <div>
         <label for="view-mode">View of textures</label>
@@ -78,23 +97,26 @@
       <div class="button-group">
         <button id="copy">Copy the list</button>
         <button id="surprise">Surprise</button>
+        <button id="export-schematic">Export to .schem</button>
       </div>
     </div>
   </main>
 
   <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <h2>Choisir un bloc ou une couleur</h2>
+      <h2>Choose a block or color</h2>
       <div class="modal-tabs">
-        <button id="tab-blocks" class="tab-button active">Blocs Minecraft</button>
-        <button id="tab-color" class="tab-button">Couleur libre</button>
-        <button id="close-modal" class="tab-button close">Fermer</button>
+        <button id="tab-blocks" class="tab-button active">Minecraft Blocks</button>
+        <button id="tab-glass" class="tab-button">Glass Blocks</button>
+        <button id="tab-color" class="tab-button">Free Color</button>
+        <button id="close-modal" class="tab-button close">Close</button>
       </div>
 
       <div id="blocks-content" class="blocks-grid"></div>
+      <div id="glass-content" class="blocks-grid hidden"></div>
       <div id="color-content" class="hidden">
         <input type="color" id="color-picker" />
-        <button id="use-color" class="modal-button">Utiliser cette couleur</button>
+        <button id="use-color" class="modal-button">Use this color</button>
       </div>
     </div>
   </div>
@@ -140,5 +162,6 @@
   </footer>
 
   <script src="script.js"></script>
+  <script src="exportSchematic.js"></script>
 </body>
 </html>

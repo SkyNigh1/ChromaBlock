@@ -1,31 +1,57 @@
 let blocks = [];
+let glassBlocks = [];
 let sourceA = null;
 let sourceB = null;
+let glassA = null;
+let glassB = null;
 let currentSource = null;
+let fillMode = 'nearest'; // Default to blocks (nearest)
+let glassEnabled = false;
 
-// Charger les blocs depuis le fichier JSON
+// Load blocks and glass from JSON files
 async function loadBlocks() {
   try {
-    const response = await fetch('blocks.json');
-    blocks = await response.json();
-    showBlocks(); // Initialiser l'affichage des blocs après le chargement
+    const [blocksResponse, glassResponse] = await Promise.all([
+      fetch('blocks.json'),
+      fetch('glass.json')
+    ]);
+    blocks = await blocksResponse.json();
+    glassBlocks = await glassResponse.json();
+    
+    // Initialize glass sources to "none"
+    glassA = glassB = glassBlocks.find(b => b.name === 'none');
+    document.getElementById('glassA-label').textContent = 'None';
+    document.getElementById('glassB-label').textContent = 'None';
+    
+    showBlocks();
   } catch (error) {
-    console.error('Erreur lors du chargement des blocs:', error);
+    console.error('Error loading blocks or glass:', error);
   }
 }
 
 function openModal(source) {
   currentSource = source;
   document.getElementById('modal').classList.remove('hidden');
-  showBlocks();
+  
+  if (source.startsWith('glass')) {
+    showGlassBlocks();
+  } else {
+    showBlocks();
+  }
 }
 
 function showBlocks() {
   const blocksContent = document.getElementById('blocks-content');
+  const glassContent = document.getElementById('glass-content');
   blocksContent.classList.remove('hidden');
+  glassContent.classList.add('hidden');
   document.getElementById('color-content').classList.add('hidden');
+  
+  // Update tabs
   document.getElementById('tab-blocks').classList.add('bg-blue-600', 'text-white');
   document.getElementById('tab-blocks').classList.remove('bg-gray-300', 'text-black');
+  document.getElementById('tab-glass').classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-glass').classList.remove('bg-blue-600', 'text-white');
   document.getElementById('tab-color').classList.add('bg-gray-300', 'text-black');
   document.getElementById('tab-color').classList.remove('bg-blue-600', 'text-white');
 
@@ -39,38 +65,99 @@ function showBlocks() {
   });
 }
 
-function showColorPicker() {
-  document.getElementById('blocks-content').classList.add('hidden');
-  document.getElementById('color-content').classList.remove('hidden');
+function showGlassBlocks() {
+  const blocksContent = document.getElementById('blocks-content');
+  const glassContent = document.getElementById('glass-content');
+  blocksContent.classList.add('hidden');
+  glassContent.classList.remove('hidden');
+  document.getElementById('color-content').classList.add('hidden');
+  
+  // Update tabs
   document.getElementById('tab-blocks').classList.add('bg-gray-300', 'text-black');
   document.getElementById('tab-blocks').classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('tab-glass').classList.add('bg-blue-600', 'text-white');
+  document.getElementById('tab-glass').classList.remove('bg-gray-300', 'text-black');
+  document.getElementById('tab-color').classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-color').classList.remove('bg-blue-600', 'text-white');
+
+  glassContent.innerHTML = '';
+  glassBlocks.forEach(block => {
+    const div = document.createElement('div');
+    div.className = 'block-option';
+    div.innerHTML = block.name === 'none' ? 
+      `<span>${block.name}</span>` : 
+      `<img src="${block.path}" alt="${block.name}" title="${block.name}" />`;
+    div.onclick = () => selectGlassBlock(block);
+    glassContent.appendChild(div);
+  });
+}
+
+function showColorPicker() {
+  document.getElementById('blocks-content').classList.add('hidden');
+  document.getElementById('glass-content').classList.add('hidden');
+  document.getElementById('color-content').classList.remove('hidden');
+  
+  // Update tabs
+  document.getElementById('tab-blocks').classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-blocks').classList.remove('bg-blue-600', 'text-white');
+  document.getElementById('tab-glass').classList.add('bg-gray-300', 'text-black');
+  document.getElementById('tab-glass').classList.remove('bg-blue-600', 'text-white');
   document.getElementById('tab-color').classList.add('bg-blue-600', 'text-white');
   document.getElementById('tab-color').classList.remove('bg-gray-300', 'text-black');
 }
 
 function selectBlock(block) {
-  const sourceId = currentSource === 'sourceA' ? 'sourceA' : 'sourceB';
+  const sourceId = currentSource;
   const img = document.getElementById(`${sourceId}-img`);
   const label = document.getElementById(`${sourceId}-label`);
   img.src = block.path;
   img.classList.remove('hidden');
   label.textContent = block.name;
+  
   if (currentSource === 'sourceA') sourceA = block;
-  else sourceB = block;
+  else if (currentSource === 'sourceB') sourceB = block;
+  
+  document.getElementById('modal').classList.add('hidden');
+  updateGradient();
+}
+
+function selectGlassBlock(block) {
+  const sourceId = currentSource;
+  const img = document.getElementById(`${sourceId}-img`);
+  const label = document.getElementById(`${sourceId}-label`);
+  img.src = block.path || '';
+  img.classList[block.path ? 'remove' : 'add']('hidden');
+  label.textContent = block.name;
+  
+  if (currentSource === 'glassA') glassA = block;
+  else if (currentSource === 'glassB') glassB = block;
+  
   document.getElementById('modal').classList.add('hidden');
   updateGradient();
 }
 
 function selectColor() {
   const color = document.getElementById('color-picker').value;
-  const sourceId = currentSource === 'sourceA' ? 'sourceA' : 'sourceB';
+  const sourceId = currentSource;
   const img = document.getElementById(`${sourceId}-img`);
   const label = document.getElementById(`${sourceId}-label`);
   img.src = '';
   img.classList.add('hidden');
-  label.textContent = `Couleur: ${color}`;
-  if (currentSource === 'sourceA') sourceA = { name: color, color: hexToRgb(color), path: null, view: 'both' };
-  else sourceB = { name: color, color: hexToRgb(color), path: null, view: 'both' };
+  label.textContent = `Color: ${color}`;
+  
+  const colorObj = { 
+    name: color, 
+    color: hexToRgb(color), 
+    path: null, 
+    view: 'both',
+    alpha: currentSource.startsWith('glass') ? 0.5 : 1.0
+  };
+  
+  if (currentSource === 'sourceA') sourceA = colorObj;
+  else if (currentSource === 'sourceB') sourceB = colorObj;
+  else if (currentSource === 'glassA') glassA = colorObj;
+  else if (currentSource === 'glassB') glassB = colorObj;
+  
   document.getElementById('modal').classList.add('hidden');
   updateGradient();
 }
@@ -82,40 +169,80 @@ function hexToRgb(hex) {
   return { r, g, b };
 }
 
+function blendColors(baseColor, glassBlock) {
+  if (!glassBlock || glassBlock.name === 'none') return baseColor;
+  const alpha = glassBlock.alpha || 0.5;
+  const r = Math.round((1 - alpha) * baseColor.r + alpha * glassBlock.color.r);
+  const g = Math.round((1 - alpha) * baseColor.g + alpha * glassBlock.color.g);
+  const b = Math.round((1 - alpha) * baseColor.b + alpha * glassBlock.color.b);
+  return { r, g, b };
+}
+
 function updateGradient() {
   if (!sourceA || !sourceB) return;
+  if (glassEnabled && (!glassA || !glassB)) return;
+  
   const length = parseInt(document.getElementById('length').value) || 16;
-  const fillMode = document.getElementById('fill-mode').value;
   const viewMode = document.getElementById('view-mode').value;
   const gradient = document.getElementById('gradient');
   gradient.innerHTML = '';
 
-  if (fillMode === 'exact') {
-    // Linear interpolation for exact colors
-    for (let i = 0; i < length; i++) {
-      const t = i / (length - 1);
-      const r = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
-      const g = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
-      const b = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
-      const div = document.createElement('div');
-      div.className = 'gradient-square';
-      div.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
-      div.innerHTML = `<span class="tooltip">Couleur: rgb(${r}, ${g}, ${b})</span>`;
-      gradient.appendChild(div);
+  for (let i = 0; i < length; i++) {
+    const t = i / (length - 1);
+    
+    // Calculate base color interpolation
+    const baseR = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
+    const baseG = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
+    const baseB = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
+    
+    let finalColor = { r: baseR, g: baseG, b: baseB };
+    
+    // Apply glass blending if enabled
+    if (glassEnabled && glassA && glassB) {
+      // Interpolate glass color/transparency
+      const glassAColor = glassA.name === 'none' ? null : glassA.color;
+      const glassBColor = glassB.name === 'none' ? null : glassB.color;
+      
+      if (glassAColor && glassBColor) {
+        const glassR = Math.round(glassAColor.r + (glassBColor.r - glassAColor.r) * t);
+        const glassG = Math.round(glassAColor.g + (glassBColor.g - glassAColor.g) * t);
+        const glassB = Math.round(glassAColor.b + (glassBColor.b - glassAColor.b) * t);
+        const interpolatedGlass = { 
+          color: { r: glassR, g: glassG, b: glassB }, 
+          alpha: 0.5, 
+          name: 'interpolated' 
+        };
+        finalColor = blendColors(finalColor, interpolatedGlass);
+      } else if (glassAColor) {
+        const alpha = (1 - t) * 0.5;
+        const interpolatedGlass = { color: glassAColor, alpha: alpha, name: 'interpolated' };
+        finalColor = blendColors(finalColor, interpolatedGlass);
+      } else if (glassBColor) {
+        const alpha = t * 0.5;
+        const interpolatedGlass = { color: glassBColor, alpha: alpha, name: 'interpolated' };
+        finalColor = blendColors(finalColor, interpolatedGlass);
+      }
     }
-  } else {
-    // Linear interpolation with nearest block, filtered by view
-    for (let i = 0; i < length; i++) {
-      const t = i / (length - 1);
-      const r = Math.round(sourceA.color.r + (sourceB.color.r - sourceA.color.r) * t);
-      const g = Math.round(sourceA.color.g + (sourceB.color.g - sourceA.color.g) * t);
-      const b = Math.round(sourceA.color.b + (sourceB.color.b - sourceA.color.b) * t);
-      const nearestBlock = findNearestBlock({ r, g, b }, viewMode);
-      const div = document.createElement('div');
-      div.className = 'gradient-square';
-      div.innerHTML = `<img src="${nearestBlock.path}" alt="${nearestBlock.name}" /><span class="tooltip">${nearestBlock.name}</span>`;
-      gradient.appendChild(div);
+    
+    const div = document.createElement('div');
+    div.className = 'gradient-square';
+    
+    if (fillMode === 'exact') {
+      div.style.backgroundColor = `rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})`;
+      div.innerHTML = `<span class="tooltip">Color: rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})</span>`;
+    } else {
+      if (glassEnabled) {
+        const { base, glass } = findNearestBlockPair(finalColor, viewMode);
+        const baseImg = `<img src="${base.path}" alt="${base.name}" class="base-img" />`;
+        const glassImg = glass.name !== 'none' ? `<img src="${glass.path}" alt="${glass.name}" class="glass-img" />` : '';
+        const tooltip = glass.name === 'none' ? `Base: ${base.name}` : `Base: ${base.name}, Glass: ${glass.name}`;
+        div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
+      } else {
+        const nearestBlock = findNearestBlock(finalColor, viewMode);
+        div.innerHTML = `<img src="${nearestBlock.path}" alt="${nearestBlock.name}" /><span class="tooltip">${nearestBlock.name}</span>`;
+      }
     }
+    gradient.appendChild(div);
   }
 }
 
@@ -123,7 +250,8 @@ function findNearestBlock(color, viewMode) {
   let minDistance = Infinity;
   let nearestBlock = blocks[0];
   const filteredBlocks = blocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
-  if (filteredBlocks.length === 0) return blocks[0]; // Fallback if no blocks match the view
+  if (filteredBlocks.length === 0) return blocks[0];
+  
   filteredBlocks.forEach(block => {
     const distance =
       Math.pow(block.color.r - color.r, 2) +
@@ -137,37 +265,120 @@ function findNearestBlock(color, viewMode) {
   return nearestBlock;
 }
 
+function findNearestBlockPair(targetColor, viewMode) {
+  let minDistance = Infinity;
+  let bestBase = blocks[0];
+  let bestGlass = glassBlocks.find(b => b.name === 'none');
+  const filteredBlocks = blocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
+  const filteredGlass = glassBlocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
+  if (filteredBlocks.length === 0) return { base: blocks[0], glass: bestGlass };
+
+  filteredBlocks.forEach(base => {
+    // Try with no glass
+    let distance = 
+      Math.pow(base.color.r - targetColor.r, 2) +
+      Math.pow(base.color.g - targetColor.g, 2) +
+      Math.pow(base.color.b - targetColor.b, 2);
+    if (distance < minDistance) {
+      minDistance = distance;
+      bestBase = base;
+      bestGlass = filteredGlass.find(b => b.name === 'none');
+    }
+
+    // Try with each glass block
+    filteredGlass.forEach(glass => {
+      if (glass.name === 'none') return;
+      const blendedColor = blendColors(base.color, glass);
+      distance = 
+        Math.pow(blendedColor.r - targetColor.r, 2) +
+        Math.pow(blendedColor.g - targetColor.g, 2) +
+        Math.pow(blendedColor.b - targetColor.b, 2);
+      if (distance < minDistance) {
+        minDistance = distance;
+        bestBase = base;
+        bestGlass = glass;
+      }
+    });
+  });
+
+  return { base: bestBase, glass: bestGlass };
+}
+
+function toggleFillMode() {
+  fillMode = fillMode === 'nearest' ? 'exact' : 'nearest';
+  document.getElementById('fill-mode').textContent = fillMode === 'nearest' ? 'Close Blocks' : 'Accurate Colors';
+  updateGradient();
+}
+
+function toggleGlassOverlay() {
+  glassEnabled = document.getElementById('enable-glass').checked;
+  const glassSources = document.getElementById('glass-sources');
+  
+  if (glassEnabled) {
+    glassSources.classList.remove('hidden');
+  } else {
+    glassSources.classList.add('hidden');
+  }
+  
+  updateGradient();
+}
+
+// Event listeners
 document.getElementById('tab-blocks').onclick = showBlocks;
+document.getElementById('tab-glass').onclick = showGlassBlocks;
 document.getElementById('tab-color').onclick = showColorPicker;
 document.getElementById('close-modal').onclick = () => {
   document.getElementById('modal').classList.add('hidden');
 };
 document.getElementById('use-color').onclick = selectColor;
 document.getElementById('length').oninput = updateGradient;
-document.getElementById('fill-mode').onchange = updateGradient;
+document.getElementById('fill-mode').onclick = toggleFillMode;
 document.getElementById('view-mode').onchange = updateGradient;
+document.getElementById('enable-glass').onchange = toggleGlassOverlay;
+
 document.getElementById('copy').onclick = () => {
   const gradient = document.getElementById('gradient');
   const names = Array.from(gradient.querySelectorAll('.tooltip')).map(span => span.textContent);
   navigator.clipboard.writeText(names.join(','));
-  alert('Liste copiée !');
+  alert('List copied!');
 };
+
 document.getElementById('surprise').onclick = () => {
   const viewMode = document.getElementById('view-mode').value;
   const filteredBlocks = blocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
-  if (filteredBlocks.length === 0) return; // Prevent action if no blocks match
+  const filteredGlass = glassBlocks.filter(block => viewMode === 'both' || block.view === viewMode || block.view === 'both');
+  if (filteredBlocks.length === 0) return;
+  
   const randomA = filteredBlocks[Math.floor(Math.random() * filteredBlocks.length)];
   const randomB = filteredBlocks[Math.floor(Math.random() * filteredBlocks.length)];
+  
   sourceA = randomA;
   document.getElementById('sourceA-img').src = randomA.path;
   document.getElementById('sourceA-img').classList.remove('hidden');
   document.getElementById('sourceA-label').textContent = randomA.name;
+  
   sourceB = randomB;
   document.getElementById('sourceB-img').src = randomB.path;
   document.getElementById('sourceB-img').classList.remove('hidden');
   document.getElementById('sourceB-label').textContent = randomB.name;
+  
+  if (glassEnabled && filteredGlass.length > 0) {
+    const randomGlassA = filteredGlass[Math.floor(Math.random() * filteredGlass.length)];
+    const randomGlassB = filteredGlass[Math.floor(Math.random() * filteredGlass.length)];
+    
+    glassA = randomGlassA;
+    document.getElementById('glassA-img').src = randomGlassA.path || '';
+    document.getElementById('glassA-img').classList[randomGlassA.path ? 'remove' : 'add']('hidden');
+    document.getElementById('glassA-label').textContent = randomGlassA.name;
+    
+    glassB = randomGlassB;
+    document.getElementById('glassB-img').src = randomGlassB.path || '';
+    document.getElementById('glassB-img').classList[randomGlassB.path ? 'remove' : 'add']('hidden');
+    document.getElementById('glassB-label').textContent = randomGlassB.name;
+  }
+  
   updateGradient();
 };
 
-// Initialiser le chargement des blocs
+// Initialize block loading
 loadBlocks();
