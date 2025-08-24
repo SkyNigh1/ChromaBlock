@@ -1860,16 +1860,6 @@
         "view":  "both"
     },
     {
-        "name":  "honey_block",
-        "path":  "img/tex/top/honey_block_bottom.png",
-        "color":  {
-                      "r":  241,
-                      "g":  146,
-                      "b":  17
-                  },
-        "view":  "both"
-    },
-    {
         "name":  "stripped_spruce_log",
         "path":  "img/tex/top/stripped_spruce_log_top.png",
         "color":  {
@@ -2360,16 +2350,6 @@
         "view":  "both"
     },
     {
-        "name":  "honey_block",
-        "path":  "img/tex/top/honey_block_top.png",
-        "color":  {
-                      "r":  251,
-                      "g":  185,
-                      "b":  52
-                  },
-        "view":  "top"
-    },
-    {
         "name":  "bee_nest",
         "path":  "img/tex/top/bee_nest_top.png",
         "color":  {
@@ -2398,16 +2378,6 @@
                       "b":  93
                   },
         "view":  "side"
-    },
-    {
-        "name":  "honey_block",
-        "path":  "img/tex/top/honey_block_side.png",
-        "color":  {
-                      "r":  250,
-                      "g":  188,
-                      "b":  57
-                  },
-        "view":  "both"
     },
     {
         "name":  "grass_block",
