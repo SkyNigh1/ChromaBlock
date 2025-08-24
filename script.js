@@ -227,7 +227,13 @@ function updateGradient() {
       }
       
       div.style.backgroundColor = `rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})`;
-      div.innerHTML = `<span class="tooltip">Color: rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})</span>`;
+      
+      // Créer le tooltip pour l'exportation
+      const tooltip = document.createElement('span');
+      tooltip.className = 'tooltip';
+      tooltip.textContent = `Color: rgb(${finalColor.r}, ${finalColor.g}, ${finalColor.b})`;
+      div.appendChild(tooltip);
+      
     } else {
       // Mode blocs - CORRECTION 2: Gérer les extrémités correctement
       if (glassEnabled) {
@@ -273,8 +279,15 @@ function updateGradient() {
         
         const baseImg = `<img src="${baseBlock.path}" alt="${baseBlock.name}" class="base-img" />`;
         const glassImg = glassBlock.name !== 'none' ? `<img src="${glassBlock.path}" alt="${glassBlock.name}" class="glass-img" />` : '';
-        const tooltip = glassBlock.name === 'none' ? `Base: ${baseBlock.name}` : `Base: ${baseBlock.name}, Glass: ${glassBlock.name}`;
-        div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
+        
+        // Créer le tooltip pour l'exportation avec les noms corrects des blocs
+        const tooltip = document.createElement('span');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = glassBlock.name === 'none' ? `Base: ${baseBlock.name}` : `Base: ${baseBlock.name}, Glass: ${glassBlock.name}`;
+        
+        div.innerHTML = baseImg + glassImg;
+        div.appendChild(tooltip);
+        
       } else {
         // Mode sans verre
         let nearestBlock;
@@ -296,11 +309,36 @@ function updateGradient() {
           nearestBlock = findNearestBlock(finalColor, viewMode);
         }
         
-        div.innerHTML = `<img src="${nearestBlock.path}" alt="${nearestBlock.name}" /><span class="tooltip">${nearestBlock.name}</span>`;
+        const img = `<img src="${nearestBlock.path}" alt="${nearestBlock.name}" />`;
+        
+        // Créer le tooltip pour l'exportation
+        const tooltip = document.createElement('span');
+        tooltip.className = 'tooltip';
+        tooltip.textContent = `Base: ${nearestBlock.name}`;
+        
+        div.innerHTML = img;
+        div.appendChild(tooltip);
       }
     }
     gradient.appendChild(div);
   }
+
+  // Mettre à jour l'input size pour l'exportation
+  updateSizeInput();
+}
+
+// Nouvelle fonction pour synchroniser l'input size avec la longueur du gradient
+function updateSizeInput() {
+  const length = parseInt(document.getElementById('length').value) || 16;
+  let sizeInput = document.getElementById('size');
+  if (!sizeInput) {
+    // Créer l'input size s'il n'existe pas (pour l'exportation)
+    sizeInput = document.createElement('input');
+    sizeInput.id = 'size';
+    sizeInput.type = 'hidden';
+    document.body.appendChild(sizeInput);
+  }
+  sizeInput.value = length;
 }
 
 function findNearestBlock(color, viewMode) {
@@ -438,4 +476,4 @@ document.getElementById('surprise').onclick = () => {
 };
 
 // Initialize block loading
-loadBlocks(); blendColors(targetColor, interpolatedGlass);
+loadBlocks();
