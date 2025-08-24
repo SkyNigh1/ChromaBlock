@@ -105,6 +105,34 @@ main.container {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Hero section with background image, vignette, and blur */
+.hero-section {
+  position: relative;
+  padding: 2rem;
+  background: url('img/banner/banner1.png') no-repeat center center/cover;
+  border-radius: 1rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.3) 0%, rgba(0, 0, 0, 0.7) 70%);
+  z-index: 0;
+}
+
+.hero-section h1,
+.hero-section .description {
+  position: relative;
+  z-index: 1;
+}
+
 /* === TITLES === */
 h1 {
   font-size: 2.2rem;
