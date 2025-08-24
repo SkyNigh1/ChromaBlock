@@ -3140,7 +3140,7 @@
         "view":  "top"
     },
     {
-        "name":  "reinforced_deepslate[facing=up]",
+        "name":  "reinforced_deepslate",
         "path":  "img/tex/top/reinforced_deepslate_top.png",
         "color":  {
                       "r":  80,
@@ -3227,7 +3227,7 @@
                       "g":  109,
                       "b":  100
                   },
-        "view":  "both"
+        "view":  "side"
     },
     {
         "name":  "slime_block",
@@ -3266,16 +3266,6 @@
                       "r":  109,
                       "g":  145,
                       "b":  107
-                  },
-        "view":  "both"
-    },
-    {
-        "name":  "reinforced_deepslate[facing=down]",
-        "path":  "img/tex/top/reinforced_deepslate_bottom.png",
-        "color":  {
-                      "r":  79,
-                      "g":  82,
-                      "b":  79
                   },
         "view":  "both"
     },
