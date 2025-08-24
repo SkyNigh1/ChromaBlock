@@ -9,6 +9,7 @@ let glassTR = null;
 let glassBL = null;
 let glassBR = null;
 let currentSource = null;
+let fillMode = 'exact'; // Default to 'exact' (Accurate Colors)
 
 // Load blocks and glass from JSON files
 async function loadBlocks() {
@@ -175,7 +176,6 @@ function blendColors(baseColor, glassBlock) {
 function updateGradient() {
   if (!baseTL || !baseTR || !baseBL || !baseBR || !glassTL || !glassTR || !glassBL || !glassBR) return;
   const size = parseInt(document.getElementById('size').value) || 16;
-  const fillMode = document.getElementById('fill-mode').value;
   const viewMode = document.getElementById('view-mode').value;
   const gradient = document.getElementById('gradient');
   gradient.innerHTML = '';
@@ -280,6 +280,12 @@ function findNearestBlockPair(targetColor, viewMode) {
   return { base: bestBase, glass: bestGlass };
 }
 
+function toggleFillMode() {
+  fillMode = fillMode === 'exact' ? 'nearest' : 'exact';
+  document.getElementById('fill-mode').textContent = fillMode === 'exact' ? 'Accurate Colors' : 'Close Blocks';
+  updateGradient();
+}
+
 document.getElementById('tab-blocks').onclick = showBlocks;
 document.getElementById('tab-glass').onclick = showGlassBlocks;
 document.getElementById('tab-color').onclick = showColorPicker;
@@ -288,7 +294,7 @@ document.getElementById('close-modal').onclick = () => {
 };
 document.getElementById('use-color').onclick = selectColor;
 document.getElementById('size').oninput = updateGradient;
-document.getElementById('fill-mode').onchange = updateGradient;
+document.getElementById('fill-mode').onclick = toggleFillMode;
 document.getElementById('view-mode').onchange = updateGradient;
 document.getElementById('copy').onclick = () => {
   const gradient = document.getElementById('gradient');
