@@ -3,6 +3,19 @@ let glassBlocks = [];
 let currentImage = null;
 let pixelArtData = [];
 
+// Block entities to avoid when "Remove Block Entities" is checked
+const blockEntities = new Set([
+  'chest', 'trapped_chest', 'barrel', 'shulker_box', 'dispenser', 'dropper',
+  'hopper', 'furnace', 'blast_furnace', 'smoker', 'brewing_stand',
+  'command_block', 'repeating_command_block', 'chain_command_block',
+  'comparator', 'jukebox', 'sign', 'hanging_sign', 'banner', 'bed',
+  'skull', 'item_frame', 'glow_item_frame', 'enchanting_table', 'beacon',
+  'ender_chest', 'end_portal', 'end_gateway', 'conduit', 'spawner',
+  'structure_block', 'jigsaw', 'lodestone', 'sculk_sensor',
+  'calibrated_sculk_sensor', 'sculk_shrieker', 'chiseled_bookshelf',
+  'campfire', 'soul_campfire', 'decorated_pot'
+]);
+
 // Load blocks and glass from JSON files
 async function loadBlocks() {
   try {
@@ -266,16 +279,23 @@ function convertToBlocks(imageData, viewMode, useGlass) {
   const width = imageData.width;
   const height = imageData.height;
   const result = [];
+  const removeBlockEntities = document.getElementById('remove-blockentities').checked;
   
-  const filteredBlocks = blocks.filter(block => 
+  let filteredBlocks = blocks.filter(block => 
     viewMode === 'both' || block.view === viewMode || block.view === 'both'
   );
+  
+  // Filter out block entities if option is checked
+  if (removeBlockEntities) {
+    filteredBlocks = filteredBlocks.filter(block => !blockEntities.has(block.name));
+  }
+  
   const filteredGlass = glassBlocks.filter(block => 
     viewMode === 'both' || block.view === viewMode || block.view === 'both'
   );
   
   if (filteredBlocks.length === 0) {
-    throw new Error('No blocks available for selected view mode');
+    throw new Error('No blocks available for selected view mode and filters');
   }
 
   for (let i = 0; i < data.length; i += 4) {
@@ -717,6 +737,11 @@ function setupEventListeners() {
     }
   });
   document.getElementById('glass-overlay').addEventListener('change', () => {
+    if (currentImage) {
+      processImage();
+    }
+  });
+  document.getElementById('remove-blockentities').addEventListener('change', () => {
     if (currentImage) {
       processImage();
     }
