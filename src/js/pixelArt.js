@@ -131,11 +131,12 @@ function updateButtonStates() {
   document.getElementById('export-schematic').disabled = !hasPixelArt;
 }
 
-// Image processing
+// Image processing with smart cropping
 function processImage() {
   if (!currentImage) return;
 
   const width = parseInt(document.getElementById('width').value) || 32;
+  const height = parseInt(document.getElementById('height').value) || 32;
   const dithering = document.getElementById('dithering').value;
   const viewMode = document.getElementById('view-mode').value;
   const useGlass = document.getElementById('glass-overlay').checked;
@@ -148,15 +149,36 @@ function processImage() {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
-      // Calculate height maintaining aspect ratio
-      const aspectRatio = currentImage.naturalHeight / currentImage.naturalWidth;
-      const height = Math.round(width * aspectRatio);
-      
       canvas.width = width;
       canvas.height = height;
       
-      // Draw and resize image
-      ctx.drawImage(currentImage, 0, 0, width, height);
+      // Calculate source crop area to maintain aspect ratio
+      const sourceAspect = currentImage.naturalWidth / currentImage.naturalHeight;
+      const targetAspect = width / height;
+      
+      let sourceWidth, sourceHeight, sourceX, sourceY;
+      
+      if (sourceAspect > targetAspect) {
+        // Source is wider than target - crop horizontally
+        sourceHeight = currentImage.naturalHeight;
+        sourceWidth = sourceHeight * targetAspect;
+        sourceX = (currentImage.naturalWidth - sourceWidth) / 2;
+        sourceY = 0;
+      } else {
+        // Source is taller than target - crop vertically  
+        sourceWidth = currentImage.naturalWidth;
+        sourceHeight = sourceWidth / targetAspect;
+        sourceX = 0;
+        sourceY = (currentImage.naturalHeight - sourceHeight) / 2;
+      }
+      
+      // Draw cropped and resized image
+      ctx.drawImage(
+        currentImage,
+        sourceX, sourceY, sourceWidth, sourceHeight,  // Source crop area
+        0, 0, width, height                           // Destination
+      );
+      
       const imageData = ctx.getImageData(0, 0, width, height);
       
       // Apply dithering if selected
@@ -463,8 +485,7 @@ async function exportPixelArtToSchematic() {
   }
 
   const width = parseInt(document.getElementById('width').value) || 32;
-  const aspectRatio = currentImage.naturalHeight / currentImage.naturalWidth;
-  const height = Math.round(width * aspectRatio);
+  const height = parseInt(document.getElementById('height').value) || 32;
   const useGlass = document.getElementById('glass-overlay').checked;
 
   // Load blocks and glass data
@@ -723,6 +744,12 @@ function setupEventListeners() {
   document.getElementById('width').addEventListener('input', () => {
     if (currentImage && pixelArtData.length > 0) {
       // Auto-regenerate when width changes
+      setTimeout(processImage, 300);
+    }
+  });
+  document.getElementById('height').addEventListener('input', () => {
+    if (currentImage && pixelArtData.length > 0) {
+      // Auto-regenerate when height changes
       setTimeout(processImage, 300);
     }
   });
