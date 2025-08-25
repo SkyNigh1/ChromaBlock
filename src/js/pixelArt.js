@@ -436,10 +436,270 @@ function copyBlockList() {
   });
 }
 
+async function exportPixelArtToSchematic() {
+  if (pixelArtData.length === 0) {
+    alert('Please generate pixel art first!');
+    return;
+  }
+
+  const width = parseInt(document.getElementById('width').value) || 32;
+  const aspectRatio = currentImage.naturalHeight / currentImage.naturalWidth;
+  const height = Math.round(width * aspectRatio);
+  const useGlass = document.getElementById('glass-overlay').checked;
+
+  // Load blocks and glass data
+  let blocksData, glassData;
+  try {
+    const [blocksResponse, glassResponse] = await Promise.all([
+      fetch('assets/blocks.json'),
+      fetch('assets/glass.json')
+    ]);
+    blocksData = await blocksResponse.json();
+    glassData = await glassResponse.json();
+  } catch (err) {
+    alert("Error loading blocks.json / glass.json: " + err.message);
+    return;
+  }
+
+  // Palette
+  const palette = {};
+  let paletteIndex = 0;
+  
+  // Force air at index 0
+  palette["minecraft:air"] = paletteIndex++;
+  
+  function getPaletteIndex(name) {
+    if (!(name in palette)) palette[name] = paletteIndex++;
+    return palette[name];
+  }
+
+  // Dimensions (add height for glass layer if needed)
+  const schematicWidth = width;
+  const schematicHeight = useGlass ? 2 : 1;
+  const schematicLength = height;
+  const volume = schematicWidth * schematicHeight * schematicLength;
+  const blockData = new Int32Array(volume).fill(0); // 0 = air
+
+  // Fill from pixel art data
+  let validBlocks = 0;
+  pixelArtData.forEach((pixel, index) => {
+    const x = index % width;
+    const z = Math.floor(index / width);
+    
+    if (pixel.transparent) {
+      // Leave as air (already 0)
+      return;
+    }
+    
+    const baseName = pixel.base ? `minecraft:${pixel.base.name}` : "minecraft:air";
+    const baseIndex = x + z * schematicWidth + 0 * schematicWidth * schematicLength;
+    blockData[baseIndex] = getPaletteIndex(baseName);
+    validBlocks++;
+
+    if (useGlass && pixel.glass && pixel.glass.name !== 'none') {
+      const glassName = `minecraft:${pixel.glass.name}`;
+      const glassIndex = x + z * schematicWidth + 1 * schematicWidth * schematicLength;
+      blockData[glassIndex] = getPaletteIndex(glassName);
+    }
+  });
+
+  console.log(`Palette size=${paletteIndex}, Blocks=${validBlocks}`);
+
+  const nbtData = {
+    type: "compound",
+    name: "",
+    value: {
+      Schematic: {
+        type: "compound",
+        value: {
+          Version: { type: "int", value: 3 },
+          DataVersion: { type: "int", value: 4189 },
+          Width: { type: "short", value: schematicWidth },
+          Height: { type: "short", value: schematicHeight },
+          Length: { type: "short", value: schematicLength },
+          Offset: { type: "intArray", value: [0, 0, 0] },
+          
+          Blocks: {
+            type: "compound",
+            value: {
+              Palette: {
+                type: "compound",
+                value: Object.fromEntries(
+                  Object.entries(palette).map(([name, idx]) => [
+                    name, { type: "int", value: idx }
+                  ])
+                )
+              },
+              Data: { type: "byteArray", value: encodeVarIntArray(Array.from(blockData)) },
+              BlockEntities: { type: "list", value: { type: "compound", value: [] } }
+            }
+          },
+          
+          Metadata: {
+            type: "compound",
+            value: {
+              WorldEdit: {
+                type: "compound",
+                value: {
+                  Platforms: {
+                    type: "compound",
+                    value: {
+                      "intellectualsites:bukkit": {
+                        type: "compound",
+                        value: {
+                          Name: { type: "string", value: "Bukkit-Official" },
+                          Version: { type: "string", value: "2.12.3" }
+                        }
+                      }
+                    }
+                  },
+                  EditingPlatform: { type: "string", value: "intellectualsites.bukkit" },
+                  Version: { type: "string", value: "2.12.3" },
+                  Origin: { type: "intArray", value: [0, 0, 0] }
+                }
+              },
+              Date: { type: "long", value: Date.now() }
+            }
+          }
+        }
+      }
+    }
+  };
+
+  // NBT Writer functions (copied from exportSchematic.js)
+  function writeNBT(root) {
+    const buffer = [];
+    writeTag(root, buffer);
+    return new Uint8Array(buffer);
+  }
+
+  function writeTag(tag, buffer, name = tag.name) {
+    const tagId = getTagId(tag.type);
+    buffer.push(tagId);
+    writeString(name, buffer);
+
+    switch (tag.type) {
+      case "int": writeInt32(tag.value, buffer); break;
+      case "short": writeInt16(tag.value, buffer); break;
+      case "long": writeLong(tag.value, buffer); break;
+      case "string": writeString(tag.value, buffer); break;
+      case "byteArray":
+        writeInt32(tag.value.length, buffer);
+        tag.value.forEach(v => buffer.push(v & 0xff));
+        break;
+      case "intArray":
+        writeInt32(tag.value.length, buffer);
+        tag.value.forEach(v => writeInt32(v, buffer));
+        break;
+      case "compound":
+        for (const [k, v] of Object.entries(tag.value)) {
+          writeTag(v, buffer, k);
+        }
+        buffer.push(0x00);
+        break;
+      case "list":
+        buffer.push(getTagId(tag.value.type));
+        writeInt32(tag.value.value.length, buffer);
+        if (tag.value.type === "compound") {
+          tag.value.value.forEach(item => {
+            for (const [k, v] of Object.entries(item)) {
+              writeTag(v, buffer, k);
+            }
+            buffer.push(0x00);
+          });
+        }
+        break;
+    }
+  }
+
+  function writeInt16(val, buffer) {
+    buffer.push((val >> 8) & 0xff, val & 0xff);
+  }
+
+  function writeInt32(val, buffer) {
+    buffer.push(
+      (val >> 24) & 0xff,
+      (val >> 16) & 0xff,
+      (val >> 8) & 0xff,
+      val & 0xff
+    );
+  }
+
+  function writeLong(val, buffer) {
+    if (typeof val === 'bigint') {
+      const high = Number(val >> 32n);
+      const low = Number(val & 0xffffffffn);
+      writeInt32(high, buffer);
+      writeInt32(low, buffer);
+    } else {
+      writeInt32(Math.floor(val / 0x100000000), buffer);
+      writeInt32(val & 0xffffffff, buffer);
+    }
+  }
+
+  function writeVarInt(value, buffer) {
+    while (value >= 0x80) {
+      buffer.push((value & 0x7F) | 0x80);
+      value >>>= 7;
+    }
+    buffer.push(value & 0x7F);
+  }
+
+  function encodeVarIntArray(intArray) {
+    const buffer = [];
+    intArray.forEach(value => writeVarInt(value, buffer));
+    return buffer;
+  }
+
+  function writeString(str, buffer) {
+    const bytes = new TextEncoder().encode(str);
+    writeInt16(bytes.length, buffer);
+    buffer.push(...bytes);
+  }
+
+  function getTagId(type) {
+    return {
+      byte: 1,
+      short: 2,
+      int: 3,
+      long: 4,
+      string: 8,
+      list: 9,
+      compound: 10,
+      intArray: 11,
+      byteArray: 7
+    }[type] || 0;
+  }
+
+  // Export the file
+  try {
+    const nbtBuffer = writeNBT(nbtData);
+    console.log(`NBT buffer size: ${nbtBuffer.length} bytes`);
+    
+    const compressed = pako.gzip(nbtBuffer);
+    console.log(`Compressed size: ${compressed.length} bytes`);
+    
+    const blob = new Blob([compressed], { type: "application/octet-stream" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "pixel_art.schem";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert(`.schem v3 exported! ${validBlocks} blocks processed.`);
+  } catch (err) {
+    alert("Export failed: " + err.message);
+    console.error(err);
+  }
+}
+
 // Event listeners
 function setupEventListeners() {
   document.getElementById('process-image').addEventListener('click', processImage);
   document.getElementById('copy-blocks').addEventListener('click', copyBlockList);
+  document.getElementById('export-schematic').addEventListener('click', exportPixelArtToSchematic);
   document.getElementById('width').addEventListener('input', () => {
     if (currentImage && pixelArtData.length > 0) {
       // Auto-regenerate when width changes
