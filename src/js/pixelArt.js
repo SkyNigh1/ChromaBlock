@@ -49,6 +49,7 @@ const blockEntities = new Set([
   'structure_block',
   'trapped_chest',
   'trial_spawner',
+  'trial_spawner[ominous=true]',
   'vault'
 ]);
 

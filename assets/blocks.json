@@ -3730,7 +3730,7 @@
         "view":  "both"
     },
     {
-        "name":  "trial_spawner[ominous=true,",
+        "name":  "trial_spawner[ominous=true],",
         "path":  "img/tex/top/trial_spawner_top_active_ominous.png",
         "color":  {
                       "r":  49,
@@ -4416,16 +4416,6 @@
                       "r":  53,
                       "g":  48,
                       "b":  56
-                  },
-        "view":  "both"
-    },
-    {
-        "name":  "tinted_glass",
-        "path":  "img/tex/top/tinted_glass.png",
-        "color":  {
-                      "r":  43,
-                      "g":  38,
-                      "b":  45
                   },
         "view":  "both"
     },
