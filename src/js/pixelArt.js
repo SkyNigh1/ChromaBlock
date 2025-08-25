@@ -177,12 +177,13 @@ function showProcessing() {
 
 function hideProcessing() {
   const container = document.querySelector('.pixel-art-container');
-  const pixelArt = document.getElementById('pixel-art');
-  const placeholder = document.getElementById('pixel-art-placeholder');
   
-  container.innerHTML = '';
-  container.appendChild(pixelArt);
-  container.appendChild(placeholder);
+  container.innerHTML = `
+    <div id="pixel-art" class="pixel-art hidden"></div>
+    <div class="pixel-art-placeholder hidden" id="pixel-art-placeholder">
+      <p>Upload an image to see the pixel art preview</p>
+    </div>
+  `;
 }
 
 function applyDithering(imageData, type) {
