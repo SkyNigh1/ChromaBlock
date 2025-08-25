@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChromaBlock - Pixel Art</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="src/css/style.css">
+  <link rel="stylesheet" href="src/css/pixelArt.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
+  <script src="src/js/pixelArt.js" defer></script>
+  <script src="src/js/exportSchematic.js" defer></script>
+</head>
+<body>
+  <canvas id="background-canvas"></canvas>
+  <nav>
+    <div class="container">
+      <a href="index.html" class="logo">ChromaBlock</a>
+      <div class="nav-links">
+        <div class="dropdown">
+          <a class="dropdown-toggle">Gradients</a>
+          <div class="dropdown-menu">
+            <a href="gradient1D.html">Gradient 1D</a>
+            <a href="gradient2D.html">Gradient 2D</a>
+            <a href="gradient3D.html">Gradient 3D</a>
+          </div>
+        </div>
+        <a href="#">Noises</a>
+        <a href="#">Palette</a>
+        <a href="pixelArt.html">Pixel Art</a>
+        <a href="#">GitHub</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+    <section class="hero-section">
+      <h1>Pixel Art Creator</h1>
+      <p class="description">
+        Upload any image and convert it to Minecraft pixel art. Choose the width in blocks, add optional glass overlay, and export to .schematic format.
+      </p>
+    </section>
+
+    <div class="layout-container">
+      <div class="upload-section panel">
+        <div class="upload-area" id="upload-area">
+          <div class="upload-content">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7,10 12,15 17,10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <h3>Drop image here or click to upload</h3>
+            <p>Supports PNG, JPG, JPEG, GIF, WEBP</p>
+          </div>
+          <input type="file" id="file-input" accept="image/*" hidden>
+        </div>
+
+        <div class="image-preview hidden" id="image-preview">
+          <img id="preview-img" alt="Preview">
+          <div class="image-info">
+            <p id="image-dimensions">0 x 0 pixels</p>
+            <button id="clear-image" class="clear-btn">Remove Image</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="pixel-art-container">
+        <div id="pixel-art" class="pixel-art"></div>
+        <div class="pixel-art-placeholder" id="pixel-art-placeholder">
+          <p>Upload an image to see the pixel art preview</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls panel">
+      <div>
+        <label for="width">Width (blocks)</label>
+        <input type="number" id="width" min="8" max="128" value="32">
+      </div>
+      <div>
+        <label for="dithering">Dithering</label>
+        <select id="dithering">
+          <option value="none">None</option>
+          <option value="floyd-steinberg">Floyd-Steinberg</option>
+          <option value="atkinson">Atkinson</option>
+        </select>
+      </div>
+      <div>
+        <label for="view-mode">View of textures</label>
+        <select id="view-mode">
+          <option value="both">Both</option>
+          <option value="top">Top</option>
+          <option value="side">Side</option>
+        </select>
+      </div>
+      <div class="glass-overlay-section">
+        <label class="glass-checkbox">
+          <input type="checkbox" id="glass-overlay">
+          Add Glass Overlay
+        </label>
+      </div>
+      <div class="button-group">
+        <button id="process-image">Generate Pixel Art</button>
+        <button id="copy-blocks">Copy Block List</button>
+        <button id="export-schematic">Export to .schematic</button>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-section">
+          <h3>ChromaBlock</h3>
+          <p>Create stunning Minecraft block gradients with ease.</p>
+        </div>
+        <div class="footer-section">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="gradient1D.html">1D Gradient</a></li>
+            <li><a href="gradient2D.html">2D Gradient</a></li>
+            <li><a href="gradient3D.html">3D Gradient</a></li>
+            <li><a href="#">Noises</a></li>
+            <li><a href="#">Palette</a></li>
+            <li><a href="pixelArt.html">Pixel Art</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Connect</h3>
+          <ul>
+            <li><a href="#">Instagram</a></li>
+            <li><a href="#">Discord</a></li>
+            <li><a href="#">X</a></li>
+            <li><a href="#">GitHub</a></li>
+          </ul>
+        </div>
+        <div class="footer-section">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 ChromaBlock. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>
