@@ -7,6 +7,9 @@ let pixelArtData = [];
 const blockEntities = new Set([
   'banner',
   'barrel',
+  'barrel[facing=up]',
+  'barrel[facing=up,open=true]',
+  'barrel[facing=down]',
   'beacon',
   'bed',
   'beehive',
@@ -39,6 +42,7 @@ const blockEntities = new Set([
   'lectern',
   'mob_spawner',
   'piston',
+  'piston[facing=up]',
   'sculk_catalyst',
   'sculk_sensor',
   'sculk_shrieker',
@@ -50,7 +54,8 @@ const blockEntities = new Set([
   'trapped_chest',
   'trial_spawner',
   'trial_spawner[ominous=true]',
-  'vault'
+  'vault',
+  'vault[ominous=true]'
 ]);
 
 
