@@ -3,13 +3,9 @@ let glassBlocks = [];
 let currentImage = null;
 let pixelArtData = [];
 
-// Configuration de sécurité
+// Configuration de sécurité allégée - Maximum de créativité
 const SECURITY_CONFIG = {
-  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB max
-  MAX_DIMENSIONS: 512, // Max width/height
-  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'],
-  MAX_CANVAS_SIZE: 128 * 128, // Limite pour éviter les attaques DoS
-  TIMEOUT_MS: 30000 // 30 secondes max pour le traitement
+  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp']
 };
 
 // Block entities à éviter quand "Remove Block Entities" est coché
@@ -67,7 +63,7 @@ const blockEntities = new Set([
   'vault[ominous=true]'
 ]);
 
-// Fonction de validation sécurisée des fichiers
+// Fonction de validation sécurisée des fichiers (validation minimale)
 function validateFile(file) {
   const errors = [];
   
@@ -76,14 +72,9 @@ function validateFile(file) {
     return errors;
   }
   
-  // Vérification du type MIME
+  // Vérification du type MIME uniquement
   if (!SECURITY_CONFIG.ALLOWED_TYPES.includes(file.type)) {
     errors.push(`File type not allowed: ${file.type}`);
-  }
-  
-  // Vérification de la taille
-  if (file.size > SECURITY_CONFIG.MAX_FILE_SIZE) {
-    errors.push(`File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB (max: ${SECURITY_CONFIG.MAX_FILE_SIZE / 1024 / 1024}MB)`);
   }
   
   // Vérification de l'extension
@@ -96,33 +87,20 @@ function validateFile(file) {
   return errors;
 }
 
-// Fonction de validation des dimensions d'image
+// Fonction de validation des dimensions d'image (aucune limite)
 function validateImageDimensions(img) {
-  const errors = [];
-  
-  if (img.naturalWidth > SECURITY_CONFIG.MAX_DIMENSIONS || img.naturalHeight > SECURITY_CONFIG.MAX_DIMENSIONS) {
-    errors.push(`Image dimensions too large: ${img.naturalWidth}x${img.naturalHeight} (max: ${SECURITY_CONFIG.MAX_DIMENSIONS}x${SECURITY_CONFIG.MAX_DIMENSIONS})`);
-  }
-  
-  if (img.naturalWidth < 8 || img.naturalHeight < 8) {
-    errors.push('Image dimensions too small (min: 8x8)');
-  }
-  
-  return errors;
+  // Aucune validation - créativité maximale !
+  console.log(`Image loaded: ${img.naturalWidth}x${img.naturalHeight} pixels`);
+  return [];
 }
 
-// Chargement sécurisé des blocs
+// Chargement des blocs sans timeout
 async function loadBlocks() {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), SECURITY_CONFIG.TIMEOUT_MS);
-    
     const [blocksResponse, glassResponse] = await Promise.all([
-      fetch('assets/blocks.json', { signal: controller.signal }),
-      fetch('assets/glass.json', { signal: controller.signal })
+      fetch('assets/blocks.json'),
+      fetch('assets/glass.json')
     ]);
-    
-    clearTimeout(timeoutId);
     
     if (!blocksResponse.ok || !glassResponse.ok) {
       throw new Error('Failed to load block data');
@@ -262,21 +240,15 @@ function updateButtonStates() {
   document.getElementById('export-schematic').disabled = !hasPixelArt;
 }
 
-// Traitement d'image amélioré et optimisé
+// Traitement d'image sans limites pour la créativité maximale
 function processImage() {
   if (!currentImage) return;
 
-  const width = Math.min(parseInt(document.getElementById('width').value) || 32, 128);
-  const height = Math.min(parseInt(document.getElementById('height').value) || 32, 128);
+  const width = parseInt(document.getElementById('width').value) || 32;
+  const height = parseInt(document.getElementById('height').value) || 32;
   const blackWhite = document.getElementById('black-white').checked;
   const viewMode = document.getElementById('view-mode').value;
   const useGlass = document.getElementById('glass-overlay').checked;
-
-  // Validation de sécurité
-  if (width * height > SECURITY_CONFIG.MAX_CANVAS_SIZE) {
-    alert(`Canvas size too large: ${width}x${height} (max: ${Math.sqrt(SECURITY_CONFIG.MAX_CANVAS_SIZE)}x${Math.sqrt(SECURITY_CONFIG.MAX_CANVAS_SIZE)})`);
-    return;
-  }
 
   showProcessing();
 
@@ -628,21 +600,13 @@ async function exportPixelArtToSchematic() {
   const useGlass = document.getElementById('glass-overlay').checked;
 
   try {
-    // Validation des dimensions
-    if (width > 128 || height > 128) {
-      alert('Dimensions too large for export (max: 128x128)');
-      return;
-    }
-
+    // Aucune limitation de dimensions pour l'export
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), SECURITY_CONFIG.TIMEOUT_MS);
     
     const [blocksResponse, glassResponse] = await Promise.all([
-      fetch('assets/blocks.json', { signal: controller.signal }),
-      fetch('assets/glass.json', { signal: controller.signal })
+      fetch('assets/blocks.json'),
+      fetch('assets/glass.json')
     ]);
-    
-    clearTimeout(timeoutId);
     
     if (!blocksResponse.ok || !glassResponse.ok) {
       throw new Error('Failed to load block data for export');
@@ -917,16 +881,15 @@ function setupEventListeners() {
     }
   });
   
-  // Validation en temps réel des inputs numériques
+  // Validation en temps réel des inputs numériques (sans limites)
   ['width', 'height'].forEach(id => {
     const input = document.getElementById(id);
     input.addEventListener('input', (e) => {
       let value = parseInt(e.target.value);
-      if (isNaN(value) || value < 8) {
-        e.target.value = 8;
-      } else if (value > 128) {
-        e.target.value = 128;
+      if (isNaN(value) || value < 1) {
+        e.target.value = 1;
       }
+      // Aucune limite maximale - créativité libre !
     });
   });
 }

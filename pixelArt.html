@@ -51,7 +51,7 @@
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
             <h3>Drop image here or click to upload</h3>
-            <p>Supports PNG, JPG, JPEG, GIF, WEBP (Max: 10MB, 512x512px)</p>
+            <p>Supports PNG, JPG, JPEG, GIF, WEBP - No limits!</p>
           </div>
           <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" hidden aria-label="Select image file">
         </div>
@@ -76,13 +76,13 @@
     <div class="controls panel">
       <div>
         <label for="width">Width (blocks)</label>
-        <input type="number" id="width" min="8" max="128" value="32" aria-describedby="width-help">
-        <small id="width-help" class="sr-only">Width in blocks, between 8 and 128</small>
+        <input type="number" id="width" min="1" value="32" aria-describedby="width-help">
+        <small id="width-help" class="sr-only">Width in blocks, minimum 1</small>
       </div>
       <div>
         <label for="height">Height (blocks)</label>
-        <input type="number" id="height" min="8" max="128" value="32" aria-describedby="height-help">
-        <small id="height-help" class="sr-only">Height in blocks, between 8 and 128</small>
+        <input type="number" id="height" min="1" value="32" aria-describedby="height-help">
+        <small id="height-help" class="sr-only">Height in blocks, minimum 1</small>
       </div>
       <div>
         <label for="black-white">Black & White Filter</label>
