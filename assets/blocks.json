@@ -3730,7 +3730,7 @@
         "view":  "both"
     },
     {
-        "name":  "trial_spawner[ominous=true],",
+        "name":  "trial_spawner[ominous=true]",
         "path":  "img/tex/top/trial_spawner_top_active_ominous.png",
         "color":  {
                       "r":  49,
