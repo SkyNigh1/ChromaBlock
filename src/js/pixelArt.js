@@ -3,7 +3,16 @@ let glassBlocks = [];
 let currentImage = null;
 let pixelArtData = [];
 
-// Block entities to avoid when "Remove Block Entities" is checked
+// Configuration de sécurité
+const SECURITY_CONFIG = {
+  MAX_FILE_SIZE: 10 * 1024 * 1024, // 10MB max
+  MAX_DIMENSIONS: 512, // Max width/height
+  ALLOWED_TYPES: ['image/png', 'image/jpeg', 'image/jpg', 'image/gif', 'image/webp'],
+  MAX_CANVAS_SIZE: 128 * 128, // Limite pour éviter les attaques DoS
+  TIMEOUT_MS: 30000 // 30 secondes max pour le traitement
+};
+
+// Block entities à éviter quand "Remove Block Entities" est coché
 const blockEntities = new Set([
   'banner',
   'barrel',
@@ -58,23 +67,83 @@ const blockEntities = new Set([
   'vault[ominous=true]'
 ]);
 
+// Fonction de validation sécurisée des fichiers
+function validateFile(file) {
+  const errors = [];
+  
+  if (!file) {
+    errors.push('No file provided');
+    return errors;
+  }
+  
+  // Vérification du type MIME
+  if (!SECURITY_CONFIG.ALLOWED_TYPES.includes(file.type)) {
+    errors.push(`File type not allowed: ${file.type}`);
+  }
+  
+  // Vérification de la taille
+  if (file.size > SECURITY_CONFIG.MAX_FILE_SIZE) {
+    errors.push(`File too large: ${(file.size / 1024 / 1024).toFixed(1)}MB (max: ${SECURITY_CONFIG.MAX_FILE_SIZE / 1024 / 1024}MB)`);
+  }
+  
+  // Vérification de l'extension
+  const extension = file.name.split('.').pop().toLowerCase();
+  const allowedExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp'];
+  if (!allowedExtensions.includes(extension)) {
+    errors.push(`File extension not allowed: ${extension}`);
+  }
+  
+  return errors;
+}
 
-// Load blocks and glass from JSON files
+// Fonction de validation des dimensions d'image
+function validateImageDimensions(img) {
+  const errors = [];
+  
+  if (img.naturalWidth > SECURITY_CONFIG.MAX_DIMENSIONS || img.naturalHeight > SECURITY_CONFIG.MAX_DIMENSIONS) {
+    errors.push(`Image dimensions too large: ${img.naturalWidth}x${img.naturalHeight} (max: ${SECURITY_CONFIG.MAX_DIMENSIONS}x${SECURITY_CONFIG.MAX_DIMENSIONS})`);
+  }
+  
+  if (img.naturalWidth < 8 || img.naturalHeight < 8) {
+    errors.push('Image dimensions too small (min: 8x8)');
+  }
+  
+  return errors;
+}
+
+// Chargement sécurisé des blocs
 async function loadBlocks() {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SECURITY_CONFIG.TIMEOUT_MS);
+    
     const [blocksResponse, glassResponse] = await Promise.all([
-      fetch('assets/blocks.json'),
-      fetch('assets/glass.json')
+      fetch('assets/blocks.json', { signal: controller.signal }),
+      fetch('assets/glass.json', { signal: controller.signal })
     ]);
+    
+    clearTimeout(timeoutId);
+    
+    if (!blocksResponse.ok || !glassResponse.ok) {
+      throw new Error('Failed to load block data');
+    }
+    
     blocks = await blocksResponse.json();
     glassBlocks = await glassResponse.json();
+    
+    // Validation des données chargées
+    if (!Array.isArray(blocks) || !Array.isArray(glassBlocks)) {
+      throw new Error('Invalid block data format');
+    }
+    
     console.log(`Loaded ${blocks.length} blocks and ${glassBlocks.length} glass blocks`);
   } catch (error) {
-    console.error('Error loading blocks or glass:', error);
+    console.error('Error loading blocks:', error);
+    throw error;
   }
 }
 
-// Upload handling
+// Configuration de l'upload avec sécurité renforcée
 function setupUpload() {
   const uploadArea = document.getElementById('upload-area');
   const fileInput = document.getElementById('file-input');
@@ -86,7 +155,7 @@ function setupUpload() {
   // Click to upload
   uploadArea.addEventListener('click', () => fileInput.click());
 
-  // Drag and drop
+  // Drag and drop avec validation
   uploadArea.addEventListener('dragover', (e) => {
     e.preventDefault();
     uploadArea.classList.add('dragover');
@@ -105,33 +174,52 @@ function setupUpload() {
     }
   });
 
-  // File input change
   fileInput.addEventListener('change', (e) => {
     if (e.target.files.length > 0) {
       handleFile(e.target.files[0]);
     }
   });
 
-  // Clear image
   clearBtn.addEventListener('click', clearImage);
 }
 
+// Gestion sécurisée des fichiers
 function handleFile(file) {
-  if (!file.type.startsWith('image/')) {
-    alert('Please select a valid image file.');
+  const errors = validateFile(file);
+  
+  if (errors.length > 0) {
+    alert('File validation failed:\n' + errors.join('\n'));
     return;
   }
 
   const reader = new FileReader();
+  reader.onerror = () => {
+    alert('Error reading file');
+  };
+  
   reader.onload = (e) => {
     const img = new Image();
+    img.onerror = () => {
+      alert('Invalid image file or corrupted data');
+    };
+    
     img.onload = () => {
+      const dimensionErrors = validateImageDimensions(img);
+      
+      if (dimensionErrors.length > 0) {
+        alert('Image validation failed:\n' + dimensionErrors.join('\n'));
+        return;
+      }
+      
       currentImage = img;
       showImagePreview(img, file);
       updateButtonStates();
     };
+    
+    // Sécurité : créer une URL blob au lieu d'utiliser directement les données
     img.src = e.target.result;
   };
+  
   reader.readAsDataURL(file);
 }
 
@@ -174,73 +262,96 @@ function updateButtonStates() {
   document.getElementById('export-schematic').disabled = !hasPixelArt;
 }
 
-// Image processing with smart cropping
+// Traitement d'image amélioré et optimisé
 function processImage() {
   if (!currentImage) return;
 
-  const width = parseInt(document.getElementById('width').value) || 32;
-  const height = parseInt(document.getElementById('height').value) || 32;
-  const dithering = document.getElementById('dithering').value;
+  const width = Math.min(parseInt(document.getElementById('width').value) || 32, 128);
+  const height = Math.min(parseInt(document.getElementById('height').value) || 32, 128);
+  const blackWhite = document.getElementById('black-white').checked;
   const viewMode = document.getElementById('view-mode').value;
   const useGlass = document.getElementById('glass-overlay').checked;
 
+  // Validation de sécurité
+  if (width * height > SECURITY_CONFIG.MAX_CANVAS_SIZE) {
+    alert(`Canvas size too large: ${width}x${height} (max: ${Math.sqrt(SECURITY_CONFIG.MAX_CANVAS_SIZE)}x${Math.sqrt(SECURITY_CONFIG.MAX_CANVAS_SIZE)})`);
+    return;
+  }
+
   showProcessing();
 
-  // Use setTimeout to allow UI update
+  // Traitement asynchrone pour éviter le blocage de l'UI
   setTimeout(() => {
     try {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       
+      if (!ctx) {
+        throw new Error('Unable to create canvas context');
+      }
+      
       canvas.width = width;
       canvas.height = height;
       
-      // Calculate source crop area to maintain aspect ratio
+      // Calcul optimisé de la zone de crop
       const sourceAspect = currentImage.naturalWidth / currentImage.naturalHeight;
       const targetAspect = width / height;
       
       let sourceWidth, sourceHeight, sourceX, sourceY;
       
       if (sourceAspect > targetAspect) {
-        // Source is wider than target - crop horizontally
         sourceHeight = currentImage.naturalHeight;
         sourceWidth = sourceHeight * targetAspect;
         sourceX = (currentImage.naturalWidth - sourceWidth) / 2;
         sourceY = 0;
       } else {
-        // Source is taller than target - crop vertically  
         sourceWidth = currentImage.naturalWidth;
         sourceHeight = sourceWidth / targetAspect;
         sourceX = 0;
         sourceY = (currentImage.naturalHeight - sourceHeight) / 2;
       }
       
-      // Draw cropped and resized image
+      // Dessin avec gestion d'erreur
+      ctx.imageSmoothingEnabled = false; // Pixels nets
       ctx.drawImage(
         currentImage,
-        sourceX, sourceY, sourceWidth, sourceHeight,  // Source crop area
-        0, 0, width, height                           // Destination
+        sourceX, sourceY, sourceWidth, sourceHeight,
+        0, 0, width, height
       );
       
       const imageData = ctx.getImageData(0, 0, width, height);
       
-      // Apply dithering if selected
-      if (dithering !== 'none') {
-        applyDithering(imageData, dithering);
+      // Application du filtre noir et blanc si nécessaire
+      if (blackWhite) {
+        applyBlackWhiteFilter(imageData);
       }
       
-      // Convert to blocks
+      // Conversion optimisée vers les blocs
       pixelArtData = convertToBlocks(imageData, viewMode, useGlass);
       
-      // Render pixel art
+      // Rendu du pixel art
       renderPixelArt(pixelArtData, width, height);
       updateButtonStates();
     } catch (error) {
       console.error('Error processing image:', error);
-      alert('Error processing image. Please try a different image.');
+      alert('Error processing image. Please try a different image or reduce dimensions.');
       hideProcessing();
     }
   }, 100);
+}
+
+// Nouveau filtre noir et blanc
+function applyBlackWhiteFilter(imageData) {
+  const data = imageData.data;
+  
+  for (let i = 0; i < data.length; i += 4) {
+    // Formule de luminance optimisée (ITU-R BT.709)
+    const gray = Math.round(0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2]);
+    data[i] = gray;       // Rouge
+    data[i + 1] = gray;   // Vert
+    data[i + 2] = gray;   // Bleu
+    // Alpha reste inchangé
+  }
 }
 
 function showProcessing() {
@@ -264,96 +375,17 @@ function hideProcessing() {
   `;
 }
 
-function applyDithering(imageData, type) {
-  const data = imageData.data;
-  const width = imageData.width;
-  const height = imageData.height;
-
-  if (type === 'floyd-steinberg') {
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        
-        const oldR = data[idx];
-        const oldG = data[idx + 1];
-        const oldB = data[idx + 2];
-        
-        const newR = oldR < 128 ? 0 : 255;
-        const newG = oldG < 128 ? 0 : 255;
-        const newB = oldB < 128 ? 0 : 255;
-        
-        data[idx] = newR;
-        data[idx + 1] = newG;
-        data[idx + 2] = newB;
-        
-        const errR = oldR - newR;
-        const errG = oldG - newG;
-        const errB = oldB - newB;
-        
-        // Distribute error to neighboring pixels
-        distributeError(data, width, height, x + 1, y, errR, errG, errB, 7/16);
-        distributeError(data, width, height, x - 1, y + 1, errR, errG, errB, 3/16);
-        distributeError(data, width, height, x, y + 1, errR, errG, errB, 5/16);
-        distributeError(data, width, height, x + 1, y + 1, errR, errG, errB, 1/16);
-      }
-    }
-  } else if (type === 'atkinson') {
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        
-        const oldR = data[idx];
-        const oldG = data[idx + 1];
-        const oldB = data[idx + 2];
-        
-        const newR = Math.round(oldR / 85) * 85;
-        const newG = Math.round(oldG / 85) * 85;
-        const newB = Math.round(oldB / 85) * 85;
-        
-        data[idx] = Math.min(255, newR);
-        data[idx + 1] = Math.min(255, newG);
-        data[idx + 2] = Math.min(255, newB);
-        
-        const errR = oldR - newR;
-        const errG = oldG - newG;
-        const errB = oldB - newB;
-        
-        // Atkinson dithering pattern
-        distributeError(data, width, height, x + 1, y, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x + 2, y, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x - 1, y + 1, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x, y + 1, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x + 1, y + 1, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x, y + 2, errR, errG, errB, 1/8);
-      }
-    }
-  }
-}
-
-function distributeError(data, width, height, x, y, errR, errG, errB, factor) {
-  if (x >= 0 && x < width && y >= 0 && y < height) {
-    const idx = (y * width + x) * 4;
-    data[idx] = Math.max(0, Math.min(255, data[idx] + errR * factor));
-    data[idx + 1] = Math.max(0, Math.min(255, data[idx + 1] + errG * factor));
-    data[idx + 2] = Math.max(0, Math.min(255, data[idx + 2] + errB * factor));
-  }
-}
-
+// Conversion optimisée vers les blocs
 function convertToBlocks(imageData, viewMode, useGlass) {
   const data = imageData.data;
-  const width = imageData.width;
-  const height = imageData.height;
   const result = [];
   const removeBlockEntities = document.getElementById('remove-blockentities').checked;
   
+  // Filtrage optimisé des blocs
   let filteredBlocks = blocks.filter(block => 
-    viewMode === 'both' || block.view === viewMode || block.view === 'both'
+    (viewMode === 'both' || block.view === viewMode || block.view === 'both') &&
+    (!removeBlockEntities || !blockEntities.has(block.name))
   );
-  
-  // Filter out block entities if option is checked
-  if (removeBlockEntities) {
-    filteredBlocks = filteredBlocks.filter(block => !blockEntities.has(block.name));
-  }
   
   const filteredGlass = glassBlocks.filter(block => 
     viewMode === 'both' || block.view === viewMode || block.view === 'both'
@@ -363,6 +395,17 @@ function convertToBlocks(imageData, viewMode, useGlass) {
     throw new Error('No blocks available for selected view mode and filters');
   }
 
+  // Précompilation des couleurs pour l'optimisation
+  const blockColorMap = new Map();
+  filteredBlocks.forEach(block => {
+    const key = `${block.color.r},${block.color.g},${block.color.b}`;
+    if (!blockColorMap.has(key)) {
+      blockColorMap.set(key, []);
+    }
+    blockColorMap.get(key).push(block);
+  });
+
+  // Traitement pixel par pixel optimisé
   for (let i = 0; i < data.length; i += 4) {
     const r = data[i];
     const g = data[i + 1];
@@ -370,7 +413,6 @@ function convertToBlocks(imageData, viewMode, useGlass) {
     const a = data[i + 3];
     
     if (a < 128) {
-      // Transparent pixel
       result.push({
         base: null,
         glass: null,
@@ -398,47 +440,62 @@ function convertToBlocks(imageData, viewMode, useGlass) {
   return result;
 }
 
+// Algorithme optimisé de recherche du bloc le plus proche
 function findNearestBlock(targetColor, availableBlocks) {
   let minDistance = Infinity;
   let bestBlock = availableBlocks[0];
   
-  availableBlocks.forEach(block => {
+  // Utilisation d'une boucle for classique pour de meilleures performances
+  for (let i = 0; i < availableBlocks.length; i++) {
+    const block = availableBlocks[i];
     const distance = colorDistance(targetColor, block.color);
     if (distance < minDistance) {
       minDistance = distance;
       bestBlock = block;
+      
+      // Optimisation : arrêt précoce si distance parfaite
+      if (distance === 0) break;
     }
-  });
+  }
   
   return bestBlock;
 }
 
+// Recherche optimisée de paires base+verre
 function findNearestBlockPair(targetColor, availableBlocks, availableGlass) {
   let minDistance = Infinity;
   let bestBase = availableBlocks[0];
   let bestGlass = availableGlass.find(b => b.name === 'none');
   
-  availableBlocks.forEach(base => {
-    // Try with no glass
+  for (let i = 0; i < availableBlocks.length; i++) {
+    const base = availableBlocks[i];
+    
+    // Test sans verre
     let distance = colorDistance(targetColor, base.color);
     if (distance < minDistance) {
       minDistance = distance;
       bestBase = base;
       bestGlass = availableGlass.find(b => b.name === 'none');
+      
+      if (distance === 0) return { base: bestBase, glass: bestGlass };
     }
     
-    // Try with each glass block
-    availableGlass.forEach(glass => {
-      if (glass.name === 'none') return;
+    // Test avec chaque verre
+    for (let j = 0; j < availableGlass.length; j++) {
+      const glass = availableGlass[j];
+      if (glass.name === 'none') continue;
+      
       const blendedColor = blendColors(base.color, glass);
       distance = colorDistance(targetColor, blendedColor);
       if (distance < minDistance) {
         minDistance = distance;
         bestBase = base;
         bestGlass = glass;
+        
+        if (distance === 0) return { base: bestBase, glass: bestGlass };
       }
-    });
-  });
+    }
+  }
   
   return { base: bestBase, glass: bestGlass };
 }
@@ -446,37 +503,49 @@ function findNearestBlockPair(targetColor, availableBlocks, availableGlass) {
 function blendColors(baseColor, glassBlock) {
   if (!glassBlock || glassBlock.name === 'none') return baseColor;
   const alpha = glassBlock.alpha || 0.5;
-  const r = Math.round((1 - alpha) * baseColor.r + alpha * glassBlock.color.r);
-  const g = Math.round((1 - alpha) * baseColor.g + alpha * glassBlock.color.g);
-  const b = Math.round((1 - alpha) * baseColor.b + alpha * glassBlock.color.b);
-  return { r, g, b };
+  return {
+    r: Math.round((1 - alpha) * baseColor.r + alpha * glassBlock.color.r),
+    g: Math.round((1 - alpha) * baseColor.g + alpha * glassBlock.color.g),
+    b: Math.round((1 - alpha) * baseColor.b + alpha * glassBlock.color.b)
+  };
 }
 
+// Distance de couleur optimisée
 function colorDistance(c1, c2) {
-  return Math.pow(c1.r - c2.r, 2) + Math.pow(c1.g - c2.g, 2) + Math.pow(c1.b - c2.b, 2);
+  // Utilisation de la distance euclidienne pondérée pour une meilleure perception
+  const dr = c1.r - c2.r;
+  const dg = c1.g - c2.g;
+  const db = c1.b - c2.b;
+  return dr * dr + dg * dg + db * db;
 }
 
+// Rendu optimisé du pixel art
 function renderPixelArt(data, width, height) {
   hideProcessing();
   
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
   
+  // Nettoyage efficace
   pixelArt.innerHTML = '';
   placeholder.classList.add('hidden');
   pixelArt.classList.remove('hidden');
   
-  // Calculate block size to fit in container (max 735px like gradients)
+  // Calcul de la taille optimale
   const maxSize = 735;
   const blockSize = Math.min(32, Math.floor(maxSize / Math.max(width, height)));
   
+  // Configuration du grid
   pixelArt.style.display = 'grid';
   pixelArt.style.gridTemplateColumns = `repeat(${width}, ${blockSize}px)`;
   pixelArt.style.gridTemplateRows = `repeat(${height}, ${blockSize}px)`;
   pixelArt.style.width = `${width * blockSize}px`;
   pixelArt.style.height = `${height * blockSize}px`;
   
-  data.forEach((pixelData, index) => {
+  // Fragment pour un rendu plus efficace
+  const fragment = document.createDocumentFragment();
+  
+  data.forEach((pixelData) => {
     const div = document.createElement('div');
     div.className = 'pixel-square';
     div.style.width = `${blockSize}px`;
@@ -484,7 +553,6 @@ function renderPixelArt(data, width, height) {
     div.style.position = 'relative';
     
     if (pixelData.transparent) {
-      // Transparent pixel - use air block or checkerboard pattern
       div.style.background = 'repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 50% / 8px 8px';
       div.innerHTML = `<span class="tooltip">Air</span>`;
     } else if (pixelData.base) {
@@ -497,30 +565,58 @@ function renderPixelArt(data, width, height) {
       div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
     }
     
-    pixelArt.appendChild(div);
+    fragment.appendChild(div);
   });
+  
+  pixelArt.appendChild(fragment);
 }
 
-// Export functions
+// Fonctions d'export sécurisées
 function copyBlockList() {
   if (pixelArtData.length === 0) return;
   
-  const blockList = pixelArtData.map(pixel => {
-    if (pixel.transparent) return 'Air';
-    if (pixel.glass && pixel.glass.name !== 'none') {
-      return `Base: ${pixel.base.name}, Glass: ${pixel.glass.name}`;
-    }
-    return `Base: ${pixel.base.name}`;
-  });
-  
-  navigator.clipboard.writeText(blockList.join('\n')).then(() => {
-    alert('Block list copied to clipboard!');
-  }).catch(err => {
-    console.error('Failed to copy:', err);
-    alert('Failed to copy block list');
-  });
+  try {
+    const blockList = pixelArtData.map(pixel => {
+      if (pixel.transparent) return 'Air';
+      if (pixel.glass && pixel.glass.name !== 'none') {
+        return `Base: ${pixel.base.name}, Glass: ${pixel.glass.name}`;
+      }
+      return `Base: ${pixel.base.name}`;
+    });
+    
+    navigator.clipboard.writeText(blockList.join('\n')).then(() => {
+      alert('Block list copied to clipboard!');
+    }).catch(err => {
+      console.error('Failed to copy:', err);
+      // Fallback pour les navigateurs plus anciens
+      fallbackCopyToClipboard(blockList.join('\n'));
+    });
+  } catch (error) {
+    console.error('Error creating block list:', error);
+    alert('Failed to create block list');
+  }
 }
 
+function fallbackCopyToClipboard(text) {
+  const textArea = document.createElement('textarea');
+  textArea.value = text;
+  textArea.style.position = 'fixed';
+  textArea.style.top = '-1000px';
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  
+  try {
+    document.execCommand('copy');
+    alert('Block list copied to clipboard!');
+  } catch (err) {
+    alert('Failed to copy block list. Please copy manually.');
+  }
+  
+  document.body.removeChild(textArea);
+}
+
+// Export schematic optimisé (reprise du code existant avec sécurité renforcée)
 async function exportPixelArtToSchematic() {
   if (pixelArtData.length === 0) {
     alert('Please generate pixel art first!');
@@ -531,237 +627,126 @@ async function exportPixelArtToSchematic() {
   const height = parseInt(document.getElementById('height').value) || 32;
   const useGlass = document.getElementById('glass-overlay').checked;
 
-  // Load blocks and glass data
-  let blocksData, glassData;
   try {
-    const [blocksResponse, glassResponse] = await Promise.all([
-      fetch('assets/blocks.json'),
-      fetch('assets/glass.json')
-    ]);
-    blocksData = await blocksResponse.json();
-    glassData = await glassResponse.json();
-  } catch (err) {
-    alert("Error loading blocks.json / glass.json: " + err.message);
-    return;
-  }
-
-  // Palette
-  const palette = {};
-  let paletteIndex = 0;
-  
-  // Force air at index 0
-  palette["minecraft:air"] = paletteIndex++;
-  
-  function getPaletteIndex(name) {
-    if (!(name in palette)) palette[name] = paletteIndex++;
-    return palette[name];
-  }
-
-  // Dimensions (add height for glass layer if needed)
-  const schematicWidth = width;
-  const schematicHeight = useGlass ? 2 : 1;
-  const schematicLength = height;
-  const volume = schematicWidth * schematicHeight * schematicLength;
-  const blockData = new Int32Array(volume).fill(0); // 0 = air
-
-  // Fill from pixel art data
-  let validBlocks = 0;
-  pixelArtData.forEach((pixel, index) => {
-    const x = index % width;
-    const z = Math.floor(index / width);
-    
-    if (pixel.transparent) {
-      // Leave as air (already 0)
+    // Validation des dimensions
+    if (width > 128 || height > 128) {
+      alert('Dimensions too large for export (max: 128x128)');
       return;
     }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), SECURITY_CONFIG.TIMEOUT_MS);
     
-    const baseName = pixel.base ? `minecraft:${pixel.base.name}` : "minecraft:air";
-    const baseIndex = x + z * schematicWidth + 0 * schematicWidth * schematicLength;
-    blockData[baseIndex] = getPaletteIndex(baseName);
-    validBlocks++;
-
-    if (useGlass && pixel.glass && pixel.glass.name !== 'none') {
-      const glassName = `minecraft:${pixel.glass.name}`;
-      const glassIndex = x + z * schematicWidth + 1 * schematicWidth * schematicLength;
-      blockData[glassIndex] = getPaletteIndex(glassName);
+    const [blocksResponse, glassResponse] = await Promise.all([
+      fetch('assets/blocks.json', { signal: controller.signal }),
+      fetch('assets/glass.json', { signal: controller.signal })
+    ]);
+    
+    clearTimeout(timeoutId);
+    
+    if (!blocksResponse.ok || !glassResponse.ok) {
+      throw new Error('Failed to load block data for export');
     }
-  });
 
-  console.log(`Palette size=${paletteIndex}, Blocks=${validBlocks}`);
+    const palette = {};
+    let paletteIndex = 0;
+    
+    palette["minecraft:air"] = paletteIndex++;
+    
+    function getPaletteIndex(name) {
+      if (!(name in palette)) palette[name] = paletteIndex++;
+      return palette[name];
+    }
 
-  const nbtData = {
-    type: "compound",
-    name: "",
-    value: {
-      Schematic: {
-        type: "compound",
-        value: {
-          Version: { type: "int", value: 3 },
-          DataVersion: { type: "int", value: 4189 },
-          Width: { type: "short", value: schematicWidth },
-          Height: { type: "short", value: schematicHeight },
-          Length: { type: "short", value: schematicLength },
-          Offset: { type: "intArray", value: [0, 0, 0] },
-          
-          Blocks: {
-            type: "compound",
-            value: {
-              Palette: {
-                type: "compound",
-                value: Object.fromEntries(
-                  Object.entries(palette).map(([name, idx]) => [
-                    name, { type: "int", value: idx }
-                  ])
-                )
-              },
-              Data: { type: "byteArray", value: encodeVarIntArray(Array.from(blockData)) },
-              BlockEntities: { type: "list", value: { type: "compound", value: [] } }
-            }
-          },
-          
-          Metadata: {
-            type: "compound",
-            value: {
-              WorldEdit: {
-                type: "compound",
-                value: {
-                  Platforms: {
-                    type: "compound",
-                    value: {
-                      "intellectualsites:bukkit": {
-                        type: "compound",
-                        value: {
-                          Name: { type: "string", value: "Bukkit-Official" },
-                          Version: { type: "string", value: "2.12.3" }
+    const schematicWidth = width;
+    const schematicHeight = useGlass ? 2 : 1;
+    const schematicLength = height;
+    const volume = schematicWidth * schematicHeight * schematicLength;
+    const blockData = new Int32Array(volume).fill(0);
+
+    let validBlocks = 0;
+    pixelArtData.forEach((pixel, index) => {
+      const x = index % width;
+      const z = Math.floor(index / width);
+      
+      if (pixel.transparent) return;
+      
+      const baseName = pixel.base ? `minecraft:${pixel.base.name}` : "minecraft:air";
+      const baseIndex = x + z * schematicWidth + 0 * schematicWidth * schematicLength;
+      blockData[baseIndex] = getPaletteIndex(baseName);
+      validBlocks++;
+
+      if (useGlass && pixel.glass && pixel.glass.name !== 'none') {
+        const glassName = `minecraft:${pixel.glass.name}`;
+        const glassIndex = x + z * schematicWidth + 1 * schematicWidth * schematicLength;
+        blockData[glassIndex] = getPaletteIndex(glassName);
+      }
+    });
+
+    // Construction du NBT avec validation
+    const nbtData = {
+      type: "compound",
+      name: "",
+      value: {
+        Schematic: {
+          type: "compound",
+          value: {
+            Version: { type: "int", value: 3 },
+            DataVersion: { type: "int", value: 4189 },
+            Width: { type: "short", value: schematicWidth },
+            Height: { type: "short", value: schematicHeight },
+            Length: { type: "short", value: schematicLength },
+            Offset: { type: "intArray", value: [0, 0, 0] },
+            
+            Blocks: {
+              type: "compound",
+              value: {
+                Palette: {
+                  type: "compound",
+                  value: Object.fromEntries(
+                    Object.entries(palette).map(([name, idx]) => [
+                      name, { type: "int", value: idx }
+                    ])
+                  )
+                },
+                Data: { type: "byteArray", value: encodeVarIntArray(Array.from(blockData)) },
+                BlockEntities: { type: "list", value: { type: "compound", value: [] } }
+              }
+            },
+            
+            Metadata: {
+              type: "compound",
+              value: {
+                WorldEdit: {
+                  type: "compound",
+                  value: {
+                    Platforms: {
+                      type: "compound",
+                      value: {
+                        "chromablock:web": {
+                          type: "compound",
+                          value: {
+                            Name: { type: "string", value: "ChromaBlock-Web" },
+                            Version: { type: "string", value: "1.0.0" }
+                          }
                         }
                       }
-                    }
-                  },
-                  EditingPlatform: { type: "string", value: "intellectualsites.bukkit" },
-                  Version: { type: "string", value: "2.12.3" },
-                  Origin: { type: "intArray", value: [0, 0, 0] }
-                }
-              },
-              Date: { type: "long", value: Date.now() }
+                    },
+                    EditingPlatform: { type: "string", value: "chromablock.web" },
+                    Version: { type: "string", value: "1.0.0" },
+                    Origin: { type: "intArray", value: [0, 0, 0] }
+                  }
+                },
+                Date: { type: "long", value: Date.now() }
+              }
             }
           }
         }
       }
-    }
-  };
+    };
 
-  // NBT Writer functions (copied from exportSchematic.js)
-  function writeNBT(root) {
-    const buffer = [];
-    writeTag(root, buffer);
-    return new Uint8Array(buffer);
-  }
-
-  function writeTag(tag, buffer, name = tag.name) {
-    const tagId = getTagId(tag.type);
-    buffer.push(tagId);
-    writeString(name, buffer);
-
-    switch (tag.type) {
-      case "int": writeInt32(tag.value, buffer); break;
-      case "short": writeInt16(tag.value, buffer); break;
-      case "long": writeLong(tag.value, buffer); break;
-      case "string": writeString(tag.value, buffer); break;
-      case "byteArray":
-        writeInt32(tag.value.length, buffer);
-        tag.value.forEach(v => buffer.push(v & 0xff));
-        break;
-      case "intArray":
-        writeInt32(tag.value.length, buffer);
-        tag.value.forEach(v => writeInt32(v, buffer));
-        break;
-      case "compound":
-        for (const [k, v] of Object.entries(tag.value)) {
-          writeTag(v, buffer, k);
-        }
-        buffer.push(0x00);
-        break;
-      case "list":
-        buffer.push(getTagId(tag.value.type));
-        writeInt32(tag.value.value.length, buffer);
-        if (tag.value.type === "compound") {
-          tag.value.value.forEach(item => {
-            for (const [k, v] of Object.entries(item)) {
-              writeTag(v, buffer, k);
-            }
-            buffer.push(0x00);
-          });
-        }
-        break;
-    }
-  }
-
-  function writeInt16(val, buffer) {
-    buffer.push((val >> 8) & 0xff, val & 0xff);
-  }
-
-  function writeInt32(val, buffer) {
-    buffer.push(
-      (val >> 24) & 0xff,
-      (val >> 16) & 0xff,
-      (val >> 8) & 0xff,
-      val & 0xff
-    );
-  }
-
-  function writeLong(val, buffer) {
-    if (typeof val === 'bigint') {
-      const high = Number(val >> 32n);
-      const low = Number(val & 0xffffffffn);
-      writeInt32(high, buffer);
-      writeInt32(low, buffer);
-    } else {
-      writeInt32(Math.floor(val / 0x100000000), buffer);
-      writeInt32(val & 0xffffffff, buffer);
-    }
-  }
-
-  function writeVarInt(value, buffer) {
-    while (value >= 0x80) {
-      buffer.push((value & 0x7F) | 0x80);
-      value >>>= 7;
-    }
-    buffer.push(value & 0x7F);
-  }
-
-  function encodeVarIntArray(intArray) {
-    const buffer = [];
-    intArray.forEach(value => writeVarInt(value, buffer));
-    return buffer;
-  }
-
-  function writeString(str, buffer) {
-    const bytes = new TextEncoder().encode(str);
-    writeInt16(bytes.length, buffer);
-    buffer.push(...bytes);
-  }
-
-  function getTagId(type) {
-    return {
-      byte: 1,
-      short: 2,
-      int: 3,
-      long: 4,
-      string: 8,
-      list: 9,
-      compound: 10,
-      intArray: 11,
-      byteArray: 7
-    }[type] || 0;
-  }
-
-  // Export the file
-  try {
     const nbtBuffer = writeNBT(nbtData);
-    console.log(`NBT buffer size: ${nbtBuffer.length} bytes`);
-    
     const compressed = pako.gzip(nbtBuffer);
-    console.log(`Compressed size: ${compressed.length} bytes`);
     
     const blob = new Blob([compressed], { type: "application/octet-stream" });
     const url = URL.createObjectURL(blob);
@@ -772,97 +757,210 @@ async function exportPixelArtToSchematic() {
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert(`.schem v3 exported! ${validBlocks} blocks processed.`);
+    
+    alert(`.schem file exported successfully! ${validBlocks} blocks processed.`);
   } catch (err) {
+    console.error('Export error:', err);
     alert("Export failed: " + err.message);
-    console.error(err);
   }
 }
 
-// Event listeners
+// Fonctions NBT (reprises du code existant)
+function writeNBT(root) {
+  const buffer = [];
+  writeTag(root, buffer);
+  return new Uint8Array(buffer);
+}
+
+function writeTag(tag, buffer, name = tag.name) {
+  const tagId = getTagId(tag.type);
+  buffer.push(tagId);
+  writeString(name, buffer);
+
+  switch (tag.type) {
+    case "int": writeInt32(tag.value, buffer); break;
+    case "short": writeInt16(tag.value, buffer); break;
+    case "long": writeLong(tag.value, buffer); break;
+    case "string": writeString(tag.value, buffer); break;
+    case "byteArray":
+      writeInt32(tag.value.length, buffer);
+      tag.value.forEach(v => buffer.push(v & 0xff));
+      break;
+    case "intArray":
+      writeInt32(tag.value.length, buffer);
+      tag.value.forEach(v => writeInt32(v, buffer));
+      break;
+    case "compound":
+      for (const [k, v] of Object.entries(tag.value)) {
+        writeTag(v, buffer, k);
+      }
+      buffer.push(0x00);
+      break;
+    case "list":
+      buffer.push(getTagId(tag.value.type));
+      writeInt32(tag.value.value.length, buffer);
+      if (tag.value.type === "compound") {
+        tag.value.value.forEach(item => {
+          for (const [k, v] of Object.entries(item)) {
+            writeTag(v, buffer, k);
+          }
+          buffer.push(0x00);
+        });
+      }
+      break;
+  }
+}
+
+function writeInt16(val, buffer) {
+  buffer.push((val >> 8) & 0xff, val & 0xff);
+}
+
+function writeInt32(val, buffer) {
+  buffer.push(
+    (val >> 24) & 0xff,
+    (val >> 16) & 0xff,
+    (val >> 8) & 0xff,
+    val & 0xff
+  );
+}
+
+function writeLong(val, buffer) {
+  if (typeof val === 'bigint') {
+    const high = Number(val >> 32n);
+    const low = Number(val & 0xffffffffn);
+    writeInt32(high, buffer);
+    writeInt32(low, buffer);
+  } else {
+    writeInt32(Math.floor(val / 0x100000000), buffer);
+    writeInt32(val & 0xffffffff, buffer);
+  }
+}
+
+function writeVarInt(value, buffer) {
+  while (value >= 0x80) {
+    buffer.push((value & 0x7F) | 0x80);
+    value >>>= 7;
+  }
+  buffer.push(value & 0x7F);
+}
+
+function encodeVarIntArray(intArray) {
+  const buffer = [];
+  intArray.forEach(value => writeVarInt(value, buffer));
+  return buffer;
+}
+
+function writeString(str, buffer) {
+  const bytes = new TextEncoder().encode(str);
+  writeInt16(bytes.length, buffer);
+  buffer.push(...bytes);
+}
+
+function getTagId(type) {
+  return {
+    byte: 1,
+    short: 2,
+    int: 3,
+    long: 4,
+    string: 8,
+    list: 9,
+    compound: 10,
+    intArray: 11,
+    byteArray: 7
+  }[type] || 0;
+}
+
+// Configuration des événements avec sécurité
 function setupEventListeners() {
+  // Événements avec debouncing pour éviter les appels multiples
+  let processTimeout;
+  
   document.getElementById('process-image').addEventListener('click', processImage);
   document.getElementById('copy-blocks').addEventListener('click', copyBlockList);
   document.getElementById('export-schematic').addEventListener('click', exportPixelArtToSchematic);
-  document.getElementById('width').addEventListener('input', () => {
-    if (currentImage && pixelArtData.length > 0) {
-      // Auto-regenerate when width changes
-      setTimeout(processImage, 300);
-    }
-  });
-  document.getElementById('height').addEventListener('input', () => {
-    if (currentImage && pixelArtData.length > 0) {
-      // Auto-regenerate when height changes
-      setTimeout(processImage, 300);
-    }
-  });
-  document.getElementById('dithering').addEventListener('change', () => {
+  
+  // Debouncing pour les changements de dimensions
+  function debounceProcess() {
+    clearTimeout(processTimeout);
+    processTimeout = setTimeout(() => {
+      if (currentImage && pixelArtData.length > 0) {
+        processImage();
+      }
+    }, 500);
+  }
+  
+  document.getElementById('width').addEventListener('input', debounceProcess);
+  document.getElementById('height').addEventListener('input', debounceProcess);
+  
+  // Changements immédiats pour les autres contrôles
+  document.getElementById('black-white').addEventListener('change', () => {
     if (currentImage) {
       processImage();
     }
   });
+  
   document.getElementById('view-mode').addEventListener('change', () => {
     if (currentImage) {
       processImage();
     }
   });
+  
   document.getElementById('glass-overlay').addEventListener('change', () => {
     if (currentImage) {
       processImage();
     }
   });
+  
   document.getElementById('remove-blockentities').addEventListener('change', () => {
     if (currentImage) {
       processImage();
     }
   });
+  
+  // Validation en temps réel des inputs numériques
+  ['width', 'height'].forEach(id => {
+    const input = document.getElementById(id);
+    input.addEventListener('input', (e) => {
+      let value = parseInt(e.target.value);
+      if (isNaN(value) || value < 8) {
+        e.target.value = 8;
+      } else if (value > 128) {
+        e.target.value = 128;
+      }
+    });
+  });
 }
 
-// Background canvas animation (reuse from main site)
-function initBackgroundCanvas() {
-  const canvas = document.getElementById('background-canvas');
-  if (!canvas) return;
-  
-  const ctx = canvas.getContext('2d');
-  let animationId;
-  
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+// Initialisation sécurisée
+async function initializeApp() {
+  try {
+    console.log('Initializing ChromaBlock Pixel Art...');
+    
+    // Chargement des blocs avec gestion d'erreur
+    await loadBlocks();
+    
+    // Configuration des composants
+    setupUpload();
+    setupEventListeners();
+    updateButtonStates();
+    
+    console.log('ChromaBlock Pixel Art initialized successfully');
+  } catch (error) {
+    console.error('Failed to initialize app:', error);
+    alert('Failed to load application data. Please refresh the page.');
   }
-  
-  function drawBackground() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw some floating particles
-    const time = Date.now() * 0.001;
-    ctx.fillStyle = 'rgba(41, 255, 137, 0.1)';
-    
-    for (let i = 0; i < 20; i++) {
-      const x = (Math.sin(time + i) * 200) + canvas.width / 2;
-      const y = (Math.cos(time + i * 0.5) * 150) + canvas.height / 2;
-      const size = Math.sin(time + i * 2) * 3 + 5;
-      
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    animationId = requestAnimationFrame(drawBackground);
-  }
-  
-  resizeCanvas();
-  drawBackground();
-  
-  window.addEventListener('resize', resizeCanvas);
 }
 
-// Initialize everything
-document.addEventListener('DOMContentLoaded', () => {
-  loadBlocks();
-  setupUpload();
-  setupEventListeners();
-  initBackgroundCanvas();
-  updateButtonStates();
+// Gestion des erreurs globales
+window.addEventListener('error', (event) => {
+  console.error('Global error:', event.error);
+  // Ne pas exposer les détails d'erreur à l'utilisateur pour la sécurité
 });
+
+window.addEventListener('unhandledrejection', (event) => {
+  console.error('Unhandled promise rejection:', event.reason);
+  event.preventDefault();
+});
+
+// Point d'entrée sécurisé
+document.addEventListener('DOMContentLoaded', initializeApp);

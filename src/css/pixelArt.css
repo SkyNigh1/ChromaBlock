@@ -1,5 +1,6 @@
-/* Pixel Art Specific Styles */
+/* Pixel Art CSS - Version Améliorée avec Sécurité */
 
+/* Layout principal optimisé */
 .layout-container {
   display: flex;
   flex-direction: row;
@@ -16,31 +17,52 @@
   padding: 1.5rem;
 }
 
+/* Zone d'upload avec feedback visuel amélioré */
 .upload-area {
   border: 2px dashed rgba(41, 255, 137, 0.3);
   border-radius: 1rem;
   padding: 2rem;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: rgba(255, 255, 255, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+
+.upload-area::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(41, 255, 137, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.upload-area:hover::before {
+  left: 100%;
 }
 
 .upload-area:hover {
   border-color: rgba(41, 255, 137, 0.6);
   background: rgba(255, 255, 255, 0.05);
   transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(41, 255, 137, 0.15);
 }
 
 .upload-area.dragover {
   border-color: #29FF89;
   background: rgba(41, 255, 137, 0.1);
   transform: scale(1.02);
+  box-shadow: 0 12px 35px rgba(41, 255, 137, 0.25);
 }
 
 .upload-content svg {
   color: #29FF89;
   margin-bottom: 1rem;
+  filter: drop-shadow(0 0 10px rgba(41, 255, 137, 0.3));
 }
 
 .upload-content h3 {
@@ -56,27 +78,43 @@
   margin: 0;
 }
 
+/* Prévisualisation d'image améliorée */
 .image-preview {
   text-align: center;
-  animation: fadeIn 0.5s ease;
+  animation: fadeInScale 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+@keyframes fadeInScale {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px) scale(0.95); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0) scale(1); 
+  }
 }
 
 .image-preview img {
   max-width: 100%;
   max-height: 200px;
   border-radius: 0.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
   image-rendering: auto;
+  transition: transform 0.3s ease;
+}
+
+.image-preview img:hover {
+  transform: scale(1.05);
 }
 
 .image-info {
   margin-top: 1rem;
-  padding-top: 1rem;
+  padding: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -84,35 +122,73 @@
   margin: 0 0 1rem 0;
   opacity: 0.8;
   font-size: 0.9rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
 }
 
+/* Bouton de suppression sécurisé */
 .clear-btn {
-  background: rgba(255, 0, 0, 0.2);
-  border: 1px solid rgba(255, 0, 0, 0.3);
-  color: #ff6b6b;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
+  background: rgba(255, 82, 82, 0.15);
+  border: 1px solid rgba(255, 82, 82, 0.3);
+  color: #ff5252;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.6rem;
   cursor: pointer;
   font-size: 0.85rem;
-  transition: all 0.3s ease;
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.clear-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 82, 82, 0.1);
+  transition: left 0.3s;
+}
+
+.clear-btn:hover::before {
+  left: 100%;
 }
 
 .clear-btn:hover {
-  background: rgba(255, 0, 0, 0.3);
-  border-color: rgba(255, 0, 0, 0.5);
+  background: rgba(255, 82, 82, 0.25);
+  border-color: rgba(255, 82, 82, 0.5);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 82, 82, 0.2);
 }
 
+/* Conteneur pixel art optimisé */
 .pixel-art-container {
   flex-grow: 1;
-  padding: 0.8rem;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 0.8rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   min-height: 400px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.pixel-art-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 80%, rgba(41, 255, 137, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(0, 212, 170, 0.03) 0%, transparent 50%);
+  border-radius: inherit;
+  pointer-events: none;
 }
 
 .pixel-art {
@@ -120,29 +196,57 @@
   gap: 0;
   width: fit-content;
   height: fit-content;
-  animation: slideIn 0.6s ease;
+  animation: pixelArtReveal 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  z-index: 1;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
 }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: scale(0.95); }
-  to { opacity: 1; transform: scale(1); }
+@keyframes pixelArtReveal {
+  from { 
+    opacity: 0; 
+    transform: scale(0.9) rotateY(10deg); 
+    filter: blur(4px);
+  }
+  to { 
+    opacity: 1; 
+    transform: scale(1) rotateY(0deg); 
+    filter: blur(0px);
+  }
 }
 
+/* Placeholder amélioré */
 .pixel-art-placeholder {
   text-align: center;
   opacity: 0.6;
-  padding: 2rem;
+  padding: 3rem;
+  border-radius: 1rem;
+  border: 2px dashed rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .pixel-art-placeholder p {
   font-size: 1.1rem;
   margin: 0;
-  color: #666;
+  color: #888;
+  font-weight: 500;
 }
 
+/* Pixels individuels optimisés */
 .pixel-square {
   position: relative;
   overflow: hidden;
+  transition: transform 0.2s ease;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.pixel-square:hover {
+  transform: scale(1.1);
+  z-index: 10;
+  border-color: rgba(41, 255, 137, 0.5);
+  box-shadow: 0 4px 15px rgba(41, 255, 137, 0.2);
 }
 
 .pixel-square img {
@@ -150,6 +254,8 @@
   height: 100%;
   object-fit: cover;
   image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
 }
 
 .pixel-square .base-img {
@@ -165,77 +271,224 @@
   left: 0;
   z-index: 2;
   opacity: 0.7;
+  mix-blend-mode: multiply;
 }
 
-/* Processing indicator */
+/* Tooltips améliorés */
+.pixel-square .tooltip {
+  position: absolute;
+  bottom: 120%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: #fff;
+  padding: 0.5rem 0.8rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 100;
+  border: 1px solid rgba(41, 255, 137, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+.pixel-square .tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.pixel-square:hover .tooltip {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-5px);
+}
+
+/* Indicateur de traitement cyberpunk */
 .processing {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.5rem;
   color: #29FF89;
+  padding: 2rem;
 }
 
 .processing .spinner {
-  width: 40px;
-  height: 40px;
+  width: 50px;
+  height: 50px;
   border: 3px solid rgba(41, 255, 137, 0.2);
   border-top: 3px solid #29FF89;
+  border-right: 3px solid rgba(0, 212, 170, 0.6);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: cyberpunkSpin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+  position: relative;
 }
 
-@keyframes spin {
+.processing .spinner::before {
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  right: -3px;
+  bottom: -3px;
+  border: 1px solid rgba(41, 255, 137, 0.1);
+  border-radius: 50%;
+  animation: cyberpunkPulse 2s ease-in-out infinite;
+}
+
+@keyframes cyberpunkSpin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes cyberpunkPulse {
+  0%, 100% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 0.8; }
 }
 
 .processing p {
   margin: 0;
   font-weight: 600;
   opacity: 0.9;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: 0 0 10px rgba(41, 255, 137, 0.3);
 }
 
-/* Controls adjustments */
+/* Contrôles sécurisés et améliorés */
 .glass-overlay-section {
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .glass-checkbox {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.8rem;
   cursor: pointer;
   font-size: 0.9rem;
   user-select: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.glass-checkbox:hover {
+  color: #29FF89;
 }
 
 .glass-checkbox input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
   margin: 0;
   cursor: pointer;
   accent-color: #29FF89;
+  border-radius: 4px;
+  transition: all 0.3s ease;
 }
 
-/* Button states */
+.glass-checkbox input[type="checkbox"]:checked {
+  box-shadow: 0 0 10px rgba(41, 255, 137, 0.4);
+}
+
+/* États des boutons sécurisés */
 .controls button:disabled {
-  background: rgba(255, 255, 255, 0.1);
-  color: rgba(255, 255, 255, 0.5);
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+  background: rgba(255, 255, 255, 0.05) !important;
+  color: rgba(255, 255, 255, 0.3) !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
 }
 
 .controls button:disabled:hover {
-  transform: none;
-  box-shadow: none;
+  transform: none !important;
+  box-shadow: none !important;
 }
 
-/* Mobile responsiveness */
+.controls button:not(:disabled) {
+  position: relative;
+  overflow: hidden;
+}
+
+.controls button:not(:disabled)::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  transition: left 0.5s;
+}
+
+.controls button:not(:disabled):hover::before {
+  left: 100%;
+}
+
+/* Inputs numériques sécurisés */
+input[type="number"] {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #29FF89;
+  box-shadow: 0 0 0 2px rgba(41, 255, 137, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+input[type="number"]:invalid {
+  border-color: #ff5252;
+  box-shadow: 0 0 0 2px rgba(255, 82, 82, 0.2);
+}
+
+/* Sélecteurs stylisés */
+select {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+select:focus {
+  outline: none;
+  border-color: #29FF89;
+  box-shadow: 0 0 0 2px rgba(41, 255, 137, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+select option {
+  background: #1a1a2e;
+  color: #fff;
+  padding: 0.5rem;
+}
+
+/* Responsive design sécurisé */
 @media (max-width: 800px) {
   .layout-container {
     flex-direction: column;
@@ -264,6 +517,7 @@
   
   .button-group button {
     width: 100%;
+    margin: 0.25rem 0;
   }
 }
 
@@ -279,4 +533,69 @@
   .upload-content p {
     font-size: 0.8rem;
   }
+  
+  .pixel-art-container {
+    padding: 1rem;
+  }
+  
+  .processing .spinner {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Classes utilitaires pour la sécurité */
+.hidden {
+  display: none !important;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Animation de chargement pour les images */
+img[src]:not([src=""]) {
+  animation: imageLoad 0.3s ease-in;
+}
+
+@keyframes imageLoad {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Protection contre les attaques par CSS */
+* {
+  max-width: 100%;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Prévention de l'injection de contenu */
+*::before,
+*::after {
+  content: normal;
+}
+
+/* Styles spécifiques pour le mode noir et blanc */
+.black-white-mode .pixel-square {
+  filter: contrast(1.1);
+}
+
+.black-white-mode .pixel-square img {
+  transition: filter 0.3s ease;
+}
+
+.black-white-mode .pixel-square:hover img {
+  filter: brightness(1.1);
 }
