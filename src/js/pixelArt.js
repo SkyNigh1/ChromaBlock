@@ -631,7 +631,7 @@ function copyBlockList() {
   }
 }
 
-// Enhanced schematic export (keeping original functionality)
+// Enhanced schematic export using exportSchematic.js functions
 async function exportPixelArtToSchematic() {
   if (pixelArtData.length === 0) {
     alert('Please generate pixel art first!');
@@ -662,7 +662,7 @@ async function exportPixelArtToSchematic() {
       return;
     }
 
-    // Palette
+    // Create palette
     const palette = {};
     let paletteIndex = 0;
     
@@ -705,6 +705,7 @@ async function exportPixelArtToSchematic() {
 
     console.log(`Palette size=${paletteIndex}, Blocks=${validBlocks}`);
 
+    // Create NBT data structure
     const nbtData = {
       type: "compound",
       name: "",
@@ -766,112 +767,7 @@ async function exportPixelArtToSchematic() {
       }
     };
 
-    // NBT Writer functions
-    function writeNBT(root) {
-      const buffer = [];
-      writeTag(root, buffer);
-      return new Uint8Array(buffer);
-    }
-
-    function writeTag(tag, buffer, name = tag.name) {
-      const tagId = getTagId(tag.type);
-      buffer.push(tagId);
-      writeString(name, buffer);
-
-      switch (tag.type) {
-        case "int": writeInt32(tag.value, buffer); break;
-        case "short": writeInt16(tag.value, buffer); break;
-        case "long": writeLong(tag.value, buffer); break;
-        case "string": writeString(tag.value, buffer); break;
-        case "byteArray":
-          writeInt32(tag.value.length, buffer);
-          tag.value.forEach(v => buffer.push(v & 0xff));
-          break;
-        case "intArray":
-          writeInt32(tag.value.length, buffer);
-          tag.value.forEach(v => writeInt32(v, buffer));
-          break;
-        case "compound":
-          for (const [k, v] of Object.entries(tag.value)) {
-            writeTag(v, buffer, k);
-          }
-          buffer.push(0x00);
-          break;
-        case "list":
-          buffer.push(getTagId(tag.value.type));
-          writeInt32(tag.value.value.length, buffer);
-          if (tag.value.type === "compound") {
-            tag.value.value.forEach(item => {
-              for (const [k, v] of Object.entries(item)) {
-                writeTag(v, buffer, k);
-              }
-              buffer.push(0x00);
-            });
-          }
-          break;
-      }
-    }
-
-    function writeInt16(val, buffer) {
-      buffer.push((val >> 8) & 0xff, val & 0xff);
-    }
-
-    function writeInt32(val, buffer) {
-      buffer.push(
-        (val >> 24) & 0xff,
-        (val >> 16) & 0xff,
-        (val >> 8) & 0xff,
-        val & 0xff
-      );
-    }
-
-    function writeLong(val, buffer) {
-      if (typeof val === 'bigint') {
-        const high = Number(val >> 32n);
-        const low = Number(val & 0xffffffffn);
-        writeInt32(high, buffer);
-        writeInt32(low, buffer);
-      } else {
-        writeInt32(Math.floor(val / 0x100000000), buffer);
-        writeInt32(val & 0xffffffff, buffer);
-      }
-    }
-
-    function writeVarInt(value, buffer) {
-      while (value >= 0x80) {
-        buffer.push((value & 0x7F) | 0x80);
-        value >>>= 7;
-      }
-      buffer.push(value & 0x7F);
-    }
-
-    function encodeVarIntArray(intArray) {
-      const buffer = [];
-      intArray.forEach(value => writeVarInt(value, buffer));
-      return buffer;
-    }
-
-    function writeString(str, buffer) {
-      const bytes = new TextEncoder().encode(str);
-      writeInt16(bytes.length, buffer);
-      buffer.push(...bytes);
-    }
-
-    function getTagId(type) {
-      return {
-        byte: 1,
-        short: 2,
-        int: 3,
-        long: 4,
-        string: 8,
-        list: 9,
-        compound: 10,
-        intArray: 11,
-        byteArray: 7
-      }[type] || 0;
-    }
-
-    // Export the file
+    // Use functions from exportSchematic.js
     const nbtBuffer = writeNBT(nbtData);
     console.log(`NBT buffer size: ${nbtBuffer.length} bytes`);
     
