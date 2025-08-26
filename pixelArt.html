@@ -3,23 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Convert images to Minecraft pixel art with ChromaBlock">
-  <meta name="keywords" content="minecraft, pixel art, blocks, schematic, converter">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:;">
   <title>ChromaBlock - Pixel Art</title>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="src/css/style.css">
   <link rel="stylesheet" href="src/css/pixelArt.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js" integrity="sha512-6OwYJAs1I38KZmcUixkO6WnPLdUlLNE7Xqg5ydl8g4E8Zg6fF9YzM7oGO9JcIqNnADqGLlJlnW5y/a8O2Z6pA==" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.0.4/pako.min.js"></script>
   <script src="src/js/pixelArt.js" defer></script>
+  <script src="src/js/exportSchematic.js" defer></script>
 </head>
 <body>
+  <canvas id="background-canvas"></canvas>
   <nav>
     <div class="container">
       <a href="index.html" class="logo">ChromaBlock</a>
       <div class="nav-links">
         <div class="dropdown">
-          <a class="dropdown-toggle" href="#" role="button" aria-haspopup="true" aria-expanded="false">Gradients</a>
+          <a class="dropdown-toggle">Gradients</a>
           <div class="dropdown-menu">
             <a href="gradient1D.html">Gradient 1D</a>
             <a href="gradient2D.html">Gradient 2D</a>
@@ -27,8 +26,8 @@
           </div>
         </div>
         <a href="#">Procedural Pattern</a>
-        <a href="pixelArt.html" aria-current="page">Pixel Art</a>
-        <a href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <a href="pixelArt.html">Pixel Art</a>
+        <a href="#">GitHub</a>
       </div>
     </div>
   </nav>
@@ -43,9 +42,9 @@
 
     <div class="layout-container">
       <div class="upload-section panel">
-        <div class="upload-area" id="upload-area" role="button" tabindex="0" aria-label="Click to upload image or drag and drop">
+        <div class="upload-area" id="upload-area">
           <div class="upload-content">
-            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
               <polyline points="7,10 12,15 17,10"/>
               <line x1="12" y1="15" x2="12" y2="3"/>
@@ -53,20 +52,20 @@
             <h3>Drop image here or click to upload</h3>
             <p>Supports PNG, JPG, JPEG, GIF, WEBP</p>
           </div>
-          <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" hidden aria-label="Select image file">
+          <input type="file" id="file-input" accept="image/*" hidden>
         </div>
 
         <div class="image-preview hidden" id="image-preview">
-          <img id="preview-img" alt="Uploaded image preview">
+          <img id="preview-img" alt="Preview">
           <div class="image-info">
-            <p id="image-dimensions" aria-live="polite">0 x 0 pixels</p>
-            <button id="clear-image" class="clear-btn" type="button">Remove Image</button>
+            <p id="image-dimensions">0 x 0 pixels</p>
+            <button id="clear-image" class="clear-btn">Remove Image</button>
           </div>
         </div>
       </div>
 
       <div class="pixel-art-container">
-        <div id="pixel-art" class="pixel-art hidden"></div>
+        <div id="pixel-art" class="pixel-art"></div>
         <div class="pixel-art-placeholder" id="pixel-art-placeholder">
           <p>Upload an image to see the pixel art preview</p>
         </div>
@@ -76,32 +75,32 @@
     <div class="controls panel">
       <div>
         <label for="width">Width (blocks)</label>
-        <input type="number" id="width" min="1" value="32" aria-describedby="width-help">
-        <small id="width-help" class="sr-only">Width in blocks</small>
+        <input type="number" id="width" min="8" max="128" value="32">
       </div>
       <div>
         <label for="height">Height (blocks)</label>
-        <input type="number" id="height" min="1" value="32" aria-describedby="height-help">
-        <small id="height-help" class="sr-only">Height in blocks</small>
+        <input type="number" id="height" min="8" max="128" value="32">
       </div>
       <div>
-        <label for="view-mode">View Mode</label>
+        <label for="dithering">Dithering</label>
+        <select id="dithering">
+          <option value="none">None</option>
+          <option value="floyd-steinberg">Floyd-Steinberg</option>
+          <option value="atkinson">Atkinson</option>
+        </select>
+      </div>
+      <div>
+        <label for="view-mode">View of textures</label>
         <select id="view-mode">
-          <option value="both">All Blocks</option>
-          <option value="top">Top View Only</option>
-          <option value="side">Side View Only</option>
+          <option value="both">Both</option>
+          <option value="top">Top</option>
+          <option value="side">Side</option>
         </select>
       </div>
       <div class="glass-overlay-section">
         <label class="glass-checkbox">
           <input type="checkbox" id="glass-overlay">
-          Glass Overlay
-        </label>
-      </div>
-      <div class="glass-overlay-section">
-        <label class="glass-checkbox">
-          <input type="checkbox" id="grayscale">
-          Black & White
+          Add Glass Overlay
         </label>
       </div>
       <div class="glass-overlay-section">
@@ -111,9 +110,9 @@
         </label>
       </div>
       <div class="button-group">
-        <button id="process-image" type="button" disabled>Process Image</button>
-        <button id="copy-blocks" type="button" disabled>Copy Block List</button>
-        <button id="export-schematic" type="button" disabled>Export .schem</button>
+        <button id="process-image">Generate Pixel Art</button>
+        <button id="copy-blocks">Copy Block List</button>
+        <button id="export-schematic">Export to .schematic</button>
       </div>
     </div>
   </main>
@@ -133,7 +132,7 @@
             <li><a href="gradient3D.html">3D Gradient</a></li>
             <li><a href="#">Noises</a></li>
             <li><a href="#">Palette</a></li>
-            <li><a href="#">Pixel Art</a></li>
+            <li><a href="pixelArt.html">Pixel Art</a></li>
           </ul>
         </div>
         <div class="footer-section">
