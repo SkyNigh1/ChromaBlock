@@ -51,7 +51,7 @@
               <line x1="12" y1="15" x2="12" y2="3"/>
             </svg>
             <h3>Drop image here or click to upload</h3>
-            <p>Supports PNG, JPG, JPEG, GIF, WEBP - No limits!</p>
+            <p>Supports PNG, JPG, JPEG, GIF, WEBP</p>
           </div>
           <input type="file" id="file-input" accept="image/png,image/jpeg,image/jpg,image/gif,image/webp" hidden aria-label="Select image file">
         </div>
@@ -77,125 +77,45 @@
       <div>
         <label for="width">Width (blocks)</label>
         <input type="number" id="width" min="1" value="32" aria-describedby="width-help">
-        <small id="width-help" class="sr-only">Width in blocks, minimum 1</small>
+        <small id="width-help" class="sr-only">Width in blocks</small>
       </div>
       <div>
         <label for="height">Height (blocks)</label>
         <input type="number" id="height" min="1" value="32" aria-describedby="height-help">
-        <small id="height-help" class="sr-only">Height in blocks, minimum 1</small>
+        <small id="height-help" class="sr-only">Height in blocks</small>
       </div>
       <div>
-        <label for="black-white">Black & White Filter</label>
-        <select id="black-white">
-          <option value="false">Color</option>
-          <option value="true">Black & White</option>
-        </select>
-      </div>
-      <div>
-        <label for="view-mode">View of textures</label>
+        <label for="view-mode">View Mode</label>
         <select id="view-mode">
-          <option value="both">Both</option>
-          <option value="top">Top</option>
-          <option value="side">Side</option>
+          <option value="both">All Blocks</option>
+          <option value="top">Top View Only</option>
+          <option value="side">Side View Only</option>
         </select>
       </div>
       <div class="glass-overlay-section">
         <label class="glass-checkbox">
-          <input type="checkbox" id="glass-overlay" aria-describedby="glass-help">
-          Add Glass Overlay
+          <input type="checkbox" id="glass-overlay">
+          Glass Overlay
         </label>
-        <small id="glass-help" class="sr-only">Add a glass layer over blocks for more color options</small>
       </div>
       <div class="glass-overlay-section">
         <label class="glass-checkbox">
-          <input type="checkbox" id="remove-blockentities" aria-describedby="entities-help">
+          <input type="checkbox" id="grayscale">
+          Black & White
+        </label>
+      </div>
+      <div class="glass-overlay-section">
+        <label class="glass-checkbox">
+          <input type="checkbox" id="remove-blockentities">
           Remove Block Entities
         </label>
-        <small id="entities-help" class="sr-only">Exclude blocks with special properties like chests, furnaces, etc.</small>
       </div>
       <div class="button-group">
-        <button id="process-image" type="button" disabled>Generate Pixel Art</button>
+        <button id="process-image" type="button" disabled>Process Image</button>
         <button id="copy-blocks" type="button" disabled>Copy Block List</button>
-        <button id="export-schematic" type="button" disabled>Export to .schematic</button>
+        <button id="export-schematic" type="button" disabled>Export .schem</button>
       </div>
     </div>
   </main>
-
-  <footer>
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-section">
-          <h3>ChromaBlock</h3>
-          <p>Create stunning Minecraft block gradients with ease.</p>
-        </div>
-        <div class="footer-section">
-          <h3>Explore</h3>
-          <ul>
-            <li><a href="gradient1D.html">1D Gradient</a></li>
-            <li><a href="gradient2D.html">2D Gradient</a></li>
-            <li><a href="gradient3D.html">3D Gradient</a></li>
-            <li><a href="#">Noises</a></li>
-            <li><a href="#">Palette</a></li>
-            <li><a href="pixelArt.html">Pixel Art</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Connect</h3>
-          <ul>
-            <li><a href="#" target="_blank" rel="noopener noreferrer">Instagram</a></li>
-            <li><a href="#" target="_blank" rel="noopener noreferrer">Discord</a></li>
-            <li><a href="#" target="_blank" rel="noopener noreferrer">X</a></li>
-            <li><a href="#" target="_blank" rel="noopener noreferrer">GitHub</a></li>
-          </ul>
-        </div>
-        <div class="footer-section">
-          <h3>Legal</h3>
-          <ul>
-            <li><a href="#">Privacy Policy</a></li>
-            <li><a href="#">Terms of Use</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="footer-bottom">
-        <p>&copy; 2025 ChromaBlock. All rights reserved.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Chargement différé des scripts pour de meilleures performances -->
-  <script>
-    // Validation côté client pour renforcer la sécurité
-    document.addEventListener('DOMContentLoaded', function() {
-      // Protection contre les attaques par manipulation DOM
-      const sensitiveInputs = document.querySelectorAll('input[type="file"], input[type="number"]');
-      sensitiveInputs.forEach(input => {
-        input.addEventListener('change', function(e) {
-          // Log des changements pour audit de sécurité (en développement)
-          if (window.console && console.log) {
-            console.log('Input change detected:', e.target.id, e.target.value);
-          }
-        });
-      });
-
-      // Protection contre les attaques XSS sur les tooltips
-      const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(function(node) {
-              if (node.nodeType === Node.ELEMENT_NODE && node.classList && node.classList.contains('tooltip')) {
-                // Nettoyer le contenu des tooltips
-                node.textContent = node.textContent.replace(/<[^>]*>/g, '');
-              }
-            });
-          }
-        });
-      });
-      
-      observer.observe(document.body, {
-        childList: true,
-        subtree: true
-      });
-    });
-  </script>
 </body>
 </html>
