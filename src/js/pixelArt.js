@@ -3,6 +3,10 @@ let glassBlocks = [];
 let currentImage = null;
 let pixelArtData = [];
 
+// Block lookup table pour améliorer les performances
+let blockLookupTable = null;
+let glassLookupTable = null;
+
 // Block entities to avoid when "Remove Block Entities" is checked
 const blockEntities = new Set([
   'banner',
@@ -58,6 +62,67 @@ const blockEntities = new Set([
   'vault[ominous=true]'
 ]);
 
+// Validation de sécurité des fichiers
+function validateImageFile(file) {
+  // Vérifier l'extension
+  const allowedExtensions = /\.(jpg|jpeg|png|gif|webp)$/i;
+  if (!allowedExtensions.test(file.name)) {
+    return false;
+  }
+  
+  // Vérifier le type MIME
+  const allowedMimeTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+  if (!allowedMimeTypes.includes(file.type)) {
+    return false;
+  }
+  
+  // Vérifier la taille (max 10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    return false;
+  }
+  
+  return true;
+}
+
+// Validation supplémentaire du contenu image
+function validateImageContent(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    
+    reader.onload = (e) => {
+      const arrayBuffer = e.target.result;
+      const uint8Array = new Uint8Array(arrayBuffer);
+      
+      // Vérifier les magic bytes (signatures de fichiers)
+      const signatures = {
+        'jpg': [0xFF, 0xD8, 0xFF],
+        'png': [0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A],
+        'gif': [0x47, 0x49, 0x46],
+        'webp': [0x52, 0x49, 0x46, 0x46] // RIFF
+      };
+      
+      let isValid = false;
+      for (const [format, signature] of Object.entries(signatures)) {
+        if (uint8Array.length >= signature.length) {
+          const match = signature.every((byte, i) => uint8Array[i] === byte);
+          if (match) {
+            isValid = true;
+            break;
+          }
+        }
+      }
+      
+      if (isValid) {
+        resolve(true);
+      } else {
+        reject(new Error('Invalid image file signature'));
+      }
+    };
+    
+    reader.onerror = () => reject(new Error('Failed to read file'));
+    reader.readAsArrayBuffer(file.slice(0, 16)); // Lire seulement les premiers bytes
+  });
+}
 
 // Load blocks and glass from JSON files
 async function loadBlocks() {
@@ -68,10 +133,45 @@ async function loadBlocks() {
     ]);
     blocks = await blocksResponse.json();
     glassBlocks = await glassResponse.json();
+    
+    // Créer les lookup tables pour améliorer les performances
+    createLookupTables();
+    
     console.log(`Loaded ${blocks.length} blocks and ${glassBlocks.length} glass blocks`);
   } catch (error) {
     console.error('Error loading blocks or glass:', error);
   }
+}
+
+// Créer des lookup tables pour accélérer la recherche
+function createLookupTables() {
+  // Diviser l'espace de couleur en cubes pour une recherche plus rapide
+  const CUBE_SIZE = 32; // Taille des cubes (0-255 divisé par 8 = 32)
+  
+  blockLookupTable = new Map();
+  glassLookupTable = new Map();
+  
+  blocks.forEach(block => {
+    const key = Math.floor(block.color.r / CUBE_SIZE) + ',' + 
+               Math.floor(block.color.g / CUBE_SIZE) + ',' + 
+               Math.floor(block.color.b / CUBE_SIZE);
+    
+    if (!blockLookupTable.has(key)) {
+      blockLookupTable.set(key, []);
+    }
+    blockLookupTable.get(key).push(block);
+  });
+  
+  glassBlocks.forEach(glass => {
+    const key = Math.floor(glass.color.r / CUBE_SIZE) + ',' + 
+               Math.floor(glass.color.g / CUBE_SIZE) + ',' + 
+               Math.floor(glass.color.b / CUBE_SIZE);
+    
+    if (!glassLookupTable.has(key)) {
+      glassLookupTable.set(key, []);
+    }
+    glassLookupTable.get(key).push(glass);
+  });
 }
 
 // Upload handling
@@ -116,9 +216,19 @@ function setupUpload() {
   clearBtn.addEventListener('click', clearImage);
 }
 
-function handleFile(file) {
-  if (!file.type.startsWith('image/')) {
-    alert('Please select a valid image file.');
+async function handleFile(file) {
+  // Validation sécurisée du fichier
+  if (!validateImageFile(file)) {
+    alert('Please select a valid image file (JPG, PNG, GIF, WEBP, max 10MB).');
+    return;
+  }
+  
+  try {
+    // Validation du contenu
+    await validateImageContent(file);
+  } catch (error) {
+    alert('Invalid image file. Please select a valid image.');
+    console.error('Image validation failed:', error);
     return;
   }
 
@@ -129,6 +239,9 @@ function handleFile(file) {
       currentImage = img;
       showImagePreview(img, file);
       updateButtonStates();
+    };
+    img.onerror = () => {
+      alert('Failed to load image. Please try another file.');
     };
     img.src = e.target.result;
   };
@@ -180,7 +293,7 @@ function processImage() {
 
   const width = parseInt(document.getElementById('width').value) || 32;
   const height = parseInt(document.getElementById('height').value) || 32;
-  const dithering = document.getElementById('dithering').value;
+  const blackAndWhite = document.getElementById('black-and-white').checked;
   const viewMode = document.getElementById('view-mode').value;
   const useGlass = document.getElementById('glass-overlay').checked;
 
@@ -224,9 +337,9 @@ function processImage() {
       
       const imageData = ctx.getImageData(0, 0, width, height);
       
-      // Apply dithering if selected
-      if (dithering !== 'none') {
-        applyDithering(imageData, dithering);
+      // Apply black and white conversion if selected
+      if (blackAndWhite) {
+        applyBlackAndWhite(imageData);
       }
       
       // Convert to blocks
@@ -264,78 +377,21 @@ function hideProcessing() {
   `;
 }
 
-function applyDithering(imageData, type) {
+function applyBlackAndWhite(imageData) {
   const data = imageData.data;
-  const width = imageData.width;
-  const height = imageData.height;
-
-  if (type === 'floyd-steinberg') {
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        
-        const oldR = data[idx];
-        const oldG = data[idx + 1];
-        const oldB = data[idx + 2];
-        
-        const newR = oldR < 128 ? 0 : 255;
-        const newG = oldG < 128 ? 0 : 255;
-        const newB = oldB < 128 ? 0 : 255;
-        
-        data[idx] = newR;
-        data[idx + 1] = newG;
-        data[idx + 2] = newB;
-        
-        const errR = oldR - newR;
-        const errG = oldG - newG;
-        const errB = oldB - newB;
-        
-        // Distribute error to neighboring pixels
-        distributeError(data, width, height, x + 1, y, errR, errG, errB, 7/16);
-        distributeError(data, width, height, x - 1, y + 1, errR, errG, errB, 3/16);
-        distributeError(data, width, height, x, y + 1, errR, errG, errB, 5/16);
-        distributeError(data, width, height, x + 1, y + 1, errR, errG, errB, 1/16);
-      }
-    }
-  } else if (type === 'atkinson') {
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        const idx = (y * width + x) * 4;
-        
-        const oldR = data[idx];
-        const oldG = data[idx + 1];
-        const oldB = data[idx + 2];
-        
-        const newR = Math.round(oldR / 85) * 85;
-        const newG = Math.round(oldG / 85) * 85;
-        const newB = Math.round(oldB / 85) * 85;
-        
-        data[idx] = Math.min(255, newR);
-        data[idx + 1] = Math.min(255, newG);
-        data[idx + 2] = Math.min(255, newB);
-        
-        const errR = oldR - newR;
-        const errG = oldG - newG;
-        const errB = oldB - newB;
-        
-        // Atkinson dithering pattern
-        distributeError(data, width, height, x + 1, y, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x + 2, y, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x - 1, y + 1, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x, y + 1, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x + 1, y + 1, errR, errG, errB, 1/8);
-        distributeError(data, width, height, x, y + 2, errR, errG, errB, 1/8);
-      }
-    }
-  }
-}
-
-function distributeError(data, width, height, x, y, errR, errG, errB, factor) {
-  if (x >= 0 && x < width && y >= 0 && y < height) {
-    const idx = (y * width + x) * 4;
-    data[idx] = Math.max(0, Math.min(255, data[idx] + errR * factor));
-    data[idx + 1] = Math.max(0, Math.min(255, data[idx + 1] + errG * factor));
-    data[idx + 2] = Math.max(0, Math.min(255, data[idx + 2] + errB * factor));
+  
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    
+    // Conversion en niveaux de gris avec pondération perceptuelle
+    const gray = Math.round(0.299 * r + 0.587 * g + 0.114 * b);
+    
+    data[i] = gray;     // R
+    data[i + 1] = gray; // G
+    data[i + 2] = gray; // B
+    // data[i + 3] reste alpha inchangé
   }
 }
 
@@ -363,34 +419,40 @@ function convertToBlocks(imageData, viewMode, useGlass) {
     throw new Error('No blocks available for selected view mode and filters');
   }
 
-  for (let i = 0; i < data.length; i += 4) {
-    const r = data[i];
-    const g = data[i + 1];
-    const b = data[i + 2];
-    const a = data[i + 3];
+  // Traiter par batch pour améliorer les performances
+  const batchSize = 1000;
+  for (let i = 0; i < data.length; i += 4 * batchSize) {
+    const batchEnd = Math.min(i + 4 * batchSize, data.length);
     
-    if (a < 128) {
-      // Transparent pixel
-      result.push({
-        base: null,
-        glass: null,
-        color: { r: 0, g: 0, b: 0 },
-        transparent: true
-      });
-    } else {
-      const targetColor = { r, g, b };
+    for (let j = i; j < batchEnd; j += 4) {
+      const r = data[j];
+      const g = data[j + 1];
+      const b = data[j + 2];
+      const a = data[j + 3];
       
-      if (useGlass) {
-        const { base, glass } = findNearestBlockPair(targetColor, filteredBlocks, filteredGlass);
-        result.push({ base, glass, color: targetColor, transparent: false });
-      } else {
-        const base = findNearestBlock(targetColor, filteredBlocks);
-        result.push({ 
-          base, 
-          glass: filteredGlass.find(b => b.name === 'none'),
-          color: targetColor, 
-          transparent: false 
+      if (a < 128) {
+        // Transparent pixel
+        result.push({
+          base: null,
+          glass: null,
+          color: { r: 0, g: 0, b: 0 },
+          transparent: true
         });
+      } else {
+        const targetColor = { r, g, b };
+        
+        if (useGlass) {
+          const { base, glass } = findNearestBlockPairFast(targetColor, filteredBlocks, filteredGlass);
+          result.push({ base, glass, color: targetColor, transparent: false });
+        } else {
+          const base = findNearestBlockFast(targetColor, filteredBlocks);
+          result.push({ 
+            base, 
+            glass: filteredGlass.find(b => b.name === 'none'),
+            color: targetColor, 
+            transparent: false 
+          });
+        }
       }
     }
   }
@@ -398,12 +460,43 @@ function convertToBlocks(imageData, viewMode, useGlass) {
   return result;
 }
 
-function findNearestBlock(targetColor, availableBlocks) {
+// Version optimisée pour la recherche de blocs
+function findNearestBlockFast(targetColor, availableBlocks) {
+  const CUBE_SIZE = 32;
+  const cubeR = Math.floor(targetColor.r / CUBE_SIZE);
+  const cubeG = Math.floor(targetColor.g / CUBE_SIZE);
+  const cubeB = Math.floor(targetColor.b / CUBE_SIZE);
+  
+  // Chercher dans le cube principal et les cubes adjacents
+  const candidateBlocks = new Set();
+  
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dg = -1; dg <= 1; dg++) {
+      for (let db = -1; db <= 1; db++) {
+        const key = (cubeR + dr) + ',' + (cubeG + dg) + ',' + (cubeB + db);
+        const cubeBlocks = blockLookupTable.get(key);
+        if (cubeBlocks) {
+          cubeBlocks.forEach(block => {
+            if (availableBlocks.includes(block)) {
+              candidateBlocks.add(block);
+            }
+          });
+        }
+      }
+    }
+  }
+  
+  // Si aucun candidat trouvé, utiliser tous les blocs disponibles
+  if (candidateBlocks.size === 0) {
+    candidateBlocks.clear();
+    availableBlocks.forEach(block => candidateBlocks.add(block));
+  }
+  
   let minDistance = Infinity;
   let bestBlock = availableBlocks[0];
   
-  availableBlocks.forEach(block => {
-    const distance = colorDistance(targetColor, block.color);
+  candidateBlocks.forEach(block => {
+    const distance = colorDistanceFast(targetColor, block.color);
     if (distance < minDistance) {
       minDistance = distance;
       bestBlock = block;
@@ -413,25 +506,29 @@ function findNearestBlock(targetColor, availableBlocks) {
   return bestBlock;
 }
 
-function findNearestBlockPair(targetColor, availableBlocks, availableGlass) {
+function findNearestBlockPairFast(targetColor, availableBlocks, availableGlass) {
   let minDistance = Infinity;
   let bestBase = availableBlocks[0];
   let bestGlass = availableGlass.find(b => b.name === 'none');
   
-  availableBlocks.forEach(base => {
+  // Utiliser la recherche rapide pour la base
+  const candidateBases = getCandidateBlocks(targetColor, availableBlocks);
+  
+  candidateBases.forEach(base => {
     // Try with no glass
-    let distance = colorDistance(targetColor, base.color);
+    let distance = colorDistanceFast(targetColor, base.color);
     if (distance < minDistance) {
       minDistance = distance;
       bestBase = base;
       bestGlass = availableGlass.find(b => b.name === 'none');
     }
     
-    // Try with each glass block
-    availableGlass.forEach(glass => {
+    // Try with each glass block (mais seulement les plus pertinents)
+    const relevantGlass = availableGlass.slice(0, Math.min(20, availableGlass.length));
+    relevantGlass.forEach(glass => {
       if (glass.name === 'none') return;
       const blendedColor = blendColors(base.color, glass);
-      distance = colorDistance(targetColor, blendedColor);
+      distance = colorDistanceFast(targetColor, blendedColor);
       if (distance < minDistance) {
         minDistance = distance;
         bestBase = base;
@@ -441,6 +538,42 @@ function findNearestBlockPair(targetColor, availableBlocks, availableGlass) {
   });
   
   return { base: bestBase, glass: bestGlass };
+}
+
+function getCandidateBlocks(targetColor, availableBlocks) {
+  const CUBE_SIZE = 32;
+  const cubeR = Math.floor(targetColor.r / CUBE_SIZE);
+  const cubeG = Math.floor(targetColor.g / CUBE_SIZE);
+  const cubeB = Math.floor(targetColor.b / CUBE_SIZE);
+  
+  const candidates = new Set();
+  
+  // Chercher dans un rayon plus petit pour être plus rapide
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dg = -1; dg <= 1; dg++) {
+      for (let db = -1; db <= 1; db++) {
+        const key = (cubeR + dr) + ',' + (cubeG + dg) + ',' + (cubeB + db);
+        const cubeBlocks = blockLookupTable.get(key);
+        if (cubeBlocks) {
+          cubeBlocks.forEach(block => {
+            if (availableBlocks.includes(block)) {
+              candidates.add(block);
+            }
+          });
+        }
+      }
+    }
+  }
+  
+  return candidates.size > 0 ? Array.from(candidates) : availableBlocks.slice(0, 50);
+}
+
+// Version optimisée du calcul de distance
+function colorDistanceFast(c1, c2) {
+  const dr = c1.r - c2.r;
+  const dg = c1.g - c2.g;
+  const db = c1.b - c2.b;
+  return dr * dr + dg * dg + db * db; // Pas besoin de Math.pow pour ^2
 }
 
 function blendColors(baseColor, glassBlock) {
@@ -453,7 +586,7 @@ function blendColors(baseColor, glassBlock) {
 }
 
 function colorDistance(c1, c2) {
-  return Math.pow(c1.r - c2.r, 2) + Math.pow(c1.g - c2.g, 2) + Math.pow(c1.b - c2.b, 2);
+  return colorDistanceFast(c1, c2);
 }
 
 function renderPixelArt(data, width, height) {
@@ -796,7 +929,7 @@ function setupEventListeners() {
       setTimeout(processImage, 300);
     }
   });
-  document.getElementById('dithering').addEventListener('change', () => {
+  document.getElementById('black-and-white').addEventListener('change', () => {
     if (currentImage) {
       processImage();
     }
