@@ -951,51 +951,12 @@ function setupEventListeners() {
   });
 }
 
-// Background canvas animation (reuse from main site)
-function initBackgroundCanvas() {
-  const canvas = document.getElementById('background-canvas');
-  if (!canvas) return;
-  
-  const ctx = canvas.getContext('2d');
-  let animationId;
-  
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  
-  function drawBackground() {
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
-    // Draw some floating particles
-    const time = Date.now() * 0.001;
-    ctx.fillStyle = 'rgba(41, 255, 137, 0.1)';
-    
-    for (let i = 0; i < 20; i++) {
-      const x = (Math.sin(time + i) * 200) + canvas.width / 2;
-      const y = (Math.cos(time + i * 0.5) * 150) + canvas.height / 2;
-      const size = Math.sin(time + i * 2) * 3 + 5;
-      
-      ctx.beginPath();
-      ctx.arc(x, y, size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-    
-    animationId = requestAnimationFrame(drawBackground);
-  }
-  
-  resizeCanvas();
-  drawBackground();
-  
-  window.addEventListener('resize', resizeCanvas);
-}
+// Background canvas removed - no animation needed
 
 // Initialize everything
 document.addEventListener('DOMContentLoaded', () => {
   loadBlocks();
   setupUpload();
   setupEventListeners();
-  initBackgroundCanvas();
   updateButtonStates();
 });
