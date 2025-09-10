@@ -916,16 +916,61 @@ async function exportPixelArtToSchematic() {
 function setupDropdownButton() {
   const dropdownButton = document.getElementById('export-button');
   const dropdownMenu = document.querySelector('.dropdown-menu-button');
+  const dropdownArrow = dropdownButton.querySelector('.dropdown-arrow');
   
-  // Toggle dropdown on arrow click
+  // Handle click events
   dropdownButton.addEventListener('click', (e) => {
     e.preventDefault();
-    if (e.target.classList.contains('dropdown-arrow')) {
+    const rect = dropdownButton.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const buttonWidth = rect.width;
+    
+    // If clicked in the rightmost 1/6 of the button (dropdown area)
+    if (clickX > buttonWidth * 5/6) {
       dropdownMenu.classList.toggle('show');
     } else {
-      // Main button click - default to schematic export
+      // Clicked in the main area (5/6 left) - export schematic
+      dropdownMenu.classList.remove('show');
       exportPixelArtToSchematic();
     }
+  });
+  
+  // Show dropdown on hover over the right part
+  dropdownButton.addEventListener('mousemove', (e) => {
+    const rect = dropdownButton.getBoundingClientRect();
+    const hoverX = e.clientX - rect.left;
+    const buttonWidth = rect.width;
+    
+    if (hoverX > buttonWidth * 5/6) {
+      dropdownMenu.classList.add('show');
+      dropdownButton.classList.add('dropdown-hover');
+    } else {
+      dropdownButton.classList.remove('dropdown-hover');
+    }
+  });
+  
+  // Hide dropdown when leaving button area (unless hovering over menu)
+  dropdownButton.addEventListener('mouseleave', () => {
+    dropdownButton.classList.remove('dropdown-hover');
+    setTimeout(() => {
+      if (!dropdownMenu.matches(':hover') && !dropdownButton.matches(':hover')) {
+        dropdownMenu.classList.remove('show');
+      }
+    }, 100);
+  });
+  
+  // Keep dropdown open when hovering over menu
+  dropdownMenu.addEventListener('mouseenter', () => {
+    dropdownMenu.classList.add('show');
+  });
+  
+  // Hide dropdown when leaving menu
+  dropdownMenu.addEventListener('mouseleave', () => {
+    setTimeout(() => {
+      if (!dropdownButton.matches(':hover')) {
+        dropdownMenu.classList.remove('show');
+      }
+    }, 100);
   });
   
   // Close dropdown when clicking outside
