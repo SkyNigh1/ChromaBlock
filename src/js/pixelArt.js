@@ -284,7 +284,7 @@ function updateButtonStates() {
   
   document.getElementById('process-image').disabled = !hasImage;
   document.getElementById('copy-blocks').disabled = !hasPixelArt;
-  document.getElementById('export-schematic').disabled = !hasPixelArt;
+  document.getElementById('export-button').disabled = !hasPixelArt;
 }
 
 // Image processing with smart cropping
@@ -912,11 +912,35 @@ async function exportPixelArtToSchematic() {
   }
 }
 
+// Dropdown button functionality
+function setupDropdownButton() {
+  const dropdownButton = document.getElementById('export-button');
+  const dropdownMenu = document.querySelector('.dropdown-menu-button');
+  
+  // Toggle dropdown on arrow click
+  dropdownButton.addEventListener('click', (e) => {
+    e.preventDefault();
+    if (e.target.classList.contains('dropdown-arrow')) {
+      dropdownMenu.classList.toggle('show');
+    } else {
+      // Main button click - default to schematic export
+      exportPixelArtToSchematic();
+    }
+  });
+  
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+      dropdownMenu.classList.remove('show');
+    }
+  });
+}
+
 // Event listeners
 function setupEventListeners() {
   document.getElementById('process-image').addEventListener('click', processImage);
   document.getElementById('copy-blocks').addEventListener('click', copyBlockList);
-  document.getElementById('export-schematic').addEventListener('click', exportPixelArtToSchematic);
+  setupDropdownButton();
   document.getElementById('width').addEventListener('input', () => {
     if (currentImage && pixelArtData.length > 0) {
       // Auto-regenerate when width changes
