@@ -338,8 +338,9 @@ function processImage() {
           let b = imageData[index + 2];
           const a = imageData[index + 3];
 
+          let gray;
           if (blackAndWhite) {
-            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            gray = 0.299 * r + 0.587 * g + 0.114 * b;
             r = g = b = Math.round(gray);
           }
 
@@ -414,9 +415,23 @@ function processImage() {
             pixelData.base = closestBlock;
 
             if (useGlass) {
-              // Use grayscale cubeKey for glass in black-and-white mode
               const glassCubeKey = blackAndWhite ? `${Math.floor(r / 32)},${Math.floor(r / 32)},${Math.floor(r / 32)}` : cubeKey;
-              const glassCandidates = glassLookupTable.get(glassCubeKey) || glassBlocks;
+              let glassCandidates = glassLookupTable.get(glassCubeKey) || glassBlocks;
+
+              if (blackAndWhite) {
+                glassCandidates = glassCandidates.filter(glass => {
+                  const { r: gr, g: gg, b: gb } = glass.color;
+                  return Math.abs(gr - gg) < 10 && Math.abs(gg - gb) < 10 && Math.abs(gr - gb) < 10;
+                });
+                if (glassCandidates.length === 0) {
+                  console.log(`No grayscale glass in candidates for pixel (${x}, ${y}), using all glass blocks`);
+                  glassCandidates = glassBlocks.filter(glass => {
+                    const { r: gr, g: gg, b: gb } = glass.color;
+                    return Math.abs(gr - gg) < 10 && Math.abs(gg - gb) < 10 && Math.abs(gr - gb) < 10;
+                  });
+                }
+              }
+
               const sortedGlass = glassCandidates.map(glass => {
                 const distance = Math.sqrt(
                   (r - glass.color.r) ** 2 +
@@ -435,9 +450,15 @@ function processImage() {
               }
               if (!closestGlass) {
                 console.log(`No glass with view ${viewMode} for pixel (${x}, ${y}), searching all glass blocks`);
-                const allGlassCandidates = glassBlocks.filter(glass => 
+                let allGlassCandidates = glassBlocks.filter(glass => 
                   glass.view === viewMode || glass.view === 'both'
                 );
+                if (blackAndWhite) {
+                  allGlassCandidates = allGlassCandidates.filter(glass => {
+                    const { r: gr, g: gg, b: gb } = glass.color;
+                    return Math.abs(gr - gg) < 10 && Math.abs(gg - gb) < 10 && Math.abs(gr - gb) < 10;
+                  });
+                }
                 if (allGlassCandidates.length > 0) {
                   closestGlass = allGlassCandidates.reduce((best, glass) => {
                     const distance = Math.sqrt(
@@ -450,7 +471,13 @@ function processImage() {
                 }
               }
 
-              pixelData.glass = closestGlass || { name: 'none', path: '', color: { r: 0, g: 0, b: 0 }, view: 'both' };
+              pixelData.glass = closestGlass || { 
+                name: 'glass', 
+                path: 'assets/glass/glass.png', 
+                color: { r: 255, g: 255, b: 255 }, 
+                view: 'both' 
+              };
+              console.log(`Selected glass for pixel (${x}, ${y}): ${pixelData.glass.name}`);
             }
           }
 
