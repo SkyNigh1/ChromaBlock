@@ -346,7 +346,7 @@ function processImage() {
           let pixelData = { transparent: a < 128 };
           if (!pixelData.transparent) {
             const cubeKey = `${Math.floor(r / 32)},${Math.floor(g / 32)},${Math.floor(b / 32)}`;
-            const blockCandidates = blockLookupTable.get(cubeKey) || blocks;
+            let blockCandidates = blockLookupTable.get(cubeKey) || blocks;
 
             // Sort candidates by distance
             const sortedBlocks = blockCandidates.map(block => {
@@ -358,13 +358,32 @@ function processImage() {
               return { block, distance };
             }).sort((a, b) => a.distance - b.distance);
 
-            // Select first valid block
             let closestBlock = null;
             if (removeBlockEntities) {
+              // Try candidates from blockLookupTable or blocks
               for (const { block } of sortedBlocks) {
                 if (!blockEntities.has(block.name)) {
                   closestBlock = block;
                   break;
+                }
+              }
+              // If no valid block found, search entire blocks array
+              if (!closestBlock) {
+                console.log(`No non-entity block in candidates for pixel (${x}, ${y}), searching all blocks`);
+                const allSortedBlocks = blocks.map(block => {
+                  const distance = Math.sqrt(
+                    (r - block.color.r) ** 2 +
+                    (g - block.color.g) ** 2 +
+                    (b - block.color.b) ** 2
+                  );
+                  return { block, distance };
+                }).sort((a, b) => a.distance - b.distance);
+
+                for (const { block } of allSortedBlocks) {
+                  if (!blockEntities.has(block.name)) {
+                    closestBlock = block;
+                    break;
+                  }
                 }
               }
             } else {
@@ -372,7 +391,11 @@ function processImage() {
             }
 
             // Fallback to minecraft:stone if no valid block found
-            pixelData.base = closestBlock || { name: 'stone', path: 'assets/blocks/stone.png', color: { r: 128, g: 128, b: 128 } };
+            if (!closestBlock) {
+              console.warn(`No valid block found for pixel (${x}, ${y}), using fallback: minecraft:stone`);
+              closestBlock = { name: 'stone', path: 'assets/blocks/stone.png', color: { r: 128, g: 128, b: 128 } };
+            }
+            pixelData.base = closestBlock;
 
             if (useGlass) {
               const glassCandidates = glassLookupTable.get(cubeKey) || glassBlocks;
