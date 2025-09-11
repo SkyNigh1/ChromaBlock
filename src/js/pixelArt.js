@@ -387,10 +387,9 @@ function processImage() {
               closestBlock = sortedBlocks[0]?.block;
             }
 
-            // Handle viewMode compatibility
             if (closestBlock && closestBlock.view !== viewMode && closestBlock.view !== 'both') {
               console.log(`Block ${closestBlock.name} view (${closestBlock.view}) does not match viewMode (${viewMode}), searching for matching view`);
-              const baseName = closestBlock.name.split('[')[0]; // e.g., 'observer' from 'observer[facing=down]'
+              const baseName = closestBlock.name.split('[')[0];
               const viewCandidates = blocks.filter(block => 
                 block.name.startsWith(baseName) && 
                 (block.view === viewMode || block.view === 'both') &&
@@ -408,7 +407,6 @@ function processImage() {
               }
             }
 
-            // Fallback to minecraft:stone if no valid block found
             if (!closestBlock) {
               console.warn(`No valid block found for pixel (${x}, ${y}), using fallback: minecraft:stone`);
               closestBlock = { name: 'stone', path: 'assets/blocks/stone.png', color: { r: 128, g: 128, b: 128 }, view: 'both' };
@@ -416,7 +414,9 @@ function processImage() {
             pixelData.base = closestBlock;
 
             if (useGlass) {
-              const glassCandidates = glassLookupTable.get(cubeKey) || glassBlocks;
+              // Use grayscale cubeKey for glass in black-and-white mode
+              const glassCubeKey = blackAndWhite ? `${Math.floor(r / 32)},${Math.floor(r / 32)},${Math.floor(r / 32)}` : cubeKey;
+              const glassCandidates = glassLookupTable.get(glassCubeKey) || glassBlocks;
               const sortedGlass = glassCandidates.map(glass => {
                 const distance = Math.sqrt(
                   (r - glass.color.r) ** 2 +
