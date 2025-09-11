@@ -610,6 +610,8 @@ function colorDistance(c1, c2) {
   return colorDistanceFast(c1, c2);
 }
 
+// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
+
 function renderPixelArt(data, width, height) {
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
@@ -633,37 +635,37 @@ function renderPixelArt(data, width, height) {
   
   // Count total images that need to be loaded
   let totalImagesToLoad = 0;
+  let loadedImages = 0;
+  
+  // Pre-count images to load
   data.forEach(pixel => {
     if (!pixel.transparent && pixel.base) {
       totalImagesToLoad++;
       if (pixel.glass && pixel.glass.name !== 'none') {
-        totalImagesToLoad++; // Count glass images separately
+        totalImagesToLoad++;
       }
     }
   });
   
-  // Track loaded images
-  let loadedImages = 0;
-  
   function onImageLoaded() {
     loadedImages++;
-    const renderProgress = Math.round((loadedImages / totalImagesToLoad) * 100);
+    const renderProgress = Math.round((loadedImages / Math.max(totalImagesToLoad, 1)) * 100);
     updateProgressBar(renderProgress);
     
-    if (loadedImages === totalImagesToLoad) {
-      showImage();
+    if (loadedImages >= totalImagesToLoad) {
+      // Petite pause pour s'assurer que toutes les images sont bien rendues
+      setTimeout(showImage, 100);
     }
   }
   
-  if (totalImagesToLoad === 0) {
-    // No images to load, show immediately
-    showImage();
-    return;
-  }
-  
   function showImage() {
-    // Convert canvas to blob and create image element
     canvas.toBlob((blob) => {
+      if (!blob) {
+        console.error('Failed to create canvas blob');
+        hideProcessing();
+        return;
+      }
+      
       const url = URL.createObjectURL(blob);
       const img = document.createElement('img');
       img.src = url;
@@ -674,25 +676,34 @@ function renderPixelArt(data, width, height) {
       img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
       img.alt = 'Generated Pixel Art';
       
-      hideProcessing();
-      
-      const container = document.querySelector('.pixel-art-container');
-      const pixelArt = document.getElementById('pixel-art');
-      
-      pixelArt.style.display = 'flex';
-      pixelArt.style.justifyContent = 'center';
-      pixelArt.style.alignItems = 'center';
-      pixelArt.appendChild(img);
-      
-      // Clean up the blob URL after the image loads
       img.onload = () => {
-        // Keep the URL active for right-click functionality
-        // URL.revokeObjectURL(url); // Don't revoke immediately
+        hideProcessing();
+        
+        const container = document.querySelector('.pixel-art-container');
+        const pixelArt = document.getElementById('pixel-art');
+        
+        pixelArt.style.display = 'flex';
+        pixelArt.style.justifyContent = 'center';
+        pixelArt.style.alignItems = 'center';
+        pixelArt.innerHTML = ''; // Clear any existing content
+        pixelArt.appendChild(img);
+      };
+      
+      img.onerror = () => {
+        console.error('Failed to load generated image');
+        hideProcessing();
       };
     }, 'image/png');
   }
   
+  // Handle case where no images need to be loaded
+  if (totalImagesToLoad === 0) {
+    showImage();
+    return;
+  }
+  
   // Process each pixel
+  let processedPixels = 0;
   data.forEach((pixelData, index) => {
     const x = (index % width) * blockSize;
     const y = Math.floor(index / width) * blockSize;
@@ -711,46 +722,66 @@ function renderPixelArt(data, width, height) {
           }
         }
       }
+      processedPixels++;
       return;
     }
     
-    if (!pixelData.base) return;
+    if (!pixelData.base) {
+      processedPixels++;
+      return;
+    }
     
     // Load base image
     const baseImg = new Image();
     baseImg.crossOrigin = 'anonymous';
     
     baseImg.onload = () => {
-      // Draw base image
-      ctx.drawImage(baseImg, x, y, blockSize, blockSize);
-      onImageLoaded(); // Count this image as loaded
-      
-      // Check if there's a glass overlay
-      if (pixelData.glass && pixelData.glass.name !== 'none') {
-        const glassImg = new Image();
-        glassImg.crossOrigin = 'anonymous';
+      try {
+        // Draw base image
+        ctx.drawImage(baseImg, x, y, blockSize, blockSize);
         
-        glassImg.onload = () => {
-          ctx.save();
-          const alpha = pixelData.glass.alpha || 0.7;
-          ctx.globalAlpha = alpha;
-          ctx.drawImage(glassImg, x, y, blockSize, blockSize);
-          ctx.restore();
-          onImageLoaded(); // Count glass image as loaded
-        };
+        // Check if there's a glass overlay
+        if (pixelData.glass && pixelData.glass.name !== 'none') {
+          const glassImg = new Image();
+          glassImg.crossOrigin = 'anonymous';
+          
+          glassImg.onload = () => {
+            try {
+              ctx.save();
+              const alpha = pixelData.glass.alpha || 0.7;
+              ctx.globalAlpha = alpha;
+              ctx.drawImage(glassImg, x, y, blockSize, blockSize);
+              ctx.restore();
+              onImageLoaded(); // Count glass image as loaded
+            } catch (err) {
+              console.warn(`Error drawing glass image: ${err.message}`);
+              onImageLoaded();
+            }
+          };
+          
+          glassImg.onerror = () => {
+            console.warn(`Failed to load glass image: ${pixelData.glass.path}`);
+            onImageLoaded();
+          };
+          
+          glassImg.src = pixelData.glass.path;
+        }
         
-        glassImg.onerror = () => {
-          console.warn(`Failed to load glass image: ${pixelData.glass.path}`);
-          onImageLoaded(); // Count as loaded even if failed
-        };
+        onImageLoaded(); // Count base image as loaded
+      } catch (err) {
+        console.warn(`Error drawing base image: ${err.message}`);
+        onImageLoaded();
         
-        glassImg.src = pixelData.glass.path;
+        // If there was supposed to be a glass image too, count it as well
+        if (pixelData.glass && pixelData.glass.name !== 'none') {
+          onImageLoaded();
+        }
       }
     };
     
     baseImg.onerror = () => {
       console.warn(`Failed to load base image: ${pixelData.base.path}`);
-      onImageLoaded(); // Count as loaded even if failed
+      onImageLoaded();
       
       // If there was supposed to be a glass image too, count it as well
       if (pixelData.glass && pixelData.glass.name !== 'none') {
@@ -759,6 +790,7 @@ function renderPixelArt(data, width, height) {
     };
     
     baseImg.src = pixelData.base.path;
+    processedPixels++;
   });
 }
 
