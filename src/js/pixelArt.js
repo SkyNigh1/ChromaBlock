@@ -663,18 +663,26 @@ function renderPixelArt(width, height, viewMode, useGlass) {
 
   if (!pixelArt || !placeholder) {
     console.error('Required DOM elements not found');
+    placeholder.innerHTML = '<p>Error: Pixel art container not found.</p>';
     return;
   }
 
   try {
     pixelArt.innerHTML = '';
+    pixelArt.classList.remove('hidden');
+    pixelArt.style.display = 'grid';
     pixelArt.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
+    pixelArt.style.width = '100%';
+    pixelArt.style.height = 'auto';
+
+    console.log('Rendering pixel art with', pixelArtData.length, 'pixels');
 
     pixelArtData.forEach((pixelData, index) => {
       const square = document.createElement('div');
       square.className = 'pixel-square';
       square.style.width = `${100 / width}%`;
       square.style.aspectRatio = '1/1';
+      square.style.position = 'relative';
 
       if (pixelData.transparent) {
         square.style.background = `
@@ -690,6 +698,18 @@ function renderPixelArt(width, height, viewMode, useGlass) {
         baseImg.src = pixelData.base.path;
         baseImg.alt = pixelData.base.name;
         baseImg.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
+        baseImg.style.width = '100%';
+        baseImg.style.height = '100%';
+        baseImg.style.position = 'absolute';
+        baseImg.style.top = '0';
+        baseImg.style.left = '0';
+        baseImg.style.zIndex = '1';
+
+        baseImg.onerror = () => {
+          console.warn(`Failed to load base image: ${pixelData.base.path}`);
+          square.style.backgroundColor = '#ff0000';
+        };
+
         square.appendChild(baseImg);
 
         if (useGlass && pixelData.glass && pixelData.glass.name !== 'none') {
@@ -698,19 +718,38 @@ function renderPixelArt(width, height, viewMode, useGlass) {
           glassImg.src = pixelData.glass.path;
           glassImg.alt = pixelData.glass.name;
           glassImg.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
+          glassImg.style.width = '100%';
+          glassImg.style.height = '100%';
+          glassImg.style.position = 'absolute';
+          glassImg.style.top = '0';
+          glassImg.style.left = '0';
+          glassImg.style.zIndex = '2';
+          glassImg.style.opacity = '0.7';
+
+          glassImg.onerror = () => {
+            console.warn(`Failed to load glass image: ${pixelData.glass.path}`);
+            square.style.backgroundColor = '#ff0000';
+          };
+
           square.appendChild(glassImg);
         }
+      } else {
+        console.warn(`No base block for pixel at index ${index}`);
+        square.style.backgroundColor = '#ff0000';
       }
 
       pixelArt.appendChild(square);
     });
 
-    pixelArt.classList.remove('hidden');
+    console.log(`Rendered ${pixelArt.children.length} pixel squares`);
+
     placeholder.classList.add('hidden');
     updateButtonStates();
   } catch (error) {
     console.error('Error rendering pixel art:', error);
     placeholder.innerHTML = '<p>Error rendering pixel art. Please try again.</p>';
+    placeholder.classList.remove('hidden');
+    pixelArt.classList.add('hidden');
   }
 }
 
