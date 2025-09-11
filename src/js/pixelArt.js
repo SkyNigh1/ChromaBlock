@@ -589,12 +589,15 @@ function colorDistance(c1, c2) {
   return colorDistanceFast(c1, c2);
 }
 
-async function renderPixelArt(data, width, height) {
+function renderPixelArt(data, width, height) {
+  hideProcessing();
+  
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
   
-  // Update progress to rendering phase
-  updateProgress('rendering', 0);
+  pixelArt.innerHTML = '';
+  placeholder.classList.add('hidden');
+  pixelArt.classList.remove('hidden');
   
   // Calculate display size to fit in container (max 735px like gradients)
   const maxSize = 735;
@@ -615,44 +618,34 @@ async function renderPixelArt(data, width, height) {
   
   if (totalImages === 0) {
     // No images to load, show immediately
-    await showImage();
+    showImage();
     return;
   }
   
-  async function showImage() {
-    return new Promise((resolve) => {
-      updateProgress('rendering', 90);
+  function showImage() {
+    // Convert canvas to blob and create image element
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.maxWidth = displayWidth + 'px';
+      img.style.maxHeight = displayHeight + 'px';
+      img.style.imageRendering = 'pixelated';
+      img.style.borderRadius = '0.5rem';
+      img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+      img.alt = 'Generated Pixel Art';
       
-      // Convert canvas to blob and create image element
-      canvas.toBlob((blob) => {
-        const url = URL.createObjectURL(blob);
-        const img = document.createElement('img');
-        img.src = url;
-        img.style.maxWidth = displayWidth + 'px';
-        img.style.maxHeight = displayHeight + 'px';
-        img.style.imageRendering = 'pixelated';
-        img.style.borderRadius = '0.5rem';
-        img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
-        img.alt = 'Generated Pixel Art';
-        
-        img.onload = () => {
-          updateProgress('rendering', 100);
-          
-          // Hide processing and show result
-          setTimeout(() => {
-            hideProcessing();
-            pixelArt.innerHTML = '';
-            placeholder.classList.add('hidden');
-            pixelArt.classList.remove('hidden');
-            pixelArt.style.display = 'flex';
-            pixelArt.style.justifyContent = 'center';
-            pixelArt.style.alignItems = 'center';
-            pixelArt.appendChild(img);
-            resolve();
-          }, 200);
-        };
-      }, 'image/png');
-    });
+      pixelArt.style.display = 'flex';
+      pixelArt.style.justifyContent = 'center';
+      pixelArt.style.alignItems = 'center';
+      pixelArt.appendChild(img);
+      
+      // Clean up the blob URL after the image loads
+      img.onload = () => {
+        // Keep the URL active for right-click functionality
+        // URL.revokeObjectURL(url); // Don't revoke immediately
+      };
+    }, 'image/png');
   }
   
   // Process each pixel
@@ -700,9 +693,6 @@ async function renderPixelArt(data, width, height) {
           ctx.restore();
           
           loadedImages++;
-          const progress = (loadedImages / totalImages) * 80; // 0-80% of rendering phase
-          updateProgress('rendering', progress);
-          
           if (loadedImages === totalImages) {
             showImage();
           }
@@ -710,9 +700,6 @@ async function renderPixelArt(data, width, height) {
         
         glassImg.onerror = () => {
           loadedImages++;
-          const progress = (loadedImages / totalImages) * 80;
-          updateProgress('rendering', progress);
-          
           if (loadedImages === totalImages) {
             showImage();
           }
@@ -721,9 +708,6 @@ async function renderPixelArt(data, width, height) {
         glassImg.src = pixelData.glass.path;
       } else {
         loadedImages++;
-        const progress = (loadedImages / totalImages) * 80;
-        updateProgress('rendering', progress);
-        
         if (loadedImages === totalImages) {
           showImage();
         }
@@ -732,9 +716,6 @@ async function renderPixelArt(data, width, height) {
     
     baseImg.onerror = () => {
       loadedImages++;
-      const progress = (loadedImages / totalImages) * 80;
-      updateProgress('rendering', progress);
-      
       if (loadedImages === totalImages) {
         showImage();
       }
