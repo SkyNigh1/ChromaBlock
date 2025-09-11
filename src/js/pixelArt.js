@@ -348,7 +348,6 @@ function processImage() {
             const cubeKey = `${Math.floor(r / 32)},${Math.floor(g / 32)},${Math.floor(b / 32)}`;
             let blockCandidates = blockLookupTable.get(cubeKey) || blocks;
 
-            // Sort candidates by distance
             const sortedBlocks = blockCandidates.map(block => {
               const distance = Math.sqrt(
                 (r - block.color.r) ** 2 +
@@ -360,14 +359,12 @@ function processImage() {
 
             let closestBlock = null;
             if (removeBlockEntities) {
-              // Try candidates from blockLookupTable or blocks
               for (const { block } of sortedBlocks) {
                 if (!blockEntities.has(block.name)) {
                   closestBlock = block;
                   break;
                 }
               }
-              // If no valid block found, search entire blocks array
               if (!closestBlock) {
                 console.log(`No non-entity block in candidates for pixel (${x}, ${y}), searching all blocks`);
                 const allSortedBlocks = blocks.map(block => {
@@ -390,31 +387,70 @@ function processImage() {
               closestBlock = sortedBlocks[0]?.block;
             }
 
+            // Handle viewMode compatibility
+            if (closestBlock && closestBlock.view !== viewMode && closestBlock.view !== 'both') {
+              console.log(`Block ${closestBlock.name} view (${closestBlock.view}) does not match viewMode (${viewMode}), searching for matching view`);
+              const baseName = closestBlock.name.split('[')[0]; // e.g., 'observer' from 'observer[facing=down]'
+              const viewCandidates = blocks.filter(block => 
+                block.name.startsWith(baseName) && 
+                (block.view === viewMode || block.view === 'both') &&
+                (!removeBlockEntities || !blockEntities.has(block.name))
+              );
+              if (viewCandidates.length > 0) {
+                closestBlock = viewCandidates.reduce((best, block) => {
+                  const distance = Math.sqrt(
+                    (r - block.color.r) ** 2 +
+                    (g - block.color.g) ** 2 +
+                    (b - block.color.b) ** 2
+                  );
+                  return distance < best.distance ? { block, distance } : best;
+                }, { block: null, distance: Infinity }).block;
+              }
+            }
+
             // Fallback to minecraft:stone if no valid block found
             if (!closestBlock) {
               console.warn(`No valid block found for pixel (${x}, ${y}), using fallback: minecraft:stone`);
-              closestBlock = { name: 'stone', path: 'assets/blocks/stone.png', color: { r: 128, g: 128, b: 128 } };
+              closestBlock = { name: 'stone', path: 'assets/blocks/stone.png', color: { r: 128, g: 128, b: 128 }, view: 'both' };
             }
             pixelData.base = closestBlock;
 
             if (useGlass) {
               const glassCandidates = glassLookupTable.get(cubeKey) || glassBlocks;
-              let closestGlass = { name: 'none', path: '', color: { r: 0, g: 0, b: 0 } };
-              let minDistance = Infinity;
-
-              glassCandidates.forEach(glass => {
+              const sortedGlass = glassCandidates.map(glass => {
                 const distance = Math.sqrt(
                   (r - glass.color.r) ** 2 +
                   (g - glass.color.g) ** 2 +
                   (b - glass.color.b) ** 2
                 );
-                if (distance < minDistance) {
-                  minDistance = distance;
-                  closestGlass = glass;
-                }
-              });
+                return { glass, distance };
+              }).sort((a, b) => a.distance - b.distance);
 
-              pixelData.glass = closestGlass;
+              let closestGlass = null;
+              for (const { glass } of sortedGlass) {
+                if (glass.view === viewMode || glass.view === 'both') {
+                  closestGlass = glass;
+                  break;
+                }
+              }
+              if (!closestGlass) {
+                console.log(`No glass with view ${viewMode} for pixel (${x}, ${y}), searching all glass blocks`);
+                const allGlassCandidates = glassBlocks.filter(glass => 
+                  glass.view === viewMode || glass.view === 'both'
+                );
+                if (allGlassCandidates.length > 0) {
+                  closestGlass = allGlassCandidates.reduce((best, glass) => {
+                    const distance = Math.sqrt(
+                      (r - glass.color.r) ** 2 +
+                      (g - glass.color.g) ** 2 +
+                      (b - glass.color.b) ** 2
+                    );
+                    return distance < best.distance ? { glass, distance } : best;
+                  }, { glass: null, distance: Infinity }).glass;
+                }
+              }
+
+              pixelData.glass = closestGlass || { name: 'none', path: '', color: { r: 0, g: 0, b: 0 }, view: 'both' };
             }
           }
 
