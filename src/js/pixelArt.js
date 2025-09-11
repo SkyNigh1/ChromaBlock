@@ -100,7 +100,7 @@ function validateImageContent(file) {
         'gif': [0x47, 0x49, 0x46],
         'webp': [0x52, 0x49, 0x46, 0x46] // RIFF
       };
-      
+
       let isValid = false;
       for (const [format, signature] of Object.entries(signatures)) {
         if (uint8Array.length >= signature.length) {
@@ -599,38 +599,129 @@ function renderPixelArt(data, width, height) {
   placeholder.classList.add('hidden');
   pixelArt.classList.remove('hidden');
   
-  // Calculate block size to fit in container (max 735px like gradients)
+  // Calculate display size to fit in container (max 735px like gradients)
   const maxSize = 735;
-  const blockSize = Math.min(32, Math.floor(maxSize / Math.max(width, height)));
+  const displayWidth = Math.min(maxSize, width * 16);
+  const displayHeight = Math.min(maxSize, height * 16);
   
-  pixelArt.style.display = 'grid';
-  pixelArt.style.gridTemplateColumns = `repeat(${width}, ${blockSize}px)`;
-  pixelArt.style.gridTemplateRows = `repeat(${height}, ${blockSize}px)`;
-  pixelArt.style.width = `${width * blockSize}px`;
-  pixelArt.style.height = `${height * blockSize}px`;
+  // Create canvas for rendering
+  const canvas = document.createElement('canvas');
+  const ctx = canvas.getContext('2d');
+  const blockSize = 32; // Fixed size for rendering
   
+  canvas.width = width * blockSize;
+  canvas.height = height * blockSize;
+  
+  // Track loaded images
+  let loadedImages = 0;
+  const totalImages = data.filter(pixel => !pixel.transparent && pixel.base).length;
+  
+  if (totalImages === 0) {
+    // No images to load, show immediately
+    showImage();
+    return;
+  }
+  
+  function showImage() {
+    // Convert canvas to blob and create image element
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.maxWidth = displayWidth + 'px';
+      img.style.maxHeight = displayHeight + 'px';
+      img.style.imageRendering = 'pixelated';
+      img.style.borderRadius = '0.5rem';
+      img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+      img.alt = 'Generated Pixel Art';
+      
+      pixelArt.style.display = 'flex';
+      pixelArt.style.justifyContent = 'center';
+      pixelArt.style.alignItems = 'center';
+      pixelArt.appendChild(img);
+      
+      // Clean up the blob URL after the image loads
+      img.onload = () => {
+        // Keep the URL active for right-click functionality
+        // URL.revokeObjectURL(url); // Don't revoke immediately
+      };
+    }, 'image/png');
+  }
+  
+  // Process each pixel
   data.forEach((pixelData, index) => {
-    const div = document.createElement('div');
-    div.className = 'pixel-square';
-    div.style.width = `${blockSize}px`;
-    div.style.height = `${blockSize}px`;
-    div.style.position = 'relative';
+    const x = (index % width) * blockSize;
+    const y = Math.floor(index / width) * blockSize;
     
     if (pixelData.transparent) {
-      // Transparent pixel - use air block or checkerboard pattern
-      div.style.background = 'repeating-conic-gradient(#ccc 0% 25%, transparent 0% 50%) 50% / 8px 8px';
-      div.innerHTML = `<span class="tooltip">Air</span>`;
-    } else if (pixelData.base) {
-      const baseImg = `<img src="${pixelData.base.path}" alt="${pixelData.base.name}" class="base-img" />`;
-      const glassImg = pixelData.glass && pixelData.glass.name !== 'none' ? 
-        `<img src="${pixelData.glass.path}" alt="${pixelData.glass.name}" class="glass-img" />` : '';
-      const tooltip = pixelData.glass && pixelData.glass.name !== 'none' ? 
-        `Base: ${pixelData.base.name}, Glass: ${pixelData.glass.name}` : 
-        `Base: ${pixelData.base.name}`;
-      div.innerHTML = `${baseImg}${glassImg}<span class="tooltip">${tooltip}</span>`;
+      // Transparent pixel - fill with checkerboard pattern
+      ctx.fillStyle = '#f0f0f0';
+      ctx.fillRect(x, y, blockSize, blockSize);
+      ctx.fillStyle = '#e0e0e0';
+      
+      const checkerSize = blockSize / 8;
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
+          if ((i + j) % 2 === 1) {
+            ctx.fillRect(x + i * checkerSize, y + j * checkerSize, checkerSize, checkerSize);
+          }
+        }
+      }
+      return;
     }
     
-    pixelArt.appendChild(div);
+    if (!pixelData.base) return;
+    
+    // Load base image
+    const baseImg = new Image();
+    baseImg.crossOrigin = 'anonymous';
+    
+    baseImg.onload = () => {
+      // Draw base image
+      ctx.drawImage(baseImg, x, y, blockSize, blockSize);
+      
+      // Check if there's a glass overlay
+      if (pixelData.glass && pixelData.glass.name !== 'none') {
+        const glassImg = new Image();
+        glassImg.crossOrigin = 'anonymous';
+        
+        glassImg.onload = () => {
+          ctx.save();
+          const alpha = pixelData.glass.alpha || 0.7;
+          ctx.globalAlpha = alpha;
+          ctx.drawImage(glassImg, x, y, blockSize, blockSize);
+          ctx.restore();
+          
+          loadedImages++;
+          if (loadedImages === totalImages) {
+            showImage();
+          }
+        };
+        
+        glassImg.onerror = () => {
+          loadedImages++;
+          if (loadedImages === totalImages) {
+            showImage();
+          }
+        };
+        
+        glassImg.src = pixelData.glass.path;
+      } else {
+        loadedImages++;
+        if (loadedImages === totalImages) {
+          showImage();
+        }
+      }
+    };
+    
+    baseImg.onerror = () => {
+      loadedImages++;
+      if (loadedImages === totalImages) {
+        showImage();
+      }
+    };
+    
+    baseImg.src = pixelData.base.path;
   });
 }
 
