@@ -296,10 +296,10 @@ function processImage() {
   const blackAndWhite = document.getElementById('black-and-white').checked;
   const viewMode = document.getElementById('view-mode').value;
   const useGlass = document.getElementById('glass-overlay').checked;
+  const removeBlockEntities = document.getElementById('remove-blockentities').checked;
 
   showProcessing('Calculating blocks...', 0);
 
-  // Use setTimeout to allow UI update
   setTimeout(() => {
     try {
       const canvas = document.createElement('canvas');
@@ -308,74 +308,121 @@ function processImage() {
       canvas.width = width;
       canvas.height = height;
       
-      // Calculate source crop area to maintain aspect ratio
       const sourceAspect = currentImage.naturalWidth / currentImage.naturalHeight;
       const targetAspect = width / height;
       
       let sourceWidth, sourceHeight, sourceX, sourceY;
       
       if (sourceAspect > targetAspect) {
-        // Source is wider than target - crop horizontally
         sourceHeight = currentImage.naturalHeight;
         sourceWidth = sourceHeight * targetAspect;
         sourceX = (currentImage.naturalWidth - sourceWidth) / 2;
         sourceY = 0;
       } else {
-        // Source is taller than target - crop vertically  
         sourceWidth = currentImage.naturalWidth;
         sourceHeight = sourceWidth / targetAspect;
         sourceX = 0;
         sourceY = (currentImage.naturalHeight - sourceHeight) / 2;
       }
       
-      // Draw cropped and resized image
-      ctx.drawImage(
-        currentImage,
-        sourceX, sourceY, sourceWidth, sourceHeight,  // Source crop area
-        0, 0, width, height                           // Destination
-      );
-      
-      const imageData = ctx.getImageData(0, 0, width, height);
-      
-      // Apply black and white conversion if selected
-      if (blackAndWhite) {
-        applyBlackAndWhite(imageData);
+      ctx.drawImage(currentImage, sourceX, sourceY, sourceWidth, sourceHeight, 0, 0, width, height);
+      const imageData = ctx.getImageData(0, 0, width, height).data;
+      pixelArtData = [];
+
+      for (let y = 0; y < height; y++) {
+        for (let x = 0; x < width; x++) {
+          const index = (y * width + x) * 4;
+          let r = imageData[index];
+          let g = imageData[index + 1];
+          let b = imageData[index + 2];
+          const a = imageData[index + 3];
+
+          if (blackAndWhite) {
+            const gray = 0.299 * r + 0.587 * g + 0.114 * b;
+            r = g = b = Math.round(gray);
+          }
+
+          let pixelData = { transparent: a < 128 };
+          if (!pixelData.transparent) {
+            const cubeKey = `${Math.floor(r / 32)},${Math.floor(g / 32)},${Math.floor(b / 32)}`;
+            const blockCandidates = blockLookupTable.get(cubeKey) || blocks;
+            let closestBlock = null;
+            let minDistance = Infinity;
+
+            blockCandidates.forEach(block => {
+              if (removeBlockEntities && blockEntities.has(block.name)) return;
+              const distance = Math.sqrt(
+                (r - block.color.r) ** 2 +
+                (g - block.color.g) ** 2 +
+                (b - block.color.b) ** 2
+              );
+              if (distance < minDistance) {
+                minDistance = distance;
+                closestBlock = block;
+              }
+            });
+
+            pixelData.base = closestBlock;
+
+            if (useGlass) {
+              const glassCandidates = glassLookupTable.get(cubeKey) || glassBlocks;
+              let closestGlass = { name: 'none', path: '', color: { r: 0, g: 0, b: 0 } };
+              minDistance = Infinity;
+
+              glassCandidates.forEach(glass => {
+                const distance = Math.sqrt(
+                  (r - glass.color.r) ** 2 +
+                  (g - glass.color.g) ** 2 +
+                  (b - glass.color.b) ** 2
+                );
+                if (distance < minDistance) {
+                  minDistance = distance;
+                  closestGlass = glass;
+                }
+              });
+
+              pixelData.glass = closestGlass;
+            }
+          }
+
+          pixelArtData.push(pixelData);
+        }
       }
-      
-      // Update progress bar
-      updateProgressBar(50);
-      
-      // Convert to blocks
-      pixelArtData = convertToBlocks(imageData, viewMode, useGlass);
-      
-      // Update progress and start rendering
-      updateProgressBar(100);
-      showProcessing('Generating preview...', 0);
-      
-      // Use setTimeout to allow UI update before starting render
+
+      showProcessing('Generating preview...', 0.5);
       setTimeout(() => {
-        renderPixelArt(pixelArtData, width, height);
-        updateButtonStates();
-      }, 50);
-      
+        renderPixelArt(width, height, viewMode, useGlass);
+      }, 100);
     } catch (error) {
       console.error('Error processing image:', error);
-      alert('Error processing image. Please try a different image.');
-      hideProcessing();
+      const placeholder = document.getElementById('pixel-art-placeholder');
+      if (placeholder) {
+        placeholder.innerHTML = '<p>Error processing image. Please try again.</p>';
+      }
     }
   }, 100);
 }
 
 function showProcessing(message, progress) {
-  const container = document.querySelector('.pixel-art-container');
-  container.innerHTML = `
+  const pixelArt = document.getElementById('pixel-art');
+  const placeholder = document.getElementById('pixel-art-placeholder');
+
+  if (!pixelArt || !placeholder) {
+    console.error('Required DOM elements for processing not found');
+    return;
+  }
+
+  pixelArt.classList.add('hidden');
+  placeholder.classList.remove('hidden');
+  placeholder.innerHTML = `
     <div class="processing">
+      <div class="spinner"></div>
+      <p>${message}</p>
       <div class="progress-container">
         <div class="progress-bar">
-          <div class="progress-fill" style="width: ${progress}%"></div>
+          <div class="progress-fill" style="width: ${progress * 100}%"></div>
         </div>
       </div>
-      <p>${message}</p>
     </div>
   `;
 }
@@ -610,198 +657,61 @@ function colorDistance(c1, c2) {
   return colorDistanceFast(c1, c2);
 }
 
-// Version corrigée de renderPixelArt
-function renderPixelArt(data, width, height) {
+function renderPixelArt(width, height, viewMode, useGlass) {
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
-  
+
   if (!pixelArt || !placeholder) {
     console.error('Required DOM elements not found');
     return;
   }
-  
-  placeholder.classList.add('hidden');
-  
-  // Calculate display size to fit in container (max 735px like gradients)
-  const maxSize = 735;
-  const displayWidth = Math.min(maxSize, width * 16);
-  const displayHeight = Math.min(maxSize, height * 16);
-  
-  // Create canvas for rendering
-  const canvas = document.createElement('canvas');
-  const ctx = canvas.getContext('2d');
-  const blockSize = 32; // Fixed size for rendering
-  
-  canvas.width = width * blockSize;
-  canvas.height = height * blockSize;
-  
-  // Count total images that need to be loaded
-  let totalImagesToLoad = 0;
-  let loadedImages = 0;
-  
-  // Pre-count images to load
-  data.forEach(pixel => {
-    if (!pixel.transparent && pixel.base) {
-      totalImagesToLoad++;
-      if (pixel.glass && pixel.glass.name !== 'none') {
-        totalImagesToLoad++;
-      }
-    }
-  });
-  
-  function onImageLoaded() {
-    loadedImages++;
-    const renderProgress = Math.round((loadedImages / Math.max(totalImagesToLoad, 1)) * 100);
-    updateProgressBar(renderProgress);
-    
-    if (loadedImages >= totalImagesToLoad) {
-      showFinalImage();
-    }
-  }
-  
-  function showFinalImage() {
-    canvas.toBlob((blob) => {
-      if (!blob) {
-        console.error('Failed to create canvas blob');
-        hideProcessing();
-        return;
-      }
-      
-      const url = URL.createObjectURL(blob);
-      const img = document.createElement('img');
-      img.src = url;
-      img.style.maxWidth = displayWidth + 'px';
-      img.style.maxHeight = displayHeight + 'px';
-      img.style.imageRendering = 'pixelated';
-      img.style.borderRadius = '0.5rem';
-      img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
-      img.alt = 'Generated Pixel Art';
-      
-      img.onload = () => {
-        // Clean up the blob URL
-        URL.revokeObjectURL(url);
-        
-        // Update container to show final result
-        const container = document.querySelector('.pixel-art-container');
-        if (container) {
-          container.innerHTML = `
-            <div id="pixel-art" class="pixel-art"></div>
-            <div class="pixel-art-placeholder hidden" id="pixel-art-placeholder">
-              <p>Upload an image to see the pixel art preview</p>
-            </div>
-          `;
-          
-          const newPixelArt = document.getElementById('pixel-art');
-          if (newPixelArt) {
-            newPixelArt.style.display = 'flex';
-            newPixelArt.style.justifyContent = 'center';
-            newPixelArt.style.alignItems = 'center';
-            newPixelArt.classList.remove('hidden');
-            newPixelArt.appendChild(img);
-          }
-        }
-      };
-      
-      img.onerror = () => {
-        console.error('Failed to load generated image');
-        URL.revokeObjectURL(url);
-        hideProcessing();
-      };
-    }, 'image/png');
-  }
-  
-  // Handle case where no images need to be loaded
-  if (totalImagesToLoad === 0) {
-    showFinalImage();
-    return;
-  }
-  
-  // Process each pixel
-  data.forEach((pixelData, index) => {
-    const x = (index % width) * blockSize;
-    const y = Math.floor(index / width) * blockSize;
-    
-    if (pixelData.transparent) {
-      // Transparent pixel - fill with checkerboard pattern
-      ctx.fillStyle = '#f0f0f0';
-      ctx.fillRect(x, y, blockSize, blockSize);
-      ctx.fillStyle = '#e0e0e0';
-      
-      const checkerSize = blockSize / 8;
-      for (let i = 0; i < 8; i++) {
-        for (let j = 0; j < 8; j++) {
-          if ((i + j) % 2 === 1) {
-            ctx.fillRect(x + i * checkerSize, y + j * checkerSize, checkerSize, checkerSize);
-          }
-        }
-      }
-      return;
-    }
-    
-    if (!pixelData.base) {
-      return;
-    }
-    
-    // Load base image
-    const baseImg = new Image();
-    baseImg.crossOrigin = 'anonymous';
-    
-    baseImg.onload = () => {
-      try {
-        // Draw base image
-        ctx.drawImage(baseImg, x, y, blockSize, blockSize);
-        
-        // Check if there's a glass overlay
-        if (pixelData.glass && pixelData.glass.name !== 'none') {
-          const glassImg = new Image();
-          glassImg.crossOrigin = 'anonymous';
-          
-          glassImg.onload = () => {
-            try {
-              ctx.save();
-              const alpha = pixelData.glass.alpha || 0.7;
-              ctx.globalAlpha = alpha;
-              ctx.drawImage(glassImg, x, y, blockSize, blockSize);
-              ctx.restore();
-              onImageLoaded(); // Count glass image as loaded
-            } catch (err) {
-              console.warn(`Error drawing glass image: ${err.message}`);
-              onImageLoaded();
-            }
-          };
-          
-          glassImg.onerror = () => {
-            console.warn(`Failed to load glass image: ${pixelData.glass.path}`);
-            onImageLoaded();
-          };
-          
+
+  try {
+    pixelArt.innerHTML = '';
+    pixelArt.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
+
+    pixelArtData.forEach((pixelData, index) => {
+      const square = document.createElement('div');
+      square.className = 'pixel-square';
+      square.style.width = `${100 / width}%`;
+      square.style.aspectRatio = '1/1';
+
+      if (pixelData.transparent) {
+        square.style.background = `
+          linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
+          linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
+          linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
+          linear-gradient(-45deg, transparent 75%, #e0e0e0 75%)`;
+        square.style.backgroundSize = '8px 8px';
+        square.style.backgroundPosition = '0 0, 0 4px, 4px -4px, -4px 0px';
+      } else if (pixelData.base) {
+        const baseImg = document.createElement('img');
+        baseImg.className = 'base-img';
+        baseImg.src = pixelData.base.path;
+        baseImg.alt = pixelData.base.name;
+        baseImg.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
+        square.appendChild(baseImg);
+
+        if (useGlass && pixelData.glass && pixelData.glass.name !== 'none') {
+          const glassImg = document.createElement('img');
+          glassImg.className = 'glass-img';
           glassImg.src = pixelData.glass.path;
-        }
-        
-        onImageLoaded(); // Count base image as loaded
-      } catch (err) {
-        console.warn(`Error drawing base image: ${err.message}`);
-        onImageLoaded();
-        
-        // If there was supposed to be a glass image too, count it as well
-        if (pixelData.glass && pixelData.glass.name !== 'none') {
-          onImageLoaded();
+          glassImg.alt = pixelData.glass.name;
+          glassImg.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
+          square.appendChild(glassImg);
         }
       }
-    };
-    
-    baseImg.onerror = () => {
-      console.warn(`Failed to load base image: ${pixelData.base.path}`);
-      onImageLoaded();
-      
-      // If there was supposed to be a glass image too, count it as well
-      if (pixelData.glass && pixelData.glass.name !== 'none') {
-        onImageLoaded();
-      }
-    };
-    
-    baseImg.src = pixelData.base.path;
-  });
+
+      pixelArt.appendChild(square);
+    });
+
+    pixelArt.classList.remove('hidden');
+    placeholder.classList.add('hidden');
+    updateButtonStates();
+  } catch (error) {
+    console.error('Error rendering pixel art:', error);
+    placeholder.innerHTML = '<p>Error rendering pixel art. Please try again.</p>';
+  }
 }
 
 // Export functions
