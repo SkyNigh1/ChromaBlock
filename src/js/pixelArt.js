@@ -297,7 +297,7 @@ function processImage() {
   const viewMode = document.getElementById('view-mode').value;
   const useGlass = document.getElementById('glass-overlay').checked;
 
-  showProcessing();
+  showProcessing('Calculating blocks...', 0);
 
   // Use setTimeout to allow UI update
   setTimeout(() => {
@@ -342,12 +342,22 @@ function processImage() {
         applyBlackAndWhite(imageData);
       }
       
+      // Update progress bar
+      updateProgressBar(50);
+      
       // Convert to blocks
       pixelArtData = convertToBlocks(imageData, viewMode, useGlass);
       
-      // Render pixel art
-      renderPixelArt(pixelArtData, width, height);
-      updateButtonStates();
+      // Update progress and start rendering
+      updateProgressBar(100);
+      showProcessing('Generating preview...', 0);
+      
+      // Use setTimeout to allow UI update before starting render
+      setTimeout(() => {
+        renderPixelArt(pixelArtData, width, height);
+        updateButtonStates();
+      }, 50);
+      
     } catch (error) {
       console.error('Error processing image:', error);
       alert('Error processing image. Please try a different image.');
@@ -356,14 +366,25 @@ function processImage() {
   }, 100);
 }
 
-function showProcessing() {
+function showProcessing(message, progress) {
   const container = document.querySelector('.pixel-art-container');
   container.innerHTML = `
     <div class="processing">
-      <div class="spinner"></div>
-      <p>Processing image...</p>
+      <div class="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+      </div>
+      <p>${message}</p>
     </div>
   `;
+}
+
+function updateProgressBar(progress) {
+  const progressFill = document.querySelector('.progress-fill');
+  if (progressFill) {
+    progressFill.style.width = progress + '%';
+  }
 }
 
 function hideProcessing() {
@@ -590,8 +611,6 @@ function colorDistance(c1, c2) {
 }
 
 function renderPixelArt(data, width, height) {
-  hideProcessing();
-  
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
   
@@ -619,6 +638,7 @@ function renderPixelArt(data, width, height) {
   if (totalImages === 0) {
     // No images to load, show immediately
     showImage();
+    hideProcessing();
     return;
   }
   
@@ -634,6 +654,11 @@ function renderPixelArt(data, width, height) {
       img.style.borderRadius = '0.5rem';
       img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
       img.alt = 'Generated Pixel Art';
+      
+      hideProcessing();
+      
+      const container = document.querySelector('.pixel-art-container');
+      const pixelArt = document.getElementById('pixel-art');
       
       pixelArt.style.display = 'flex';
       pixelArt.style.justifyContent = 'center';
@@ -680,6 +705,11 @@ function renderPixelArt(data, width, height) {
       // Draw base image
       ctx.drawImage(baseImg, x, y, blockSize, blockSize);
       
+      // Update progress during render
+      loadedImages++;
+      const renderProgress = Math.round((loadedImages / totalImages) * 100);
+      updateProgressBar(renderProgress);
+      
       // Check if there's a glass overlay
       if (pixelData.glass && pixelData.glass.name !== 'none') {
         const glassImg = new Image();
@@ -692,14 +722,12 @@ function renderPixelArt(data, width, height) {
           ctx.drawImage(glassImg, x, y, blockSize, blockSize);
           ctx.restore();
           
-          loadedImages++;
           if (loadedImages === totalImages) {
             showImage();
           }
         };
         
         glassImg.onerror = () => {
-          loadedImages++;
           if (loadedImages === totalImages) {
             showImage();
           }
@@ -707,7 +735,6 @@ function renderPixelArt(data, width, height) {
         
         glassImg.src = pixelData.glass.path;
       } else {
-        loadedImages++;
         if (loadedImages === totalImages) {
           showImage();
         }
@@ -716,6 +743,9 @@ function renderPixelArt(data, width, height) {
     
     baseImg.onerror = () => {
       loadedImages++;
+      const renderProgress = Math.round((loadedImages / totalImages) * 100);
+      updateProgressBar(renderProgress);
+      
       if (loadedImages === totalImages) {
         showImage();
       }
