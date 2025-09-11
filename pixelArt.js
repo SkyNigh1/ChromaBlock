@@ -601,9 +601,8 @@ function renderPixelArt(data, width, height) {
   
   // Calculate display size to fit in container (max 735px like gradients)
   const maxSize = 735;
-  const displaySize = Math.min(maxSize, Math.max(width, height) * 16);
-  const displayWidth = Math.floor((width / Math.max(width, height)) * displaySize);
-  const displayHeight = Math.floor((height / Math.max(width, height)) * displaySize);
+  const displayWidth = Math.min(maxSize, width * 16);
+  const displayHeight = Math.min(maxSize, height * 16);
   
   // Create canvas for rendering
   const canvas = document.createElement('canvas');
@@ -619,30 +618,34 @@ function renderPixelArt(data, width, height) {
   
   if (totalImages === 0) {
     // No images to load, show immediately
-    showCanvas();
+    showImage();
     return;
   }
   
-  function showCanvas() {
-    // Create display canvas with appropriate size
-    const displayCanvas = document.createElement('canvas');
-    const displayCtx = displayCanvas.getContext('2d');
-    displayCanvas.width = displayWidth;
-    displayCanvas.height = displayHeight;
-    displayCanvas.style.imageRendering = 'pixelated';
-    displayCanvas.style.width = displayWidth + 'px';
-    displayCanvas.style.height = displayHeight + 'px';
-    displayCanvas.style.borderRadius = '0.5rem';
-    displayCanvas.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
-    
-    // Scale down the main canvas to display canvas
-    displayCtx.imageSmoothingEnabled = false;
-    displayCtx.drawImage(canvas, 0, 0, displayWidth, displayHeight);
-    
-    pixelArt.style.display = 'flex';
-    pixelArt.style.justifyContent = 'center';
-    pixelArt.style.alignItems = 'center';
-    pixelArt.appendChild(displayCanvas);
+  function showImage() {
+    // Convert canvas to blob and create image element
+    canvas.toBlob((blob) => {
+      const url = URL.createObjectURL(blob);
+      const img = document.createElement('img');
+      img.src = url;
+      img.style.maxWidth = displayWidth + 'px';
+      img.style.maxHeight = displayHeight + 'px';
+      img.style.imageRendering = 'pixelated';
+      img.style.borderRadius = '0.5rem';
+      img.style.boxShadow = '0 4px 15px rgba(0, 0, 0, 0.3)';
+      img.alt = 'Generated Pixel Art';
+      
+      pixelArt.style.display = 'flex';
+      pixelArt.style.justifyContent = 'center';
+      pixelArt.style.alignItems = 'center';
+      pixelArt.appendChild(img);
+      
+      // Clean up the blob URL after the image loads
+      img.onload = () => {
+        // Keep the URL active for right-click functionality
+        // URL.revokeObjectURL(url); // Don't revoke immediately
+      };
+    }, 'image/png');
   }
   
   // Process each pixel
@@ -691,14 +694,14 @@ function renderPixelArt(data, width, height) {
           
           loadedImages++;
           if (loadedImages === totalImages) {
-            showCanvas();
+            showImage();
           }
         };
         
         glassImg.onerror = () => {
           loadedImages++;
           if (loadedImages === totalImages) {
-            showCanvas();
+            showImage();
           }
         };
         
@@ -706,7 +709,7 @@ function renderPixelArt(data, width, height) {
       } else {
         loadedImages++;
         if (loadedImages === totalImages) {
-          showCanvas();
+          showImage();
         }
       }
     };
@@ -714,7 +717,7 @@ function renderPixelArt(data, width, height) {
     baseImg.onerror = () => {
       loadedImages++;
       if (loadedImages === totalImages) {
-        showCanvas();
+        showImage();
       }
     };
     
