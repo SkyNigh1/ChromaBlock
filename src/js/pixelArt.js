@@ -275,6 +275,7 @@ function clearImage() {
   pixelArt.innerHTML = '';
   pixelArt.classList.add('hidden');
   placeholder.classList.remove('hidden');
+  placeholder.innerHTML = '<p>Drag and drop or click to upload an image</p>';
   updateButtonStates();
 }
 
@@ -346,28 +347,37 @@ function processImage() {
           if (!pixelData.transparent) {
             const cubeKey = `${Math.floor(r / 32)},${Math.floor(g / 32)},${Math.floor(b / 32)}`;
             const blockCandidates = blockLookupTable.get(cubeKey) || blocks;
-            let closestBlock = null;
-            let minDistance = Infinity;
 
-            blockCandidates.forEach(block => {
-              if (removeBlockEntities && blockEntities.has(block.name)) return;
+            // Sort candidates by distance
+            const sortedBlocks = blockCandidates.map(block => {
               const distance = Math.sqrt(
                 (r - block.color.r) ** 2 +
                 (g - block.color.g) ** 2 +
                 (b - block.color.b) ** 2
               );
-              if (distance < minDistance) {
-                minDistance = distance;
-                closestBlock = block;
-              }
-            });
+              return { block, distance };
+            }).sort((a, b) => a.distance - b.distance);
 
-            pixelData.base = closestBlock;
+            // Select first valid block
+            let closestBlock = null;
+            if (removeBlockEntities) {
+              for (const { block } of sortedBlocks) {
+                if (!blockEntities.has(block.name)) {
+                  closestBlock = block;
+                  break;
+                }
+              }
+            } else {
+              closestBlock = sortedBlocks[0]?.block;
+            }
+
+            // Fallback to minecraft:stone if no valid block found
+            pixelData.base = closestBlock || { name: 'stone', path: 'assets/blocks/stone.png', color: { r: 128, g: 128, b: 128 } };
 
             if (useGlass) {
               const glassCandidates = glassLookupTable.get(cubeKey) || glassBlocks;
               let closestGlass = { name: 'none', path: '', color: { r: 0, g: 0, b: 0 } };
-              minDistance = Infinity;
+              let minDistance = Infinity;
 
               glassCandidates.forEach(glass => {
                 const distance = Math.sqrt(
@@ -732,9 +742,7 @@ function renderPixelArt(width, height, viewMode, useGlass) {
           if (useGlass && pixelData.glass && pixelData.glass.name !== 'none' && pixelData.glass.path) {
             const glassImg = textureMap.get(pixelData.glass.path);
             if (glassImg) {
-              ctx.globalAlpha = 0.7;
-              ctx.drawImage(glassImg, x, y, 16, 16);
-              ctx.globalAlpha = 1.0;
+              ctx.drawImage(glassImg, x, y, 16, 16); // No additional opacity
             }
           }
         } else {
