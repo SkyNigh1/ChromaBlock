@@ -705,11 +705,6 @@ function renderPixelArt(data, width, height) {
       // Draw base image
       ctx.drawImage(baseImg, x, y, blockSize, blockSize);
       
-      // Update progress during render
-      loadedImages++;
-      const renderProgress = Math.round((loadedImages / totalImages) * 100);
-      updateProgressBar(renderProgress);
-      
       // Check if there's a glass overlay
       if (pixelData.glass && pixelData.glass.name !== 'none') {
         const glassImg = new Image();
@@ -722,12 +717,22 @@ function renderPixelArt(data, width, height) {
           ctx.drawImage(glassImg, x, y, blockSize, blockSize);
           ctx.restore();
           
+          // Update progress after glass is loaded
+          loadedImages++;
+          const renderProgress = Math.round((loadedImages / totalImages) * 100);
+          updateProgressBar(renderProgress);
+          
           if (loadedImages === totalImages) {
             showImage();
           }
         };
         
         glassImg.onerror = () => {
+          // Update progress even if glass failed to load
+          loadedImages++;
+          const renderProgress = Math.round((loadedImages / totalImages) * 100);
+          updateProgressBar(renderProgress);
+          
           if (loadedImages === totalImages) {
             showImage();
           }
@@ -735,6 +740,11 @@ function renderPixelArt(data, width, height) {
         
         glassImg.src = pixelData.glass.path;
       } else {
+        // No glass overlay, increment counter immediately
+        loadedImages++;
+        const renderProgress = Math.round((loadedImages / totalImages) * 100);
+        updateProgressBar(renderProgress);
+        
         if (loadedImages === totalImages) {
           showImage();
         }
@@ -742,6 +752,7 @@ function renderPixelArt(data, width, height) {
     };
     
     baseImg.onerror = () => {
+      // Update progress even if base image failed to load
       loadedImages++;
       const renderProgress = Math.round((loadedImages / totalImages) * 100);
       updateProgressBar(renderProgress);
