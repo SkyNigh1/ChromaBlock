@@ -664,87 +664,94 @@ function renderPixelArt(width, height, viewMode, useGlass) {
   if (!pixelArt || !placeholder) {
     console.error('Required DOM elements not found');
     placeholder.innerHTML = '<p>Error: Pixel art container not found.</p>';
+    placeholder.classList.remove('hidden');
     return;
   }
 
   try {
     pixelArt.innerHTML = '';
     pixelArt.classList.remove('hidden');
-    pixelArt.style.display = 'grid';
-    pixelArt.style.gridTemplateColumns = `repeat(${width}, 1fr)`;
-    pixelArt.style.width = '100%';
-    pixelArt.style.height = 'auto';
+    placeholder.classList.add('hidden');
+
+    const canvas = document.createElement('canvas');
+    canvas.width = width * 16;
+    canvas.height = height * 16;
+    canvas.style.width = '100%';
+    canvas.style.height = 'auto';
+    canvas.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
+    pixelArt.appendChild(canvas);
+    const ctx = canvas.getContext('2d');
 
     console.log('Rendering pixel art with', pixelArtData.length, 'pixels');
 
-    pixelArtData.forEach((pixelData, index) => {
-      const square = document.createElement('div');
-      square.className = 'pixel-square';
-      square.style.width = `${100 / width}%`;
-      square.style.aspectRatio = '1/1';
-      square.style.position = 'relative';
-
-      if (pixelData.transparent) {
-        square.style.background = `
-          linear-gradient(45deg, #e0e0e0 25%, transparent 25%),
-          linear-gradient(-45deg, #e0e0e0 25%, transparent 25%),
-          linear-gradient(45deg, transparent 75%, #e0e0e0 75%),
-          linear-gradient(-45deg, transparent 75%, #e0e0e0 75%)`;
-        square.style.backgroundSize = '8px 8px';
-        square.style.backgroundPosition = '0 0, 0 4px, 4px -4px, -4px 0px';
-      } else if (pixelData.base) {
-        const baseImg = document.createElement('img');
-        baseImg.className = 'base-img';
-        baseImg.src = pixelData.base.path;
-        baseImg.alt = pixelData.base.name;
-        baseImg.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
-        baseImg.style.width = '100%';
-        baseImg.style.height = '100%';
-        baseImg.style.position = 'absolute';
-        baseImg.style.top = '0';
-        baseImg.style.left = '0';
-        baseImg.style.zIndex = '1';
-
-        baseImg.onerror = () => {
-          console.warn(`Failed to load base image: ${pixelData.base.path}`);
-          square.style.backgroundColor = '#ff0000';
-        };
-
-        square.appendChild(baseImg);
-
-        if (useGlass && pixelData.glass && pixelData.glass.name !== 'none') {
-          const glassImg = document.createElement('img');
-          glassImg.className = 'glass-img';
-          glassImg.src = pixelData.glass.path;
-          glassImg.alt = pixelData.glass.name;
-          glassImg.style.imageRendering = viewMode === 'pixelated' ? 'pixelated' : 'auto';
-          glassImg.style.width = '100%';
-          glassImg.style.height = '100%';
-          glassImg.style.position = 'absolute';
-          glassImg.style.top = '0';
-          glassImg.style.left = '0';
-          glassImg.style.zIndex = '2';
-          glassImg.style.opacity = '0.7';
-
-          glassImg.onerror = () => {
-            console.warn(`Failed to load glass image: ${pixelData.glass.path}`);
-            square.style.backgroundColor = '#ff0000';
-          };
-
-          square.appendChild(glassImg);
-        }
-      } else {
-        console.warn(`No base block for pixel at index ${index}`);
-        square.style.backgroundColor = '#ff0000';
+    const texturePaths = new Set();
+    pixelArtData.forEach(pixelData => {
+      if (pixelData.base && pixelData.base.path) {
+        texturePaths.add(pixelData.base.path);
       }
-
-      pixelArt.appendChild(square);
+      if (useGlass && pixelData.glass && pixelData.glass.name !== 'none' && pixelData.glass.path) {
+        texturePaths.add(pixelData.glass.path);
+      }
     });
 
-    console.log(`Rendered ${pixelArt.children.length} pixel squares`);
+    const texturePromises = Array.from(texturePaths).map(path => {
+      return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = path;
+        img.onload = () => resolve({ path, img });
+        img.onerror = () => {
+          console.warn(`Failed to load texture: ${path}`);
+          resolve({ path, img: null });
+        };
+      });
+    });
 
-    placeholder.classList.add('hidden');
-    updateButtonStates();
+    Promise.all(texturePromises).then(textures => {
+      const textureMap = new Map(textures.map(({ path, img }) => [path, img]));
+
+      pixelArtData.forEach((pixelData, index) => {
+        const x = (index % width) * 16;
+        const y = Math.floor(index / width) * 16;
+
+        if (pixelData.transparent) {
+          ctx.fillStyle = '#e0e0e0';
+          ctx.fillRect(x, y, 8, 8);
+          ctx.fillRect(x + 8, y + 8, 8, 8);
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(x + 8, y, 8, 8);
+          ctx.fillRect(x, y + 8, 8, 8);
+        } else if (pixelData.base && pixelData.base.path) {
+          const baseImg = textureMap.get(pixelData.base.path);
+          if (baseImg) {
+            ctx.drawImage(baseImg, x, y, 16, 16);
+          } else {
+            ctx.fillStyle = '#ff0000';
+            ctx.fillRect(x, y, 16, 16);
+          }
+
+          if (useGlass && pixelData.glass && pixelData.glass.name !== 'none' && pixelData.glass.path) {
+            const glassImg = textureMap.get(pixelData.glass.path);
+            if (glassImg) {
+              ctx.globalAlpha = 0.7;
+              ctx.drawImage(glassImg, x, y, 16, 16);
+              ctx.globalAlpha = 1.0;
+            }
+          }
+        } else {
+          console.warn(`No base block for pixel at index ${index}`);
+          ctx.fillStyle = '#ff0000';
+          ctx.fillRect(x, y, 16, 16);
+        }
+      });
+
+      console.log('Canvas rendered with dimensions', canvas.width, 'x', canvas.height);
+      updateButtonStates();
+    }).catch(error => {
+      console.error('Error preloading textures:', error);
+      placeholder.innerHTML = '<p>Error rendering pixel art. Please try again.</p>';
+      placeholder.classList.remove('hidden');
+      pixelArt.classList.add('hidden');
+    });
   } catch (error) {
     console.error('Error rendering pixel art:', error);
     placeholder.innerHTML = '<p>Error rendering pixel art. Please try again.</p>';
