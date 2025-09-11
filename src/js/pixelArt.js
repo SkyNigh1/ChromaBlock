@@ -631,14 +631,33 @@ function renderPixelArt(data, width, height) {
   canvas.width = width * blockSize;
   canvas.height = height * blockSize;
   
+  // Count total images that need to be loaded
+  let totalImagesToLoad = 0;
+  data.forEach(pixel => {
+    if (!pixel.transparent && pixel.base) {
+      totalImagesToLoad++;
+      if (pixel.glass && pixel.glass.name !== 'none') {
+        totalImagesToLoad++; // Count glass images separately
+      }
+    }
+  });
+  
   // Track loaded images
   let loadedImages = 0;
-  const totalImages = data.filter(pixel => !pixel.transparent && pixel.base).length;
   
-  if (totalImages === 0) {
+  function onImageLoaded() {
+    loadedImages++;
+    const renderProgress = Math.round((loadedImages / totalImagesToLoad) * 100);
+    updateProgressBar(renderProgress);
+    
+    if (loadedImages === totalImagesToLoad) {
+      showImage();
+    }
+  }
+  
+  if (totalImagesToLoad === 0) {
     // No images to load, show immediately
     showImage();
-    hideProcessing();
     return;
   }
   
@@ -704,6 +723,7 @@ function renderPixelArt(data, width, height) {
     baseImg.onload = () => {
       // Draw base image
       ctx.drawImage(baseImg, x, y, blockSize, blockSize);
+      onImageLoaded(); // Count this image as loaded
       
       // Check if there's a glass overlay
       if (pixelData.glass && pixelData.glass.name !== 'none') {
@@ -716,49 +736,25 @@ function renderPixelArt(data, width, height) {
           ctx.globalAlpha = alpha;
           ctx.drawImage(glassImg, x, y, blockSize, blockSize);
           ctx.restore();
-          
-          // Update progress after glass is loaded
-          loadedImages++;
-          const renderProgress = Math.round((loadedImages / totalImages) * 100);
-          updateProgressBar(renderProgress);
-          
-          if (loadedImages === totalImages) {
-            showImage();
-          }
+          onImageLoaded(); // Count glass image as loaded
         };
         
         glassImg.onerror = () => {
-          // Update progress even if glass failed to load
-          loadedImages++;
-          const renderProgress = Math.round((loadedImages / totalImages) * 100);
-          updateProgressBar(renderProgress);
-          
-          if (loadedImages === totalImages) {
-            showImage();
-          }
+          console.warn(`Failed to load glass image: ${pixelData.glass.path}`);
+          onImageLoaded(); // Count as loaded even if failed
         };
         
         glassImg.src = pixelData.glass.path;
-      } else {
-        // No glass overlay, increment counter immediately
-        loadedImages++;
-        const renderProgress = Math.round((loadedImages / totalImages) * 100);
-        updateProgressBar(renderProgress);
-        
-        if (loadedImages === totalImages) {
-          showImage();
-        }
       }
     };
     
     baseImg.onerror = () => {
-      // Update progress even if base image failed to load
-      loadedImages++;
-      const renderProgress = Math.round((loadedImages / totalImages) * 100);
-      updateProgressBar(renderProgress);
+      console.warn(`Failed to load base image: ${pixelData.base.path}`);
+      onImageLoaded(); // Count as loaded even if failed
       
-      if (loadedImages === totalImages) {
-        showImage();
+      // If there was supposed to be a glass image too, count it as well
+      if (pixelData.glass && pixelData.glass.name !== 'none') {
+        onImageLoaded();
       }
     };
     
