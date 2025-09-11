@@ -610,21 +610,17 @@ function colorDistance(c1, c2) {
   return colorDistanceFast(c1, c2);
 }
 
-// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
-
-// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
-
-// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
-
-// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
-
+// Version corrigée de renderPixelArt
 function renderPixelArt(data, width, height) {
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
   
-  pixelArt.innerHTML = '';
+  if (!pixelArt || !placeholder) {
+    console.error('Required DOM elements not found');
+    return;
+  }
+  
   placeholder.classList.add('hidden');
-  pixelArt.classList.remove('hidden');
   
   // Calculate display size to fit in container (max 735px like gradients)
   const maxSize = 735;
@@ -659,12 +655,11 @@ function renderPixelArt(data, width, height) {
     updateProgressBar(renderProgress);
     
     if (loadedImages >= totalImagesToLoad) {
-      // Petite pause pour s'assurer que toutes les images sont bien rendues
-      setTimeout(showImage, 100);
+      showFinalImage();
     }
   }
   
-  function showImage() {
+  function showFinalImage() {
     canvas.toBlob((blob) => {
       if (!blob) {
         console.error('Failed to create canvas blob');
@@ -683,36 +678,45 @@ function renderPixelArt(data, width, height) {
       img.alt = 'Generated Pixel Art';
       
       img.onload = () => {
-        hideProcessing();
+        // Clean up the blob URL
+        URL.revokeObjectURL(url);
         
-        // Re-get elements after hideProcessing() recreates the DOM
-        const pixelArt = document.getElementById('pixel-art');
-        
-        if (pixelArt) {
-          pixelArt.style.display = 'flex';
-          pixelArt.style.justifyContent = 'center';
-          pixelArt.style.alignItems = 'center';
-          pixelArt.classList.remove('hidden');
-          pixelArt.innerHTML = '';
-          pixelArt.appendChild(img);
+        // Update container to show final result
+        const container = document.querySelector('.pixel-art-container');
+        if (container) {
+          container.innerHTML = `
+            <div id="pixel-art" class="pixel-art"></div>
+            <div class="pixel-art-placeholder hidden" id="pixel-art-placeholder">
+              <p>Upload an image to see the pixel art preview</p>
+            </div>
+          `;
+          
+          const newPixelArt = document.getElementById('pixel-art');
+          if (newPixelArt) {
+            newPixelArt.style.display = 'flex';
+            newPixelArt.style.justifyContent = 'center';
+            newPixelArt.style.alignItems = 'center';
+            newPixelArt.classList.remove('hidden');
+            newPixelArt.appendChild(img);
+          }
         }
       };
       
       img.onerror = () => {
         console.error('Failed to load generated image');
-        // Don't call hideProcessing() again, just show an error state
+        URL.revokeObjectURL(url);
+        hideProcessing();
       };
     }, 'image/png');
   }
   
   // Handle case where no images need to be loaded
   if (totalImagesToLoad === 0) {
-    showImage();
+    showFinalImage();
     return;
   }
   
   // Process each pixel
-  let processedPixels = 0;
   data.forEach((pixelData, index) => {
     const x = (index % width) * blockSize;
     const y = Math.floor(index / width) * blockSize;
@@ -731,12 +735,10 @@ function renderPixelArt(data, width, height) {
           }
         }
       }
-      processedPixels++;
       return;
     }
     
     if (!pixelData.base) {
-      processedPixels++;
       return;
     }
     
@@ -799,7 +801,6 @@ function renderPixelArt(data, width, height) {
     };
     
     baseImg.src = pixelData.base.path;
-    processedPixels++;
   });
 }
 
