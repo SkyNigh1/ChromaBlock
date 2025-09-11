@@ -614,6 +614,8 @@ function colorDistance(c1, c2) {
 
 // Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
 
+// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
+
 function renderPixelArt(data, width, height) {
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
