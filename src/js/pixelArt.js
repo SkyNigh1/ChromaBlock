@@ -679,14 +679,17 @@ function renderPixelArt(data, width, height) {
       img.onload = () => {
         hideProcessing();
         
-        const container = document.querySelector('.pixel-art-container');
+        // Re-get elements after hideProcessing() recreates the DOM
         const pixelArt = document.getElementById('pixel-art');
         
-        pixelArt.style.display = 'flex';
-        pixelArt.style.justifyContent = 'center';
-        pixelArt.style.alignItems = 'center';
-        pixelArt.innerHTML = ''; // Clear any existing content
-        pixelArt.appendChild(img);
+        if (pixelArt) {
+          pixelArt.style.display = 'flex';
+          pixelArt.style.justifyContent = 'center';
+          pixelArt.style.alignItems = 'center';
+          pixelArt.classList.remove('hidden');
+          pixelArt.innerHTML = '';
+          pixelArt.appendChild(img);
+        }
       };
       
       img.onerror = () => {
