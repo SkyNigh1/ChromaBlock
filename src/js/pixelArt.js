@@ -612,6 +612,8 @@ function colorDistance(c1, c2) {
 
 // Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
 
+// Remplacer la fonction renderPixelArt dans pixelArt.js par cette version corrigée :
+
 function renderPixelArt(data, width, height) {
   const pixelArt = document.getElementById('pixel-art');
   const placeholder = document.getElementById('pixel-art-placeholder');
@@ -694,7 +696,7 @@ function renderPixelArt(data, width, height) {
       
       img.onerror = () => {
         console.error('Failed to load generated image');
-        hideProcessing();
+        // Don't call hideProcessing() again, just show an error state
       };
     }, 'image/png');
   }
